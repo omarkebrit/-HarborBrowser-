@@ -76,7 +76,7 @@ struct TabScreen: View {
                         Image(systemName: tab.isPrivate ? "eye.slash.fill" : "shield.lefthalf.filled").font(.system(size: 64)).foregroundStyle(.mint)
                         Text(tab.isPrivate ? "Private Harbor" : "Harbor").font(.largeTitle.bold())
                         Text("Browse with fewer ads and trackers.").foregroundStyle(.secondary)
-                        Text("Starter rules included. Import a full WebKit list for broader coverage.").font(.caption).multilineTextAlignment(.center).foregroundStyle(.secondary)
+                        Text("Ad and tracking filters enabled. Manage protection in Settings.").font(.caption).multilineTextAlignment(.center).foregroundStyle(.secondary)
                     }.padding().frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(uiColor: .systemBackground))
                 }
             }
@@ -107,16 +107,20 @@ struct SettingsScreen: View {
             Form {
                 Section("Protection") {
                     Text(browser.status).font(.caption)
-                    Text("Blocks selected advertising and tracking domains, third-party cookies, and common ad elements. Coverage depends on your lists.")
+                    Text(browser.filterDescription)
+                    Text("\(browser.ruleCount.formatted()) active rules, including network blocking and ad element hiding. Lists are refreshed when building a new version.")
                     Button("Import WebKit rules (.json)") { importing = true }.disabled(browser.busy)
-                    Button("Reset to starter rules") { Task { await browser.reset() } }.disabled(browser.busy)
+                    Button("Reset imported rules") { Task { await browser.reset() } }.disabled(browser.busy)
+                }
+                Section("Filter notices") {
+                    Text("AdGuard filter lists, transformed with SafariConverterLib. Original sources and licenses are included in the app bundle. Some advanced filter rules cannot run in WebKit content blocking.").font(.caption)
                 }
                 Section("Privacy") {
                     Text("Private tabs share a temporary session. Closing all private tabs discards it. This does not hide your IP address.")
                     Button("Clear browsing data", role: .destructive) { confirmClear = true }.disabled(browser.busy)
                 }
                 Section("About") {
-                    Text("Harbor 0.1 — no analytics SDK or account. This prototype has not been tested for Brave-equivalent protection. Automatic filter updates, downloads, advanced anti-fingerprinting and video-ad fixes are not included.").font(.caption)
+                    Text("Harbor 0.2 — no analytics SDK or account. This prototype has not been tested for Brave-equivalent protection. On-device filter downloads, advanced scriptlets, downloads, fingerprint randomization and guaranteed video-ad removal are not included.").font(.caption)
                 }
             }.navigationTitle("Settings")
                 .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }

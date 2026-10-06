@@ -1,0 +1,1 @@
+The GitHub build generates enhanced.json, metadata.json, source filter lists, notices and licenses here. Local builds without generation retain the small baseline fallback. Run python3 scripts/prepare_filters.py on macOS before building to include enhanced blocking. The app never silently downloads or executes external JavaScript.

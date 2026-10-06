@@ -27,6 +27,24 @@ jobs:
           project_path=$(find "$GITHUB_WORKSPACE" -name HarborBrowser.xcodeproj -type d -print -quit)
           test -n "$project_path"
           echo "HARBOR_PROJECT=$project_path" >> "$GITHUB_ENV"
+      - name: Prepare enhanced ad and tracking lists
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$(dirname "$HARBOR_PROJECT")"
+          python3 scripts/prepare_filters.py
+      - name: Verify rules with WebKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$(dirname "$HARBOR_PROJECT")"
+          swift scripts/validate_filters.swift HarborBrowser/Filters/enhanced.json
+      - name: Preserve filter source and attribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harbor-filter-sources-and-report
+          path: HarborBrowser/Filters/
+          retention-days: 30
       - name: Build for iPhone without signing
         shell: bash
         run: |

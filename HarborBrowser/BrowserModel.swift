@@ -85,6 +85,8 @@ final class BrowserModel: ObservableObject {
     @Published var ready = false
     @Published var status = "Preparing protection…"
     @Published var busy = false
+    @Published var ruleCount = 0
+    @Published var filterDescription = ""
     private let blocker = BlockingStore()
     private var rules: [WKContentRuleList] = []
     private var privateStore = WKWebsiteDataStore.nonPersistent()
@@ -92,7 +94,7 @@ final class BrowserModel: ObservableObject {
     func prepare() async {
         guard !ready, !busy else { return }
         busy = true; defer { busy = false }
-        do { rules = try await blocker.load(); ready = true; status = "Baseline protection ready"; addTab() }
+        do { rules = try await blocker.load(); ready = true; refreshFilterStatus(); addTab() }
         catch { status = "Protection failed: \(error.localizedDescription). Reset imported rules and retry." }
     }
     func addTab(isPrivate: Bool = false) {
@@ -113,19 +115,25 @@ final class BrowserModel: ObservableObject {
         busy = true; defer { busy = false }
         do {
             let custom = try await blocker.importRules(url)
-            rules = Array(rules.prefix(1)) + [custom]
+            rules = [custom]
+            refreshFilterStatus()
             for tab in tabs { tab.apply(rules); tab.webView.reload() }
             status = "Imported rules active; pages reloaded"
         } catch { status = "Import failed: \(error.localizedDescription)" }
     }
+    private func refreshFilterStatus() {
+        ruleCount = blocker.ruleCount
+        filterDescription = blocker.description
+        status = "Protection ready: \(ruleCount.formatted()) rules"
+    }
     func reset() async {
         guard !busy else { return }
+        busy = true; defer { busy = false }
         do {
-            try blocker.resetCustom()
-            if ready {
-                rules = Array(rules.prefix(1)); tabs.forEach { $0.apply(rules); $0.webView.reload() }
-                status = "Baseline protection ready"
-            } else { await prepare() }
+            rules = try await blocker.resetCustom()
+            refreshFilterStatus()
+            if ready { tabs.forEach { $0.apply(rules); $0.webView.reload() } }
+            else { ready = true; addTab() }
         } catch { status = error.localizedDescription }
     }
     func clearData() async {

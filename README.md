@@ -1,57 +1,43 @@
-# Harbor Browser — iOS prototype 0.1
+# Harbor Browser 0.2 — iOS
 
-A native SwiftUI / WKWebView browser for iPhone and iPad, iOS 16+.
+SwiftUI / WKWebView browser for iPhone and iPad, iOS 16+.
 
-## GitHub build without a Mac
+## Improved blocking
 
-See `GITHUB-SETUP.md`. Included Actions workflow builds an unsigned iPhone IPA and a simulator app. Installation still requires signing. CI has not been run yet.
+GitHub builds bundle AdGuard's iOS optimized Base, Tracking Protection, Mobile Ads and Popups filters, converted using the checksum-pinned SafariConverterLib 4.3.0 CLI. This replaces the tiny starter-domain list in built artifacts. Supported URL/path/resource-type blocking and cosmetic hiding rules are retained with their exceptions in one compiled WebKit list. Third-party cookie blocking precedes those rules. Imported JSON is appended to the same list so its exceptions can override earlier rules.
 
-## تشغيل التطبيق
+The converter's unsupported rules are reported; advanced scriptlets, procedural cosmetic rules and HTML/video modification are not implemented. This app does not claim complete AdGuard or Brave equivalence or guaranteed YouTube ad removal. Rule counts measure loaded rules, not blocked requests.
 
-1. على Mac، افتح `HarborBrowser.xcodeproj` بواسطة Xcode.
-2. اختار iPhone Simulator واضغط Run لتجربة التطبيق.
-3. للتثبيت على iPhone: سجّل Apple Account في إعدادات Xcode، ثم اختار Team ضمن Signing & Capabilities. غيّر Bundle Identifier إذا لزم.
-4. اختار الآيفون الموصول كجهاز التشغيل واضغط Run. فعّل Developer Mode إذا طلب النظام.
+Filters refresh during each GitHub build, not silently while browsing. The bundled pack works offline. Lists and converter failures stop CI instead of shipping a false enhanced-protection claim. Local builds without generated filters clearly report the starter fallback.
 
-هذا مشروع كود، وليس IPA موقّعاً جاهزاً للتثبيت. الحساب الشخصي المجاني يتطلب إعادة التثبيت دورياً حسب قيود Apple.
+## Browser features
 
-## Included
+Address/search bar, DuckDuckGo search, back/forward/reload/share, regular and private tabs, per-tab protection toggle, imported WebKit JSON rules and clearing cookies/site storage. Private tabs share a nonpersistent store, discarded after closing the last private tab. Browsing privately does not hide IP addresses.
 
-- Address/search bar using DuckDuckGo; HTTPS is used for addresses without a scheme.
-- Back, forward, reload, share, regular/private tabs.
-- WebKit rules compiled and installed before the first navigation.
-- 36 selected third-party ad/tracker domains, third-party cookie blocking, four cosmetic selectors.
-- Protection switch per tab; settings; clear cookies/cache/site storage and close tabs.
-- Custom WebKit JSON import (maximum 50,000 rules / 20 MB); validation by WebKit before replacement. Imported rules survive app restarts.
-- No analytics SDK, accounts, or automatic external filter fetches.
+Imported lists have a combined limit of 150,000 rules and 64 MB JSON. Invalid imports leave the previous list active. The compiled list is cached by SHA-256; first compilation may take time. No analytics SDK or account is included.
 
-## Protection limits
+## Build and install
 
-This is a starter prototype, not verified Brave parity. The bundled list is intentionally small. It has no automatic filter updates, advanced fingerprint randomization, adblock-scriptlet engine, malicious-site reputation service, or guaranteed YouTube/video ad removal. Popups without a user-clicked link are suppressed; clicked new-window links open in the current tab. JavaScript confirm/prompt dialogs currently return cancel; this can break some site workflows. HTTP-only sites may be restricted by the platform's default transport policy. It is not a system-wide blocker or Safari extension.
+See `GITHUB-SETUP.md`. Actions generates filters, checks the complete pack using WebKit, builds device/simulator targets and uploads an unsigned IPA. Signing is required before installing on an iPhone. No Apple secrets are needed for unsigned builds.
 
-Private tabs share one nonpersistent data store, replaced once the last private tab closes. Normal site storage persists; tab/session history itself is not restored after relaunch. Private browsing does not hide IP addresses or network activity from the network provider.
-
-## Stronger filter coverage
-
-Import a trusted, licensed content-blocker JSON array via Settings. Plain EasyList/AdGuard text files are NOT directly accepted. AdGuard's SafariConverterLib can convert supported text rules to WebKit JSON, but advanced rules require a separate implementation. Verify license obligations before redistribution. Baseline and custom lists are separate: exceptions inside one cannot override the other. The per-tab protection switch disables both lists. Re-importing replaces the prior custom list and reloads existing tabs.
-
-## Validation status
-
-JSON structure, representative domain regex matching, and project source/resource references were checked in the build environment. No Apple SDK, Swift compiler, Xcode, Simulator or physical device was available there. Compilation and runtime behavior remain unverified.
-
-On a Mac, build first:
+On macOS, open the project with Xcode. To include enhanced filters locally:
 
 ```sh
-xcodebuild -project HarborBrowser.xcodeproj -scheme HarborBrowser -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
+python3 scripts/prepare_filters.py
+swift scripts/validate_filters.swift HarborBrowser/Filters/enhanced.json
+xcodebuild -project HarborBrowser.xcodeproj -scheme HarborBrowser -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
 ```
 
-Then test: initial rule loading, regular/private tabs, blocked third-party requests with a controlled fixture, first-party requests allowed, cookie/login compatibility, imports with invalid and valid JSON, shield toggling, popups, data clearing, and persistence after relaunch. Compare the same sites with Brave before making claims about comparable protection.
+To install on a device with Xcode, select your team under Signing & Capabilities, use a unique bundle identifier and run on your connected device.
 
-## References
+## Verification and limits
 
+Version 0.1 successfully compiled for device and simulator on GitHub. Version 0.2 adds full filter compilation checks. Real-site ad coverage, cookie/login compatibility, imported exceptions, cache behavior and protection toggling must still be tested on iPhone. Disable the shield for a tab if a site breaks. Downloads, tab restoration, site allowlists and JavaScript confirm/prompt UI are not implemented. HTTP-only sites may be restricted by the platform transport policy.
+
+## Attribution
+
+App source is MIT licensed. The converted filters retain their respective authors' licenses and notices. The IPA contains the downloaded source lists, their hashes, conversion report, attribution and GPL/LGPL license texts in `Filters`. The GPL converter executable is a build-only tool and is not bundled or linked into the app. Original resources:
+
+- https://github.com/AdguardTeam/FiltersRegistry
+- https://github.com/AdguardTeam/SafariConverterLib/tree/v4.3.0
 - https://developer.apple.com/documentation/webkit/wkcontentruleliststore
-- https://webkit.org/blog/3476/content-blockers-first-look/
-- https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices
-- https://github.com/AdguardTeam/SafariConverterLib
-
-Starter rules and app source are original project code, licensed under MIT. Third-party filter imports retain their own licenses.
