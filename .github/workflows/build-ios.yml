@@ -1,0 +1,80 @@
+name: Build Harbor for iPhone
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harbor-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Locate project and show Xcode
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version
+          project_path=$(find "$GITHUB_WORKSPACE" -name HarborBrowser.xcodeproj -type d -print -quit)
+          test -n "$project_path"
+          echo "HARBOR_PROJECT=$project_path" >> "$GITHUB_ENV"
+      - name: Build for iPhone without signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project "$HARBOR_PROJECT" \
+            -scheme HarborBrowser \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/harbor-device" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            build
+      - name: Package unsigned IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/harbor-package/Payload" "$GITHUB_WORKSPACE/build-output"
+          ditto "$RUNNER_TEMP/harbor-device/Build/Products/Release-iphoneos/HarborBrowser.app" \
+            "$RUNNER_TEMP/harbor-package/Payload/HarborBrowser.app"
+          cd "$RUNNER_TEMP/harbor-package"
+          /usr/bin/zip -qry "$GITHUB_WORKSPACE/build-output/Harbor-unsigned.ipa" Payload
+      - name: Build simulator version
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -project "$HARBOR_PROJECT" \
+            -scheme HarborBrowser \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/harbor-simulator" \
+            CODE_SIGNING_ALLOWED=NO build
+      - name: Upload unsigned iPhone IPA
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harbor-iPhone-UNSIGNED-needs-signing
+          path: build-output/Harbor-unsigned.ipa
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harbor-Simulator-only
+          path: ${{ runner.temp }}/harbor-simulator/Build/Products/Debug-iphonesimulator/HarborBrowser.app
+          if-no-files-found: error
+          retention-days: 7
