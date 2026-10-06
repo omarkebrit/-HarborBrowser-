@@ -35,7 +35,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         config.websiteDataStore = store
         // Keep WebKit's actual device/OS identity while supplying Safari-compatible browser tokens.
         let os = ProcessInfo.processInfo.operatingSystemVersion
-        config.applicationNameForUserAgent = "Version/\(os.majorVersion).\(os.minorVersion) Safari/604.1"
+        config.applicationNameForUserAgent = "Version/\(os.majorVersion).\(os.minorVersion) Mobile/15E148 Safari/604.1"
         config.userContentController = WKUserContentController()
         config.allowsInlineMediaPlayback = true
         config.allowsPictureInPictureMediaPlayback = true
@@ -95,7 +95,12 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = !preferences.blockPopups
         applyProtection(webView.url ?? lastRequestedURL)
     }
-    func setDesktop(_ value: Bool) { desktop = value; reload() }
+    func setDesktop(_ value: Bool) {
+        desktop = value
+        let os = ProcessInfo.processInfo.operatingSystemVersion
+        webView.customUserAgent = value ? "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/\(os.majorVersion).\(os.minorVersion) Safari/605.1.15" : nil
+        reload()
+    }
     func setZoom(_ value: Double) { zoom = value; webView.pageZoom = value }
     func find(_ text: String, backwards: Bool = false) {
         guard !text.isEmpty else { findResult = ""; return }

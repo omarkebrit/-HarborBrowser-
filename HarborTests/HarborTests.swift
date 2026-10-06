@@ -36,7 +36,8 @@ final class HarborTests: XCTestCase {
         let tab = BrowserTab(isPrivate: true, store: .nonPersistent(), rules: [rule], preferences: BrowserPreferences(), downloads: DownloadManager())
         let window = mount(tab)
         defer { window.isHidden = true }
-        let site = URL(string: "https://www.erome.com")!
+        // HTTP base avoids mixed-content restrictions for the loopback HTTP fixture.
+        let site = URL(string: "http://www.erome.com")!
         tab.applyProtection(site)
         XCTAssertEqual(tab.protection, "Video compatibility")
         tab.webView.loadHTMLString("<html><body><video id='v' playsinline muted controls src='http://127.0.0.1:8765/video.mp4'></video></body></html>", baseURL: site)
