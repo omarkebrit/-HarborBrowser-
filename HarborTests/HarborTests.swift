@@ -46,15 +46,21 @@ final class HarborTests: XCTestCase {
         let resource = Bundle(for: Self.self).url(forResource: "video", withExtension: "b64")!
         let data = try String(contentsOf: resource)
         tab.webView.loadHTMLString("<html><body><video id='v' playsinline muted controls src='data:video/mp4;base64,\(data)'></video></body></html>", baseURL: URL(string: "https://fixture.example"))
-        var ready = false
+        var documentReady = false
         for _ in 0..<100 {
-            if let state = try? await tab.webView.evaluateJavaScript("document.getElementById('v')?.readyState || 0") as? Int, state >= 2 { ready = true; break }
+            if (try? await tab.webView.evaluateJavaScript("!!document.getElementById('v')")) as? Bool == true { documentReady = true; break }
             try await Task.sleep(nanoseconds: 100_000_000)
         }
-        XCTAssertTrue(ready, "Fixture video must load")
+        XCTAssertTrue(documentReady, "Video element must exist")
         _ = try await tab.webView.evaluateJavaScript("document.getElementById('v').play(); true")
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        let time = try await tab.webView.evaluateJavaScript("document.getElementById('v').currentTime") as? Double ?? 0
-        XCTAssertGreaterThan(time, 0.1, "Media must actually advance")
+        var time = 0.0
+        for _ in 0..<100 {
+            time = (try? await tab.webView.evaluateJavaScript("document.getElementById('v').currentTime")) as? Double ?? 0
+            if time > 0.1 { break }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        XCTAssertGreaterThan(time, 0.1, "Media must actually advance after play is requested")
+        let mediaError = try await tab.webView.evaluateJavaScript("document.getElementById('v').error?.code || 0") as? Int
+        XCTAssertEqual(mediaError, 0)
     }
 }

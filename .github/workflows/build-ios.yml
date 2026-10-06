@@ -81,6 +81,18 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/harbor-simulator" \
             -resultBundlePath "$GITHUB_WORKSPACE/build-output/HarborTests.xcresult" \
             -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO
+      - name: Export simulator screenshots
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          xcrun xcresulttool export attachments --path "$GITHUB_WORKSPACE/build-output/HarborTests.xcresult" --output-path "$GITHUB_WORKSPACE/build-output/screenshots"
+      - name: Upload simulator screenshots
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harbor-screenshots
+          path: build-output/screenshots
+          retention-days: 7
       - name: Upload test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
