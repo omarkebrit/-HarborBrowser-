@@ -25,7 +25,7 @@ for number, name in filters:
     url = f'https://filters.adtidy.org/ios/filters/{number}_optimized.txt'
     data = download(url)
     text = data.decode('utf-8-sig')
-    if not text.startswith('[Adblock') or len(text.splitlines()) < 100:
+    if 'AdGuard' not in text[:2000] or len(text.splitlines()) < 100 or '<html' in text[:1000].lower():
         raise ValueError(f'Unexpected filter response: {name}')
     (DEST / f'source-{number}.txt').write_text(text)
     inputs.extend(text.splitlines())
