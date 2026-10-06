@@ -5,3 +5,4 @@ ConverterTool
 filters-input.txt
 HarborBrowser/Filters/*
 !HarborBrowser/Filters/README.txt
+converter-source/

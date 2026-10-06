@@ -32,9 +32,21 @@ for number, name in filters:
     sources.append({'id': number, 'name': name, 'url': url, 'sha256': hashlib.sha256(data).hexdigest()})
 combined = ROOT / 'filters-input.txt'
 combined.write_text('\n'.join(inputs), encoding='utf-8')
-result = subprocess.run([str(tool), 'convert', '--input-path', str(combined),
-                         '--safari-version', '16', '--advanced-blocking', 'false'],
-                        check=True, capture_output=True, text=True)
+command = [str(tool), 'convert', '--input-path', str(combined),
+           '--safari-version', '16', '--advanced-blocking', 'false']
+result = subprocess.run(command, capture_output=True, text=True)
+if result.returncode:
+    print('Release binary failed; building the same pinned release from source.', flush=True)
+    print(result.stderr[-4000:], flush=True)
+    converter_source = ROOT / 'converter-source'
+    subprocess.run(['git', 'clone', '--depth', '1', '--branch', 'v4.3.0',
+                    'https://github.com/AdguardTeam/SafariConverterLib.git', str(converter_source)], check=True)
+    subprocess.run(['swift', 'build', '--package-path', str(converter_source),
+                    '-c', 'release', '--product', 'ConverterTool'], check=True)
+    command[0] = str(converter_source / '.build/release/ConverterTool')
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode:
+        raise RuntimeError(result.stderr[-8000:])
 report = json.loads(result.stdout)
 (DEST / 'conversion-report.json').write_text(json.dumps(report, indent=2))
 raw = report['safariRulesJSON']
