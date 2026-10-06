@@ -1,43 +1,19 @@
-# Harbor Browser 0.2 — iOS
+# Harbor 0.3 for iOS
 
-SwiftUI / WKWebView browser for iPhone and iPad, iOS 16+.
+SwiftUI / WKWebView browser for iOS 16+. Build with the included GitHub Actions workflow; the IPA is unsigned and requires your own signing.
 
-## Improved blocking
+## Browsing
 
-GitHub builds bundle AdGuard's iOS optimized Base, Tracking Protection, Mobile Ads and Popups filters, converted using the checksum-pinned SafariConverterLib 4.3.0 CLI. This replaces the tiny starter-domain list in built artifacts. Supported URL/path/resource-type blocking and cosmetic hiding rules are retained with their exceptions in one compiled WebKit list. Third-party cookie blocking precedes those rules. Imported JSON is appended to the same list so its exceptions can override earlier rules.
+Persistent bookmarks and history, regular-tab restoration, private tabs with a separate nonpersistent website store, recent closed tabs, four search engines, system/light/dark themes, page zoom, desktop mode, find in page, native JavaScript dialogs, sharing and link context menus. Downloads support preview, sharing, cancellation and deletion, and remain saved even when initiated from private tabs.
 
-The converter's unsupported rules are reported; advanced scriptlets, procedural cosmetic rules and HTML/video modification are not implemented. This app does not claim complete AdGuard or Brave equivalence or guaranteed YouTube ad removal. Rule counts measure loaded rules, not blocked requests.
+## Video compatibility
 
-Filters refresh during each GitHub build, not silently while browsing. The bundled pack works offline. Lists and converter failures stop CI instead of shipping a false enhanced-protection claim. Local builds without generated filters clearly report the starter fallback.
+Inline playback, AirPlay, Picture in Picture and autoplay configuration are enabled. YouTube compatibility is on by default and bypasses content rules on youtube.com, its subdomains and youtu.be. This can allow ads; it is a playback-first workaround, not a claim of ad-free YouTube. Disable it in site controls to try filtering. JavaScript must remain enabled for YouTube. Autoplay preferences apply to new tabs.
 
-## Browser features
+## Protection
 
-Address/search bar, DuckDuckGo search, back/forward/reload/share, regular and private tabs, per-tab protection toggle, imported WebKit JSON rules and clearing cookies/site storage. Private tabs share a nonpersistent store, discarded after closing the last private tab. Browsing privately does not hide IP addresses.
+CI compiles AdGuard Base, Tracking Protection, Mobile Ads and Popups optimized filters to WebKit rules, retaining exceptions. Filter source/license reports are included in the app and CI artifacts. Custom WebKit JSON rules can be imported. Per-host exceptions and global toggles are available. Lists refresh with each app build; no background updater is included.
 
-Imported lists have a combined limit of 150,000 rules and 64 MB JSON. Invalid imports leave the previous list active. The compiled list is cached by SHA-256; first compilation may take time. No analytics SDK or account is included.
+## Validation
 
-## Build and install
-
-See `GITHUB-SETUP.md`. Actions generates filters, checks the complete pack using WebKit, builds device/simulator targets and uploads an unsigned IPA. Signing is required before installing on an iPhone. No Apple secrets are needed for unsigned builds.
-
-On macOS, open the project with Xcode. To include enhanced filters locally:
-
-```sh
-python3 scripts/prepare_filters.py
-swift scripts/validate_filters.swift HarborBrowser/Filters/enhanced.json
-xcodebuild -project HarborBrowser.xcodeproj -scheme HarborBrowser -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
-```
-
-To install on a device with Xcode, select your team under Signing & Capabilities, use a unique bundle identifier and run on your connected device.
-
-## Verification and limits
-
-Version 0.1 successfully compiled for device and simulator on GitHub. Version 0.2 adds full filter compilation checks. Real-site ad coverage, cookie/login compatibility, imported exceptions, cache behavior and protection toggling must still be tested on iPhone. Disable the shield for a tab if a site breaks. Downloads, tab restoration, site allowlists and JavaScript confirm/prompt UI are not implemented. HTTP-only sites may be restricted by the platform transport policy.
-
-## Attribution
-
-App source is MIT licensed. The converted filters retain their respective authors' licenses and notices. The IPA contains the downloaded source lists, their hashes, conversion report, attribution and GPL/LGPL license texts in `Filters`. The GPL converter executable is a build-only tool and is not bundled or linked into the app. Original resources:
-
-- https://github.com/AdguardTeam/FiltersRegistry
-- https://github.com/AdguardTeam/SafariConverterLib/tree/v4.3.0
-- https://developer.apple.com/documentation/webkit/wkcontentruleliststore
+CI validates the full rule pack in WebKit, builds an unsigned device app, and runs unit/UI tests on an iPhone simulator. Tests cover address parsing, private history, persistence, protection state transitions, actual local HTML5 video playback, native JavaScript confirmation, bookmarks and settings. A controlled video test does not certify live YouTube playback, DRM, every download endpoint or every website. Test YouTube on the signed physical-device build.
