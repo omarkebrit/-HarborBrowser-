@@ -77,7 +77,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         if !preferences.blockAds || (host.map { preferences.disabledHosts.contains($0) } ?? false) { protection = "Protection off"; activeRules = [] }
         else if preferences.videoCompatibility(for: host) { protection = "Video compatibility"; activeRules = [] }
         else { protection = "Protected"; activeRules = rules }
-        let identifiers = activeRules.map(\.identifier)
+        let identifiers = activeRules.map { $0.identifier ?? String(describing: ObjectIdentifier($0)) }
         // Do not churn a 145k-rule list on every redirect or same-site navigation.
         guard appliedRuleIdentifiers != identifiers else { return }
         let controller = webView.configuration.userContentController
