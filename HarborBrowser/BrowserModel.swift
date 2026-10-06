@@ -45,8 +45,9 @@ final class BrowserModel: ObservableObject {
             if ProcessInfo.processInfo.arguments.contains("--uitest-fixture") { showFixture() }
             if ProcessInfo.processInfo.arguments.contains("--uitest-tabs") {
                 for name in ["First", "Second", "Third"] {
-                    addTab()
-                    current?.webView.loadHTMLString("<html><head><title>\(name) tab</title></head><body><h1>\(name) content</h1></body></html>", baseURL: URL(string: "https://fixture.example/\(name.lowercased())"))
+                    let fixtureTab = makeTab(isPrivate: false)
+                    selected = fixtureTab.id
+                    fixtureTab.webView.loadHTMLString("<html><head><title>\(name) tab</title></head><body><h1>\(name) content</h1></body></html>", baseURL: URL(string: "https://fixture.example/\(name.lowercased())"))
                 }
             }
             #endif
