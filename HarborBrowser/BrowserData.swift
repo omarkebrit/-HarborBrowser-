@@ -31,10 +31,37 @@ struct BrowserPreferences: Codable, Equatable {
     var blockAds = true
     var blockPopups = true
     var youtubeCompatibility = true
+    var videoCompatibilityHosts: Set<String> = ["erome.com"]
     var allowAutoplay = true
     var defaultZoom = 1.0
     var disabledHosts: Set<String> = []
 }
+extension BrowserPreferences {
+    private enum CodingKeys: String, CodingKey {
+        case searchEngine, theme, restoreTabs, saveHistory, javaScript, blockAds, blockPopups, youtubeCompatibility, videoCompatibilityHosts, allowAutoplay, defaultZoom, disabledHosts
+    }
+    init(from decoder: Decoder) throws {
+        self.init()
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        searchEngine = try values.decodeIfPresent(SearchEngine.self, forKey: .searchEngine) ?? searchEngine
+        theme = try values.decodeIfPresent(AppTheme.self, forKey: .theme) ?? theme
+        restoreTabs = try values.decodeIfPresent(Bool.self, forKey: .restoreTabs) ?? restoreTabs
+        saveHistory = try values.decodeIfPresent(Bool.self, forKey: .saveHistory) ?? saveHistory
+        javaScript = try values.decodeIfPresent(Bool.self, forKey: .javaScript) ?? javaScript
+        blockAds = try values.decodeIfPresent(Bool.self, forKey: .blockAds) ?? blockAds
+        blockPopups = try values.decodeIfPresent(Bool.self, forKey: .blockPopups) ?? blockPopups
+        youtubeCompatibility = try values.decodeIfPresent(Bool.self, forKey: .youtubeCompatibility) ?? youtubeCompatibility
+        videoCompatibilityHosts = try values.decodeIfPresent(Set<String>.self, forKey: .videoCompatibilityHosts) ?? videoCompatibilityHosts
+        allowAutoplay = try values.decodeIfPresent(Bool.self, forKey: .allowAutoplay) ?? allowAutoplay
+        defaultZoom = try values.decodeIfPresent(Double.self, forKey: .defaultZoom) ?? defaultZoom
+        disabledHosts = try values.decodeIfPresent(Set<String>.self, forKey: .disabledHosts) ?? disabledHosts
+    }
+    func videoCompatibility(for host: String?) -> Bool {
+        guard let host = host?.lowercased() else { return false }
+        return (youtubeCompatibility && BrowserAddress.isYouTube(host)) || videoCompatibilityHosts.contains { host == $0 || host.hasSuffix("." + $0) }
+    }
+}
+
 struct SavedPage: Codable, Identifiable, Equatable {
     var id = UUID()
     var title: String

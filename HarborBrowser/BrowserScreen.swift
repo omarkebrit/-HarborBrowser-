@@ -5,8 +5,29 @@ import QuickLook
 
 struct WebSurface: UIViewRepresentable {
     let webView: WKWebView
-    func makeUIView(context: Context) -> WKWebView { webView }
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView()
+        container.backgroundColor = .systemBackground
+        attach(to: container)
+        return container
+    }
+    func updateUIView(_ container: UIView, context: Context) { attach(to: container) }
+    private func attach(to container: UIView) {
+        guard webView.superview !== container else { return }
+        container.subviews.forEach { $0.removeFromSuperview() }
+        webView.removeFromSuperview()
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(webView)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: container.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+    }
+    static func dismantleUIView(_ container: UIView, coordinator: ()) {
+        container.subviews.forEach { $0.removeFromSuperview() }
+    }
 }
 struct BrowserScreen: View {
     @EnvironmentObject var browser: BrowserModel
@@ -36,7 +57,7 @@ struct BrowserShell: View {
             NavigationStack {
                 Group {
                     switch panel {
-                    case "Tabs": TabsPanel(browser: browser)
+                    case "Tabs": TabsPanel(browser: browser, finish: { panel = nil })
                     case "Settings": SettingsPanel(browser: browser, library: library)
                     case "Downloads": DownloadsPanel(manager: browser.downloads)
                     case "Site": if let tab = browser.current { SitePanel(browser: browser, tab: tab, library: library) }
@@ -69,7 +90,7 @@ struct TabScreen: View {
                 if tab.address.isEmpty { home }
             }
             if let error = tab.error {
-                HStack { Text(error).font(.caption).lineLimit(3); Spacer(); Button("Retry") { tab.webView.reload() } }.padding(10).background(Color.orange.opacity(0.12))
+                HStack { Text(error).font(.caption).lineLimit(3); Spacer(); Button("Retry") { tab.reload() } }.padding(10).background(Color.orange.opacity(0.12))
             }
             if finding {
                 HStack {
@@ -91,7 +112,7 @@ struct TabScreen: View {
                         .submitLabel(.go).focused($editingAddress).accessibilityIdentifier("Address")
                         .onSubmit { browser.open(address); editingAddress = false }
                     Button {
-                        if tab.loading { tab.webView.stopLoading() } else { tab.webView.reload() }
+                        if tab.loading { tab.webView.stopLoading() } else { tab.reload() }
                     } label: { Image(systemName: tab.loading ? "xmark" : "arrow.clockwise") }.accessibilityLabel(tab.loading ? "Stop loading" : "Reload")
                 }.padding(12).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
                 HStack {
@@ -130,7 +151,7 @@ struct TabScreen: View {
                 }.padding(.vertical, 12)
                 Button { editingAddress = true } label: { HStack { Image(systemName: "magnifyingglass"); Text("Search with \(library.preferences.searchEngine.rawValue)"); Spacer(); Image(systemName: "arrow.up.right") }.padding(18).background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18)) }
                 HStack(spacing: 12) {
-                    shortcut("YouTube", "play.rectangle.fill", "https://m.youtube.com")
+                    shortcut("YouTube", "play.rectangle.fill", "https://www.youtube.com")
                     shortcut("Wikipedia", "book.closed.fill", "https://wikipedia.org")
                     shortcut("DuckDuckGo", "magnifyingglass", "https://duckduckgo.com")
                 }
@@ -154,6 +175,7 @@ struct TabScreen: View {
 struct TabsPanel: View {
     @ObservedObject var browser: BrowserModel
     @Environment(\.dismiss) private var dismiss
+    let finish: () -> Void
     @State private var privateMode = false
     var body: some View {
         VStack {
@@ -161,14 +183,14 @@ struct TabsPanel: View {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
                     ForEach(browser.tabs.filter { $0.isPrivate == privateMode }) { tab in
-                        TabCard(tab: tab, selected: tab.id == browser.selected, open: { browser.select(tab); dismiss() }, close: { browser.close(tab) })
+                        TabCard(tab: tab, selected: tab.id == browser.selected, open: { browser.select(tab); finish() }, close: { browser.close(tab) })
                     }
                 }.padding(.horizontal)
                 if !privateMode, let recent = browser.recentlyClosed.first {
-                    Button("Reopen closed tab: \(recent.title)") { browser.addTab(url: URL(string: recent.url)); browser.recentlyClosed.removeFirst(); dismiss() }.font(.footnote).padding()
+                    Button("Reopen closed tab: \(recent.title)") { browser.addTab(url: URL(string: recent.url)); browser.recentlyClosed.removeFirst(); finish() }.font(.footnote).padding()
                 }
             }
-            Button { browser.addTab(isPrivate: privateMode); dismiss() } label: { Label(privateMode ? "New private tab" : "New tab", systemImage: "plus").frame(maxWidth: .infinity).padding() }.buttonStyle(.borderedProminent).padding()
+            Button { browser.addTab(isPrivate: privateMode); finish() } label: { Label(privateMode ? "New private tab" : "New tab", systemImage: "plus").frame(maxWidth: .infinity).padding() }.buttonStyle(.borderedProminent).padding()
         }.onAppear { privateMode = browser.current?.isPrivate ?? false }
     }
 }
@@ -178,14 +200,28 @@ struct TabCard: View {
     let open: () -> Void
     let close: () -> Void
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack { Image(systemName: tab.isPrivate ? "eye.slash" : "globe").foregroundStyle(.teal); Spacer(); Button(action: close) { Image(systemName: "xmark.circle.fill") }.accessibilityLabel("Close \(tab.title)") }
+        ZStack(alignment: .topTrailing) {
             Button(action: open) {
-                VStack(alignment: .leading, spacing: 8) { Text(tab.title).font(.headline).lineLimit(2); Text(tab.webView.url?.host ?? "Start page").font(.caption).foregroundStyle(.secondary).lineLimit(1) }.frame(maxWidth: .infinity, minHeight: 70, alignment: .leading)
-            }.buttonStyle(.plain)
-        }.padding(16).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18)).overlay(RoundedRectangle(cornerRadius: 18).stroke(selected ? Color.teal : .clear, lineWidth: 2))
+                VStack(alignment: .leading, spacing: 14) {
+                    Image(systemName: tab.isPrivate ? "eye.slash" : "globe").foregroundStyle(.teal)
+                    Text(tab.title).font(.headline).lineLimit(2)
+                    Text(tab.webView.url?.host ?? tab.pendingURL?.host ?? "Start page").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    Spacer(minLength: 0)
+                }
+                .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
+                .padding(16)
+                .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 18))
+                .contentShape(RoundedRectangle(cornerRadius: 18))
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("OpenTab-" + tab.title)
+            .overlay(RoundedRectangle(cornerRadius: 18).stroke(selected ? Color.teal : .clear, lineWidth: 2).allowsHitTesting(false))
+            Button(action: close) { Image(systemName: "xmark.circle.fill").padding(12).contentShape(Rectangle()) }
+                .buttonStyle(.plain).accessibilityLabel("Close " + tab.title)
+        }
     }
 }
+
 struct LibraryPanel: View {
     @ObservedObject var browser: BrowserModel
     @ObservedObject var library: BrowserLibrary
@@ -268,8 +304,14 @@ struct SettingsPanel: View {
             } header: { Text("Privacy & protection") } footer: { Text("Disabling JavaScript can break video players and sign-in pages. Private tabs do not save history or restore after closing Harbor.") }
             Section {
                 Toggle("YouTube compatibility", isOn: $library.preferences.youtubeCompatibility)
+                NavigationLink("Video site compatibility") {
+                    List {
+                        Text("Erome is included by default. Content filtering is paused for listed sites and their subdomains; ads may appear. You can also enable this for another site from its shield menu.").font(.footnote)
+                        ForEach(library.preferences.videoCompatibilityHosts.sorted(), id: \.self) { host in Text(host).swipeActions { Button("Remove", role: .destructive) { library.preferences.videoCompatibilityHosts.remove(host) } } }
+                    }.navigationTitle("Video compatibility")
+                }
                 Toggle("Allow media autoplay", isOn: $library.preferences.allowAutoplay)
-            } header: { Text("Video & audio") } footer: { Text("YouTube compatibility pauses content filtering on YouTube to avoid player failures; ads may appear. Autoplay changes apply to new tabs. Inline playback, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
+            } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites to avoid player failures; ads may appear. Autoplay changes apply to new tabs. Inline playback, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
             Section("Filter lists") {
                 LabeledContent("Loaded rules", value: browser.ruleCount.formatted())
                 Text(browser.filterDescription).font(.caption).foregroundStyle(.secondary)
@@ -281,7 +323,7 @@ struct SettingsPanel: View {
                 Button("Clear browsing history", role: .destructive) { clearHistory = true }
                 Button("Clear cookies & website data", role: .destructive) { clearData = true }.disabled(browser.busy)
             }
-            Section { LabeledContent("Harbor", value: "0.3"); Text("Built for a calmer web. Filter lists refresh when a new app build is installed.").font(.footnote).foregroundStyle(.secondary) }
+            Section { LabeledContent("Harbor", value: "0.3.1"); Text("Built for a calmer web. Filter lists refresh when a new app build is installed.").font(.footnote).foregroundStyle(.secondary) }
         }
         .onDisappear { browser.applySettings() }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in if case .success(let url) = result { Task { await browser.importRules(url) } } }
@@ -301,6 +343,14 @@ struct SitePanel: View {
                 if let host = tab.webView.url?.host?.lowercased() {
                     Toggle("Protection for this site", isOn: Binding(get: { !library.preferences.disabledHosts.contains(host) }, set: { _ in browser.toggleSite(host) })).disabled(!library.preferences.blockAds)
                     if BrowserAddress.isYouTube(host) { Toggle("YouTube compatibility", isOn: $library.preferences.youtubeCompatibility).onChange(of: library.preferences.youtubeCompatibility) { _ in browser.applySettings() }; Text("Content filters are paused in compatibility mode. Ads may appear.").font(.caption).foregroundStyle(.secondary) }
+                    else {
+                        Toggle("Video compatibility", isOn: Binding(get: { library.preferences.videoCompatibility(for: host) }, set: { value in
+                            if value { library.preferences.videoCompatibilityHosts.insert(host) }
+                            else { library.preferences.videoCompatibilityHosts = library.preferences.videoCompatibilityHosts.filter { host != $0 && !host.hasSuffix("." + $0) } }
+                            browser.applySettings()
+                        }))
+                        Text("Pauses content filtering for this site to avoid player failures. Ads may appear.").font(.caption).foregroundStyle(.secondary)
+                    }
                 }
             }
             Section("Page display") {

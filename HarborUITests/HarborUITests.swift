@@ -1,5 +1,25 @@
 import XCTest
 final class HarborUITests: XCTestCase {
+    func testSelectEntireTabCardAndSwitchBack() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--uitest-reset", "--uitest-tabs"]
+        app.launch()
+        XCTAssertTrue(app.webViews.staticTexts["Third content"].waitForExistence(timeout: 120))
+        app.buttons["Tabs"].tap()
+        let first = app.buttons["OpenTab-First tab"]
+        XCTAssertTrue(first.waitForExistence(timeout: 10))
+        // Tap the icon/padding rather than the text, where the old card had no action.
+        first.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.12)).tap()
+        XCTAssertTrue(app.webViews.staticTexts["First content"].waitForExistence(timeout: 10))
+        app.buttons["Tabs"].tap()
+        app.buttons["OpenTab-Second tab"].tap()
+        XCTAssertTrue(app.webViews.staticTexts["Second content"].waitForExistence(timeout: 10))
+        app.buttons["Tabs"].tap()
+        app.buttons["Close First tab"].tap()
+        XCTAssertFalse(app.buttons["OpenTab-First tab"].exists)
+        app.buttons["OpenTab-Third tab"].tap()
+        XCTAssertTrue(app.webViews.staticTexts["Third content"].waitForExistence(timeout: 10))
+    }
     func testNativeDialogBookmarksAndSettings() {
         let app = XCUIApplication()
         app.launchArguments = ["--uitest-reset", "--uitest-fixture"]

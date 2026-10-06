@@ -1,4 +1,4 @@
-# Harbor 0.3 for iOS
+# Harbor 0.3.1 for iOS
 
 SwiftUI / WKWebView browser for iOS 16+. Build with the included GitHub Actions workflow; the IPA is unsigned and requires your own signing.
 
@@ -17,3 +17,9 @@ CI compiles AdGuard Base, Tracking Protection, Mobile Ads and Popups optimized f
 ## Validation
 
 CI validates the full rule pack in WebKit, builds an unsigned device app, and runs unit/UI tests on an iPhone simulator. Tests cover address parsing, private history, persistence, protection state transitions, actual local HTML5 video playback, native JavaScript confirmation, bookmarks and settings. A controlled video test does not certify live YouTube playback, DRM, every download endpoint or every website. Test YouTube on the signed physical-device build.
+
+## 0.3.1 compatibility fixes
+
+Tab cards are selectable across their full surface, with independent close controls and explicit sheet dismissal. Webviews attach inside a container when switching tabs. Video responses and player iframe navigations stay in WebKit rather than being treated as file downloads. Erome and its subdomains use video compatibility by default (filtering is paused, ads can appear); other hosts can opt in using site controls. No adult-content filter is included. YouTube automatic app handoffs are cancelled without repeatedly navigating the web page, and Safari-compatible browser tokens are appended to WebKit's actual device user agent. Retry preserves a failed initial URL. Existing preferences migrate without resetting them.
+
+Regression checks include entire-card tab selection and returning to earlier tabs, HTTP range-based video playback, Erome compatibility against a deliberately blocking media rule using a controlled nonadult fixture, and live YouTube homepage rendering. The Erome test uses no real Erome content and does not certify playback of every live Erome video.

@@ -26,11 +26,16 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     var onOpen: ((URL, Bool) -> Void)?
     var onWindow: ((WKWebViewConfiguration) -> WKWebView?)?
     var onClose: (() -> Void)?
+    private var appliedRuleIdentifiers: [String]?
+    private var lastRequestedURL: URL?
     private var observations: [NSKeyValueObservation] = []
     init(isPrivate: Bool, store: WKWebsiteDataStore, rules: [WKContentRuleList], preferences: BrowserPreferences, downloads: DownloadManager, configuration: WKWebViewConfiguration? = nil) {
         self.isPrivate = isPrivate; self.rules = rules; self.preferences = preferences; self.downloads = downloads
         let config = configuration ?? WKWebViewConfiguration()
         config.websiteDataStore = store
+        // Keep WebKit's actual device/OS identity while supplying Safari-compatible browser tokens.
+        let os = ProcessInfo.processInfo.operatingSystemVersion
+        config.applicationNameForUserAgent = "Version/\(os.majorVersion).\(os.minorVersion) Safari/604.1"
         config.userContentController = WKUserContentController()
         config.allowsInlineMediaPlayback = true
         config.allowsPictureInPictureMediaPlayback = true
@@ -53,7 +58,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     }
     func refresh() {
         title = webView.title.flatMap { $0.isEmpty ? nil : $0 } ?? webView.url?.host ?? "New tab"
-        address = webView.url?.absoluteString ?? pendingURL?.absoluteString ?? ""
+        address = webView.url?.absoluteString ?? pendingURL?.absoluteString ?? lastRequestedURL?.absoluteString ?? ""
         progress = webView.estimatedProgress; loading = webView.isLoading
         canGoBack = webView.canGoBack; canGoForward = webView.canGoForward
         onChanged?()
@@ -63,23 +68,34 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         load(url)
     }
     func load(_ url: URL) {
-        pendingURL = nil; error = nil; applyProtection(url)
+        pendingURL = nil; lastRequestedURL = url; address = url.absoluteString; error = nil; applyProtection(url)
         webView.load(URLRequest(url: url))
     }
     func applyProtection(_ url: URL?) {
         let host = url?.host?.lowercased()
+        let activeRules: [WKContentRuleList]
+        if !preferences.blockAds || (host.map { preferences.disabledHosts.contains($0) } ?? false) { protection = "Protection off"; activeRules = [] }
+        else if preferences.videoCompatibility(for: host) { protection = "Video compatibility"; activeRules = [] }
+        else { protection = "Protected"; activeRules = rules }
+        let identifiers = activeRules.map(\.identifier)
+        // Do not churn a 145k-rule list on every redirect or same-site navigation.
+        guard appliedRuleIdentifiers != identifiers else { return }
         let controller = webView.configuration.userContentController
         controller.removeAllContentRuleLists()
-        if !preferences.blockAds || (host.map { preferences.disabledHosts.contains($0) } ?? false) { protection = "Protection off" }
-        else if preferences.youtubeCompatibility && BrowserAddress.isYouTube(host) { protection = "Video compatibility" }
-        else { rules.forEach { controller.add($0) }; protection = "Protected" }
+        activeRules.forEach { controller.add($0) }
+        appliedRuleIdentifiers = identifiers
+    }
+    func reload() {
+        error = nil
+        if let url = webView.url { applyProtection(url); webView.reload() }
+        else if let url = lastRequestedURL ?? pendingURL { load(url) }
     }
     func update(preferences: BrowserPreferences, rules: [WKContentRuleList]) {
         self.preferences = preferences; self.rules = rules
         webView.configuration.preferences.javaScriptCanOpenWindowsAutomatically = !preferences.blockPopups
-        applyProtection(webView.url)
+        applyProtection(webView.url ?? lastRequestedURL)
     }
-    func setDesktop(_ value: Bool) { desktop = value; webView.reload() }
+    func setDesktop(_ value: Bool) { desktop = value; reload() }
     func setZoom(_ value: Double) { zoom = value; webView.pageZoom = value }
     func find(_ text: String, backwards: Bool = false) {
         guard !text.isEmpty else { findResult = ""; return }
@@ -95,19 +111,28 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         if code != NSURLErrorCancelled && code != 102 { self.error = error.localizedDescription }
         refresh()
     }
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) { self.error = error.localizedDescription; refresh() }
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        if (error as NSError).code != NSURLErrorCancelled { self.error = error.localizedDescription }
+        refresh()
+    }
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { error = "This tab was stopped by iOS. Tap reload to reopen it."; refresh() }
     func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction, preferences page: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
         page.preferredContentMode = desktop ? .desktop : .mobile
         page.allowsContentJavaScript = preferences.javaScript
         guard let url = action.request.url, let scheme = url.scheme?.lowercased() else { decisionHandler(.cancel, page); return }
         if ["youtube", "vnd.youtube"].contains(scheme) {
-            var parts = URLComponents(); parts.scheme = "https"; parts.host = "www.youtube.com"
-            parts.path = "/watch"
-            let input = URLComponents(url: url, resolvingAgainstBaseURL: false)
-            parts.queryItems = input?.queryItems ?? [URLQueryItem(name: "v", value: url.host)]
+            // Ignore automatic app handoffs instead of repeatedly redirecting the current page.
             decisionHandler(.cancel, page)
-            if let webURL = parts.url { load(webURL) }; return
+            if action.navigationType == .linkActivated {
+                let input = URLComponents(url: url, resolvingAgainstBaseURL: false)
+                let videoID = input?.queryItems?.first(where: { $0.name == "v" })?.value ?? (url.host == "watch" ? nil : url.host)
+                var parts = URLComponents(string: "https://www.youtube.com/watch")!
+                if let videoID, !videoID.isEmpty {
+                    parts.queryItems = [URLQueryItem(name: "v", value: videoID)]
+                    if let webURL = parts.url { load(webURL) }
+                }
+            }
+            return
         }
         guard ["http", "https", "about", "blob", "data"].contains(scheme) else {
             decisionHandler(.cancel, page)
@@ -118,7 +143,10 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         decisionHandler(action.shouldPerformDownload ? .download : .allow, page)
     }
     func webView(_ webView: WKWebView, decidePolicyFor response: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
-        decisionHandler(response.canShowMIMEType ? .allow : .download)
+        let mime = response.response.mimeType?.lowercased() ?? ""
+        let media = mime.hasPrefix("video/") || mime.hasPrefix("audio/") || ["application/vnd.apple.mpegurl", "application/x-mpegurl"].contains(mime)
+        // Iframe player navigations and media belong to WebKit, not the download manager.
+        decisionHandler(!response.isForMainFrame || response.canShowMIMEType || media ? .allow : .download)
     }
     func webView(_ webView: WKWebView, navigationAction: WKNavigationAction, didBecome download: WKDownload) { downloads.begin(download) }
     func webView(_ webView: WKWebView, navigationResponse: WKNavigationResponse, didBecome download: WKDownload) { downloads.begin(download) }

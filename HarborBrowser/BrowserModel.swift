@@ -43,6 +43,12 @@ final class BrowserModel: ObservableObject {
             restoring = false
             #if DEBUG
             if ProcessInfo.processInfo.arguments.contains("--uitest-fixture") { showFixture() }
+            if ProcessInfo.processInfo.arguments.contains("--uitest-tabs") {
+                for name in ["First", "Second", "Third"] {
+                    addTab()
+                    current?.webView.loadHTMLString("<html><head><title>\(name) tab</title></head><body><h1>\(name) content</h1></body></html>", baseURL: URL(string: "https://fixture.example/\(name.lowercased())"))
+                }
+            }
             #endif
         } catch { status = "Protection could not load: \(error.localizedDescription)" }
     }
@@ -83,7 +89,7 @@ final class BrowserModel: ObservableObject {
         library.saveSession(BrowserSession(urls: Array(urls.prefix(20)), selectedIndex: normal.firstIndex { $0.id == selected } ?? 0))
     }
     func applySettings(reload: Bool = true) {
-        for tab in tabs { tab.update(preferences: library.preferences, rules: rules); if reload && tab.webView.url != nil { tab.webView.reload() } }
+        for tab in tabs { tab.update(preferences: library.preferences, rules: rules); if reload && tab.webView.url != nil { tab.reload() } }
         saveSession()
     }
     func toggleSite(_ host: String) {
