@@ -125,7 +125,7 @@ final class HarborUITests: XCTestCase {
     private func preserveDeviceScreenshot(name: String) {
         // Capture UIKit's complete display as well as the application window:
         // fullscreen uses a separate native presentation during rotation.
-        let attachment = XCTAttachment(screenshot: XCUIDevice.shared.screenshot())
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
