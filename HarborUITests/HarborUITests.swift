@@ -98,6 +98,7 @@ final class HarborUITests: XCTestCase {
         let landscapePlaying = app.staticTexts["Fullscreen video playing in landscape"]
         let keptPlaying = landscapePlaying.waitForExistence(timeout: 15)
         preserveScreenshot(app, name: "Movie in element fullscreen landscape")
+        preserveDeviceScreenshot(name: "Device display with movie in fullscreen landscape")
         XCTAssertTrue(keptPlaying, "The fullscreen movie must remain visible and advancing in the resized landscape viewport")
         guard keptPlaying else { return }
         let exit = app.buttons["Exit fullscreen"]
@@ -106,6 +107,7 @@ final class HarborUITests: XCTestCase {
         guard foundExit else { return }
         exit.tap()
         XCTAssertTrue(app.webViews.staticTexts["Fullscreen exited"].waitForExistence(timeout: 10), "The movie page must remain attached after a fullscreen rotation and exit")
+        preserveDeviceScreenshot(name: "Device display after fullscreen exit")
     }
 
     private func videoApp(_ page: String) -> XCUIApplication {
@@ -117,6 +119,13 @@ final class HarborUITests: XCTestCase {
 
     private func preserveScreenshot(_ app: XCUIApplication, name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    private func preserveDeviceScreenshot(name: String) {
+        // Capture UIKit's complete display as well as the application window:
+        // fullscreen uses a separate native presentation during rotation.
+        let attachment = XCTAttachment(screenshot: XCUIDevice.shared.screenshot())
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
