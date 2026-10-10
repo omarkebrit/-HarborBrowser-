@@ -1,6 +1,6 @@
 Aster ad-blocking resources
 
-The committed ads.json is the production pack generated and compiled with real WebKit in GitHub run 38067813790: 40,675 rules. metadata.json records its source hashes, conversion revision and exact content hash. Native standard/strict Enhanced Tracking Protection remains active as a separate layer.
+The committed ads.json is the production pack generated and compiled with real WebKit in GitHub run 38083870485: 40,723 rules. metadata.json records its source hashes, conversion revision and exact content hash. Native standard/strict Enhanced Tracking Protection remains active as a separate layer.
 
 Production GitHub Actions runs Scripts/aster/prepare_ad_filters.py to refresh the bundled pack using official AdGuard Base and Mobile Ads optimized iOS lists, converted by checksum/commit-pinned SafariConverterLib 4.3.0. Scripts/aster/validate_ad_filters.swift requires over 1,000 rules and upstream exceptions and compiles them with real WebKit before building the app. Generation or validation failure fails the production build.
 

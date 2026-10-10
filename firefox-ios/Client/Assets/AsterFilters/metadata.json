@@ -1,7 +1,7 @@
 {
   "mode": "adguard",
-  "ruleCount": 40675,
-  "generatedAt": "2026-10-10T16:29:50.599407+00:00",
+  "ruleCount": 40723,
+  "generatedAt": "2026-10-10T20:29:52.481968+00:00",
   "converter": "SafariConverterLib 4.3.0",
   "converterCommit": "7a2e93f0afa70479cc59985f332025236c3f0c39",
   "converterReleaseSHA256": "6687be9f1a77abd5299299086c5fbffd0d1b5baec755eb4808aa2f53e275d3c0",
@@ -11,7 +11,7 @@
       "id": 2,
       "name": "AdGuard Base",
       "url": "https://filters.adtidy.org/ios/filters/2_optimized.txt",
-      "sha256": "f6c161378dbef20b02fee4827c7a946a3481211593ef47d06ae66fc48459fb4d"
+      "sha256": "8b217d73c4c94318c7bbcba32c0211575bb64d99e984bfadbaeae1a1a7d1ac39"
     },
     {
       "id": 11,
@@ -20,6 +20,6 @@
       "sha256": "8135dcfccf30a1131ae200fbe90d12e1ddbdcb435bc72dd40942e0b359e338fb"
     }
   ],
-  "rulesSHA256": "ddbba6fde5c04ede1564a4c37e20db6762704ed4a75fe3f758b38db8ddf779ac",
+  "rulesSHA256": "3036112f5339915d24298fcbcd241f44b3a2f6b53e7ab4090ae2924f179f3ce3",
   "scope": "AdGuard Base and Mobile Ads; native ETP remains a separate layer. No added blanket cookie rule or video exceptions."
 }

@@ -1,0 +1,103 @@
+{
+  "runID": 38083870485,
+  "sourceCommit": "51fe284ead04c0d17b55c51725aa590dd951d031",
+  "artifactID": 11681663340,
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "imagesUnmodified": true,
+  "preflight": "4 passed",
+  "mainUI": "14 passed, 1 failed (fullscreen post-rotation toolbar assertion)",
+  "images": [
+    {
+      "file": "light-browser.png",
+      "label": "Light browser chrome at large text",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testLargeTextAndAppearanceKeepNavigationAccessible()",
+      "exportedFileName": "0D0AD45A-9725-4F26-A158-EB5F3750782A.png",
+      "attachmentName": "Light browser with large text_0_E2961512-7167-479E-BE75-2858D9F32B7F.png",
+      "sha256": "f125022e5abd4f014d611ef9ac8892ded7130beabe959b18ea8ee72046a9a980"
+    },
+    {
+      "file": "dark-browser.png",
+      "label": "Dark browser chrome; fixture page stays light",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testLargeTextAndAppearanceKeepNavigationAccessible()",
+      "exportedFileName": "09D83B2E-DE5D-47E4-85BF-65277A34062C.png",
+      "attachmentName": "Dark browser with large text_0_6FEDB599-5FBC-4DCA-AAFF-BCDD52C9756C.png",
+      "sha256": "37faa42439dc7d32983b8fb95082e5991d031245a358919804d6bd713ee3fabd"
+    },
+    {
+      "file": "accessibility-home.png",
+      "label": "Maximum Dynamic Type homepage with StageServer sponsored test tiles",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testLargeTextAndAppearanceKeepNavigationAccessible()",
+      "exportedFileName": "7DD06B65-B58E-48D8-80CE-C6D04D05420C.png",
+      "attachmentName": "Aster home at accessibility text size_0_3208362C-B842-4D16-9651-FAA5B7DFA7A1.png",
+      "sha256": "6ea76b1efac4b7b9dd93b5c021a0364145b417752ec04d80b0249b086acb4aba"
+    },
+    {
+      "file": "arabic-tab-tray.png",
+      "label": "Arabic locale: right-aligned tab tray; translation remains partial",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testArabicRTLNavigationUsesLocalizedNativeControls()",
+      "exportedFileName": "2F746CF5-3A84-4BA9-8685-C2F8C4B55089.png",
+      "attachmentName": "Actual Arabic RTL tab tray_0_7C96A24B-48C4-4BED-BD61-230824224D15.png",
+      "sha256": "ca248518492cd1daccc63c0cac790de8e5c6fabd1fed80dbdee27feb30ce6f8c"
+    },
+    {
+      "file": "private-storage.png",
+      "label": "Controlled private-storage fixture",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testPrivateStorageAndHistoryAreIsolated()",
+      "exportedFileName": "950D8769-A0DF-410C-A0F0-860427C18510.png",
+      "attachmentName": "Isolated private browser storage_0_202328C8-322E-4357-99B6-E95EAABEAD8A.png",
+      "sha256": "05017877d336d035b37c0f9771ac1a7f0585ea1d5338fc4a5534ad8ad05f7e53"
+    },
+    {
+      "file": "mp4-playback.png",
+      "label": "Decoded MP4 fixture with sound enabled; no device-audio claim",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "exportedFileName": "D3C9F22F-9CBD-49E4-AE10-3E5CA5188714.png",
+      "attachmentName": "Decoded mp4 video with audio_0_A6A36654-8C3C-4BC7-83E8-CF45FBCE522A.png",
+      "sha256": "4984a5bdab409014da92fd91a7ec8c7781b0110e01def3bbc4932a7fad87c677"
+    },
+    {
+      "file": "restored-25-tabs.png",
+      "label": "First tab after process relaunch; 25 tabs retained",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "exportedFileName": "ED61BAB0-625F-45AE-B81D-77F2D617F0A8.png",
+      "attachmentName": "Restored first tab_0_68C4FFCB-2020-4E34-B4D0-F371818A8ACC.png",
+      "sha256": "7e0a796ee49760972df37155f6ae644d0483e9425375c41d2a27f6bc03c283cb"
+    },
+    {
+      "file": "fullscreen-portrait.png",
+      "label": "Real portrait fullscreen playback",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "0C75F69A-CF2E-48EE-B2D5-B3A48C51FB36.png",
+      "attachmentName": "Actual portrait fullscreen video_0_674CD3E5-44E5-418F-9D64-A387B191926B.png",
+      "sha256": "b7658e0634444857bce2725edd9c1ff56147afd5da3bbd31515ddc78931867b1"
+    },
+    {
+      "file": "fullscreen-landscape.png",
+      "label": "Real landscape fullscreen playback",
+      "suite": "AsterAcceptanceTests",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "D9042A0D-FD0A-4A06-B486-A59D842CAAC0.png",
+      "attachmentName": "Actual landscape fullscreen video_0_D1B94599-DEAB-417E-A6F7-6C6EA79F3EA2.png",
+      "sha256": "976da51ff303ed8b397a18203aa7faacc9ab976b2847e6cfec771705c97e592d"
+    },
+    {
+      "file": "fullscreen-preflight-exit.png",
+      "label": "Browser after fullscreen exit in the passing preflight invocation",
+      "suite": "AsterRegressionTests",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "A47CA95E-09EB-4F87-84D8-D6CEA7B3FE86.png",
+      "attachmentName": "Fullscreen exit restores browser controls_0_A5FF5C98-1469-4397-80EE-0152EA6CF5AC.png",
+      "sha256": "9ddcd605f322bfbcce3a026c2ed919da6a60a156ff7107116767c9376a4ac933"
+    }
+  ]
+}
