@@ -1,5 +1,10 @@
 import XCTest
 final class HarborUITests: XCTestCase {
+    override func setUp() {
+        super.setUp()
+        XCUIDevice.shared.orientation = .portrait
+    }
+
     func testBundledPlaybackCheckPlaysWithoutAWebsite() {
         let app = XCUIApplication()
         app.launchArguments = ["--uitest-reset"]
@@ -40,10 +45,21 @@ final class HarborUITests: XCTestCase {
         XCTAssertTrue(app.webViews.buttons["Play with sound"].waitForExistence(timeout: 120))
         app.buttons["BrowserMenu"].tap()
         app.buttons["Settings"].tap()
+        let settings = app.collectionViews.firstMatch
+        XCTAssertTrue(settings.waitForExistence(timeout: 5), "Settings must present its scrollable form")
         let autoplay = app.switches["Allow media autoplay"]
-        for _ in 0..<5 where !autoplay.isHittable { app.swipeUp() }
-        XCTAssertTrue(autoplay.waitForExistence(timeout: 5))
-        if autoplay.value as? String == "1" { autoplay.tap() }
+        for _ in 0..<10 {
+            if autoplay.exists && autoplay.isHittable { break }
+            let start = settings.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+            let end = settings.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        let foundAutoplay = autoplay.waitForExistence(timeout: 5)
+        XCTAssertTrue(foundAutoplay, "The autoplay switch must become visible when scrolling Settings")
+        guard foundAutoplay else { preserveScreenshot(app, name: "Missing autoplay setting"); return }
+        XCTAssertEqual(autoplay.value as? String, "1")
+        autoplay.tap()
+        XCTAssertEqual(autoplay.value as? String, "0", "The test must actually change the existing tab's autoplay setting")
         app.buttons["Done"].tap()
         let play = app.webViews.buttons["Play with sound"]
         XCTAssertTrue(play.waitForExistence(timeout: 15))
@@ -54,16 +70,32 @@ final class HarborUITests: XCTestCase {
 
     func testElementFullscreenVideoSurvivesRotationAndExits() {
         let app = videoApp("fullscreen.html")
-        defer { XCUIDevice.shared.orientation = .portrait }
+        defer {
+            // iOS supplies a native close button as well as the page's control.
+            // Always dismiss its presentation, including on assertion failure.
+            let nativeClose = app.buttons["Done"]
+            if nativeClose.exists && nativeClose.isHittable { nativeClose.tap() }
+            XCUIDevice.shared.orientation = .portrait
+        }
         let enter = app.webViews.buttons["Enter fullscreen"]
         XCTAssertTrue(enter.waitForExistence(timeout: 120))
+        XCTAssertTrue(app.webViews.buttons["Exit fullscreen"].exists, "The fixture must expose its exit control before entering fullscreen")
         enter.tap()
-        let playing = app.staticTexts["Fullscreen video playing"]
-        XCTAssertTrue(playing.waitForExistence(timeout: 15), "Element fullscreen must show a playing movie after the user's tap")
+        let playing = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Fullscreen video playing in ")).firstMatch
+        let startedPlaying = playing.waitForExistence(timeout: 15)
+        XCTAssertTrue(startedPlaying, "Element fullscreen must show a playing movie after the user's tap")
+        guard startedPlaying else { preserveScreenshot(app, name: "Fullscreen movie failed to start"); return }
+        preserveScreenshot(app, name: "Movie playing in element fullscreen before rotation")
         XCUIDevice.shared.orientation = .landscapeLeft
-        let exit = app.buttons["Exit fullscreen"]
-        XCTAssertTrue(exit.waitForExistence(timeout: 10))
+        let landscapePlaying = app.staticTexts["Fullscreen video playing in landscape"]
+        let keptPlaying = landscapePlaying.waitForExistence(timeout: 15)
         preserveScreenshot(app, name: "Movie in element fullscreen landscape")
+        XCTAssertTrue(keptPlaying, "The fullscreen movie must remain visible and advancing in the resized landscape viewport")
+        guard keptPlaying else { return }
+        let exit = app.buttons["Exit fullscreen"]
+        let foundExit = exit.waitForExistence(timeout: 10)
+        XCTAssertTrue(foundExit)
+        guard foundExit else { return }
         exit.tap()
         XCTAssertTrue(app.webViews.staticTexts["Fullscreen exited"].waitForExistence(timeout: 10), "The movie page must remain attached after a fullscreen rotation and exit")
     }

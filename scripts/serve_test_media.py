@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Local-only genuine MP4, HLS, iframe, blob, and popup playback fixtures."""
 import base64
+import html
 import http.server
 import pathlib
 import re
@@ -51,7 +52,23 @@ PAGES = {
         document.getElementById('open').onclick = () => window.open('/video.html', '_blank');
     """),
     "/automatic-popup.html": page("Unexpected Automatic Popup", "<p>This unsolicited popup should be blocked.</p>"),
-    "/fullscreen.html": page("Fullscreen Video Fixture", "<div id='stage'>" + video() + "<p id='fullscreen-status'>Waiting for fullscreen</p><button id='exit'>Exit fullscreen</button></div><button id='enter'>Enter fullscreen</button>", """
+    "/fullscreen.html": page("Fullscreen Video Fixture", """
+        <style>
+            #stage { background: #12323a; color: white; padding: 12px; }
+            #stage video { display: block; }
+            #stage:fullscreen {
+                box-sizing: border-box; width: 100vw; height: 100vh;
+                display: flex; flex-direction: column; align-items: center;
+                justify-content: center; gap: 8px;
+                padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+            }
+            #stage:fullscreen video { width: 100%; height: calc(100% - 100px); min-height: 0; object-fit: contain; }
+            #stage:fullscreen p { margin: 0; flex: 0 0 auto; }
+            #stage:fullscreen button { min-height: 44px; flex: 0 0 auto; }
+        </style>
+        <div id='stage'><video id='v' playsinline muted loop controls preload='auto' src='/video.mp4' width='320'></video>
+        <p id='fullscreen-status'>Waiting for fullscreen</p><button id='exit'>Exit fullscreen</button></div><button id='enter'>Enter fullscreen</button>
+    """, """
         const stage = document.getElementById('stage');
         const v = document.getElementById('v');
         const status = document.getElementById('fullscreen-status');
@@ -62,13 +79,18 @@ PAGES = {
             } catch (error) { status.textContent = 'Fullscreen failed: ' + error.name; }
         };
         document.getElementById('exit').onclick = () => document.exitFullscreen();
+        function reportPlayback() {
+            if (document.fullscreenElement && !v.paused && v.currentTime > 0.25) {
+                const orientation = stage.clientWidth > stage.clientHeight ? 'landscape' : 'portrait';
+                status.textContent = 'Fullscreen video playing in ' + orientation;
+            }
+        }
         document.addEventListener('fullscreenchange', () => {
             status.textContent = document.fullscreenElement ? 'Fullscreen active' : 'Fullscreen exited';
+            reportPlayback();
         });
-        v.addEventListener('timeupdate', () => {
-            if (document.fullscreenElement && !v.paused && v.currentTime > 0.25)
-                status.textContent = 'Fullscreen video playing';
-        });
+        v.addEventListener('timeupdate', reportPlayback);
+        window.addEventListener('resize', reportPlayback);
     """),
 }
 
@@ -81,6 +103,27 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.respond(head_only=False)
+
+    def do_POST(self):
+        if urllib.parse.urlsplit(self.path).path != "/submitted.html":
+            self.send_error(404)
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            self.send_error(400)
+            return
+        if not 0 < length <= 64_000:
+            self.send_error(400)
+            return
+        submission = self.rfile.read(length).decode("utf-8", errors="replace")
+        content = page("Submitted Video Fixture", video() + "<p id='submission'>" + html.escape(submission) + "</p>")
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", str(len(content)))
+        self.end_headers()
+        self.wfile.write(content)
 
     def respond(self, head_only):
         path = urllib.parse.urlsplit(self.path).path

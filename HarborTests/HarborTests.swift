@@ -357,6 +357,56 @@ final class HarborTests: XCTestCase {
         let state = (try? await tab.webView.evaluateJavaScript(script)) as? String ?? "No JavaScript media state"
         return "\(state); navigation: \(tab.error ?? "none"); protection: \(tab.protection)"
     }
+    @MainActor func testSettingsKeepSubmittedVideoPageWithoutRepeatingPOST() async throws {
+        let suite = "harbor-post-retention-" + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let model = BrowserModel(defaults: defaults)
+        model.library.preferences.restoreTabs = false
+        await model.prepare()
+        let tab = try XCTUnwrap(model.current, "The browser must prepare a real tab")
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        let token = UUID().uuidString
+        let body = "submission=" + token
+        var request = URLRequest(url: URL(string: "http://127.0.0.1:8765/submitted.html")!)
+        request.httpMethod = "POST"
+        request.httpBody = Data(body.utf8)
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        tab.loadRequest(request)
+        var submitted = false
+        for _ in 0..<150 {
+            let echoed = (try? await tab.webView.evaluateJavaScript("document.getElementById('submission')?.textContent")) as? String
+            if echoed == body { submitted = true; break }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        XCTAssertTrue(submitted, "The real HTTP POST body must reach its video page")
+        guard submitted else { return }
+        _ = try await tab.webView.evaluateJavaScript("window.postRetentionMarker = '\(token)'; true")
+
+        // Updating filters normally reloads GET pages. A POST result must keep
+        // its live document, rather than repeating the submission or using GET.
+        model.library.preferences.blockAds.toggle()
+        model.applySettings()
+        for _ in 0..<10 {
+            try await Task.sleep(nanoseconds: 100_000_000)
+            let marker = (try? await tab.webView.evaluateJavaScript("window.postRetentionMarker")) as? String
+            XCTAssertEqual(marker, token, "Changing filters must retain a submitted page's JavaScript state")
+        }
+        XCTAssertTrue(model.current === tab)
+
+        // Autoplay is immutable in a WKWebView configuration. Refusing to
+        // recreate this POST document must also preserve its original page.
+        model.library.preferences.allowAutoplay.toggle()
+        model.applySettings()
+        XCTAssertTrue(model.current === tab, "An immutable playback setting must not replace a submitted page")
+        for _ in 0..<10 {
+            try await Task.sleep(nanoseconds: 100_000_000)
+            let marker = (try? await tab.webView.evaluateJavaScript("window.postRetentionMarker")) as? String
+            XCTAssertEqual(marker, token, "Changing autoplay must retain a submitted page's JavaScript state")
+        }
+        XCTAssertTrue(tab.error?.contains("submitted page was kept") == true)
+    }
     @MainActor func testPrivateHistoryAndPersistence() {
         let suite = "harbor-test-" + UUID().uuidString
         let defaults = UserDefaults(suiteName: suite)!

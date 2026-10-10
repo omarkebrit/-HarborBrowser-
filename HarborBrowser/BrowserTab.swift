@@ -115,6 +115,10 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     func needsRecreation(for newPreferences: BrowserPreferences) -> Bool {
         creationAllowsAutoplay != newPreferences.allowAutoplay || creationBlocksPopups != newPreferences.blockPopups
     }
+    var canReloadAfterSettings: Bool {
+        guard let request = lastMainFrameRequest else { return true }
+        return ["GET", "HEAD"].contains(request.httpMethod?.uppercased() ?? "GET")
+    }
     var currentRequestForRecreation: URLRequest? {
         if var request = lastMainFrameRequest {
             guard ["GET", "HEAD"].contains(request.httpMethod?.uppercased() ?? "GET"),

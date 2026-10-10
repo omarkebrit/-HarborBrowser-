@@ -3,33 +3,71 @@ import WebKit
 import UniformTypeIdentifiers
 import QuickLook
 
-struct WebSurface: UIViewRepresentable {
+@MainActor
+struct WebSurface: UIViewControllerRepresentable {
     let webView: WKWebView
-    func makeUIView(context: Context) -> UIView {
+
+    func makeUIViewController(context: Context) -> WebSurfaceController {
+        WebSurfaceController(webView: webView)
+    }
+
+    func updateUIViewController(_ controller: WebSurfaceController, context: Context) {
+        controller.requestLayout()
+    }
+
+    static func dismantleUIViewController(_ controller: WebSurfaceController, coordinator: ()) {
+        controller.detach()
+    }
+}
+
+// WebKit's fullscreen controller temporarily moves the entire WKWebView. It
+// preserves frame/autoresizingMask, not its original Auto Layout constraints.
+// A native child controller supplies UIKit's rotation/layout lifecycle while
+// leaving WebKit in charge of its view for the whole fullscreen presentation.
+@MainActor
+final class WebSurfaceController: UIViewController {
+    let webView: WKWebView
+    private var fullscreenObservation: NSKeyValueObservation?
+
+    init(webView: WKWebView) {
+        self.webView = webView
+        super.init(nibName: nil, bundle: nil)
+        fullscreenObservation = webView.observe(\.fullscreenState, options: [.new]) { [weak self] _, _ in
+            Task { @MainActor in self?.requestLayout() }
+        }
+        // NSKeyValueObservation invalidates itself on deallocation. Its closure
+        // holds this controller weakly; detach also invalidates it explicitly.
+    }
+
+    required init?(coder: NSCoder) { fatalError("WebSurfaceController is created in code") }
+
+    override func loadView() {
         let container = UIView()
         container.backgroundColor = .systemBackground
-        attach(to: container)
-        return container
-    }
-    func updateUIView(_ container: UIView, context: Context) { attach(to: container) }
-    private func attach(to container: UIView) {
-        // WebKit moves its view into its own controller for HTML fullscreen.
-        // SwiftUI state updates must not pull it out of that presentation.
+        view = container
         guard webView.fullscreenState == .notInFullscreen else { return }
-        guard webView.superview !== container else { return }
-        container.subviews.forEach { $0.removeFromSuperview() }
         webView.removeFromSuperview()
-        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.translatesAutoresizingMaskIntoConstraints = true
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        webView.frame = container.bounds
         container.addSubview(webView)
-        NSLayoutConstraint.activate([
-            webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            webView.topAnchor.constraint(equalTo: container.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        ])
     }
-    static func dismantleUIView(_ container: UIView, coordinator: ()) {
-        container.subviews.forEach { $0.removeFromSuperview() }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard webView.fullscreenState == .notInFullscreen, webView.superview === view else { return }
+        webView.frame = view.bounds
+    }
+
+    func requestLayout() {
+        guard isViewLoaded, webView.fullscreenState == .notInFullscreen else { return }
+        view.setNeedsLayout()
+    }
+
+    func detach() {
+        fullscreenObservation?.invalidate(); fullscreenObservation = nil
+        guard isViewLoaded, webView.fullscreenState == .notInFullscreen, webView.superview === view else { return }
+        webView.removeFromSuperview()
     }
 }
 struct BrowserScreen: View {

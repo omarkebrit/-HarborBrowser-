@@ -109,7 +109,10 @@ final class BrowserModel: ObservableObject {
                 recreate(tab)
             } else {
                 tab.update(preferences: library.preferences, rules: rules)
-                if reload && tab.webView.url != nil { tab.reload() }
+                if reload && tab.webView.url != nil {
+                    if tab.canReloadAfterSettings { tab.reload() }
+                    else { tab.error = "Open a new tab to apply playback settings. This submitted page was kept to avoid repeating its form." }
+                }
             }
         }
         saveSession()
