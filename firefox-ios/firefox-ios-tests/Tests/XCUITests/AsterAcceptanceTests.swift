@@ -208,8 +208,21 @@ final class AsterAcceptanceTests: BaseTestCase {
         exit.waitAndTap()
         expectText("Fullscreen exited")
         XCUIDevice.shared.orientation = .portrait
+        for identifier in [AccessibilityIdentifiers.Toolbar.settingsMenuButton,
+                           AccessibilityIdentifiers.Toolbar.tabsButton] {
+            waitForPredicate("exists == true AND hittable == true", element: app.buttons[identifier])
+        }
         toolbar.assertToolbarIsVisible()
         captureDisplay("Fullscreen exit restores browser controls")
+        app.buttons[AccessibilityIdentifiers.Toolbar.settingsMenuButton].waitAndTap()
+        let settings = app.tables.cells[AccessibilityIdentifiers.MainMenu.settings].firstMatch
+        waitForPredicate("exists == true AND hittable == true", element: settings)
+        captureDisplay("Recovered native browser menu accepts interaction")
+        settings.waitAndTap()
+        mozWaitForElementToExist(app.tables[AccessibilityIdentifiers.Settings.tableViewController])
+        app.buttons[AccessibilityIdentifiers.Settings.navigationBarItem].waitAndTap()
+        navigator.nowAt(BrowserTab)
+        expectText("Fullscreen exited")
     }
 
     func testAutomaticPopupBlockedAndUserPlayerWindowAllowed() {
