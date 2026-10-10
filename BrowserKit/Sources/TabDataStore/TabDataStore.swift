@@ -98,7 +98,7 @@ public actor DefaultTabDataStore: TabDataStore {
                 throw TabDataError.failedToFetchData
             }
 
-            logger.log("Successfully fetched window data", level: .debug, category: .tabs)
+            logWindowData(windowData, operation: "Fetched primary window data")
             return windowData
         } catch {
             logger.log("Error fetching window data for UUID: \(uuid) Error: \(error)", level: .warning, category: .tabs)
@@ -121,7 +121,7 @@ public actor DefaultTabDataStore: TabDataStore {
                 return nil
             }
 
-            logger.log("Returned backup window data for UUID: \(uuid)", level: .debug, category: .tabs)
+            logWindowData(backupWindowData, operation: "Fetched backup window data")
             return backupWindowData
         }
     }
@@ -233,11 +233,19 @@ public actor DefaultTabDataStore: TabDataStore {
                 return
             }
             try fileManager.writeWindowData(windowData: windowDataToSave, to: path)
+            logWindowData(windowDataToSave, operation: "Wrote window data")
         } catch {
             logger.log("Failed to save window data: \(error)",
                        level: .warning,
                        category: .tabs)
         }
+    }
+
+    private func logWindowData(_ window: WindowData, operation: String) {
+        logger.log(operation, level: AppConstants.isRunningUITests ? .info : .debug, category: .tabs,
+                   extra: ["windowUUID": window.id.uuidString,
+                           "normalTabCount": String(window.tabData.filter { !$0.isPrivate }.count),
+                           "activeTabPresent": String(window.tabData.contains { $0.id == window.activeTabId })])
     }
 
     // MARK: - Deleting Window Data

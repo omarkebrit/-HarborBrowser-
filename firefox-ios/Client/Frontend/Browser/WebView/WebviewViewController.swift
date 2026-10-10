@@ -12,6 +12,7 @@ class WebviewViewController: UIViewController,
                              ContentContainable,
                              ScreenshotableView {
     private var webView: WKWebView?
+    private var fullscreenObservation: NSKeyValueObservation?
     var contentType: ContentType = .webview
 
     init(webView: WKWebView) {
@@ -25,18 +26,53 @@ class WebviewViewController: UIViewController,
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        observeFullscreenChanges()
         setupWebView()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        layoutHostedWebView()
     }
 
     private func setupWebView() {
         guard let webView else { return }
-        view.addSubview(webView)
-        webView.pinToSuperview()
+        if #available(iOS 16.0, *), webView.fullscreenState != .notInFullscreen { return }
+        if webView.superview !== view {
+            view.addSubview(webView)
+        }
+        // WebKit moves this view into its own window during element fullscreen.
+        webView.translatesAutoresizingMaskIntoConstraints = true
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        layoutHostedWebView()
+    }
+
+    private func layoutHostedWebView() {
+        guard let webView, webView.superview === view else { return }
+        if #available(iOS 16.0, *), webView.fullscreenState != .notInFullscreen { return }
+        webView.frame = view.bounds
+    }
+
+    private func observeFullscreenChanges() {
+        fullscreenObservation = nil
+        guard let webView, #available(iOS 16.0, *) else { return }
+        fullscreenObservation = webView.observe(\.fullscreenState) { [weak self] _, _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.setupWebView()
+            }
+        }
     }
 
     func update(webView: WKWebView?) {
+        let didChangeWebView = self.webView !== webView
+        if didChangeWebView, self.webView?.superview === viewIfLoaded {
+            self.webView?.removeFromSuperview()
+        }
         self.webView = webView
-        setupWebView()
+        if isViewLoaded {
+            if didChangeWebView { observeFullscreenChanges() }
+            setupWebView()
+        }
     }
 
     // MARK: - ScreenshotableView

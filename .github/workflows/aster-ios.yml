@@ -157,6 +157,38 @@ jobs:
               sys.exit('::error::The simulator host lacks its Aster shared app group.')
           print('Verified local ad-hoc signature, bundle identifier, and Xcode-generated simulator keychain/app groups.')
           PY
+      - name: Check media and session regression cases with native diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/aster-test-server.py > "$ASTER_RESULTS/regression-fixture-server.log" 2>&1 &
+          fixture_pid=$!
+          collect_regression_evidence() {
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics" || true
+            kill "$fixture_pid" 2>/dev/null || true
+          }
+          trap collect_regression_evidence EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests/testAutomaticPopupBlockedAndUserPlayerWindowAllowed \
+            -only-testing:XCUITests/AsterAcceptanceTests/testBlockedAutoplayStillAllowsUserPlaybackWithSound \
+            -only-testing:XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits \
+            -only-testing:XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/regression-tests.log"
       - name: Run local browser acceptance and upstream UI tests
         shell: bash
         run: |
@@ -233,7 +265,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in AsterUnitTests AsterAcceptanceTests AsterDownloadTests; do
+          for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
             xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
               > "$ASTER_RESULTS/$suite-summary.json"
           done
@@ -241,12 +273,12 @@ jobs:
           import json, os, pathlib, sys
           root = pathlib.Path(sys.argv[1])
           lines = ['Aster native validation', '']
-          for suite in ('AsterUnitTests', 'AsterAcceptanceTests', 'AsterDownloadTests'):
+          for suite in ('AsterUnitTests', 'AsterRegressionTests', 'AsterAcceptanceTests', 'AsterDownloadTests'):
               result = json.loads((root / (suite + '-summary.json')).read_text())
               passed, failed = int(result.get('passedTests', 0)), int(result.get('failedTests', 0))
               if passed < 1 or failed != 0:
                   sys.exit(f'::error::{suite} must execute passing tests with zero failures before an IPA is published.')
-              expected = {'AsterAcceptanceTests': 15, 'AsterDownloadTests': 1}.get(suite)
+              expected = {'AsterRegressionTests': 4, 'AsterAcceptanceTests': 15, 'AsterDownloadTests': 1}.get(suite)
               if expected is not None and (passed != expected or int(result.get('skippedTests', 0)) != 0):
                   sys.exit(f'::error::{suite} must execute all {expected} selected tests without skips.')
               lines.append(f'- {suite}: {passed} passed; {int(result.get("skippedTests", 0))} skipped.')
@@ -290,7 +322,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         shell: bash
         run: |
-          for suite in AsterUnitTests AsterAcceptanceTests AsterDownloadTests; do
+          for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
             if [ -d "$ASTER_RESULTS/$suite.xcresult" ]; then
               xcrun xcresulttool export attachments --path "$ASTER_RESULTS/$suite.xcresult" \
                 --output-path "$ASTER_RESULTS/$suite-attachments" || true
@@ -308,6 +340,7 @@ jobs:
             build-output/*.plist
             build-output/*.xcresult
             build-output/*-attachments/
+            build-output/session-diagnostics/
           if-no-files-found: warn
           retention-days: 7
       - name: Publish unsigned IPA only after required checks pass

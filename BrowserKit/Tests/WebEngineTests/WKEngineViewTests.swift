@@ -28,6 +28,32 @@ final class WKEngineViewTests: XCTestCase {
         XCTAssertTrue(engineSession.isActive)
     }
 
+    func testRenderingSameSession_doesNotDetachOrDuplicateItsWebView() {
+        let subject = createSubject()
+        subject.frame = CGRect(x: 0, y: 0, width: 320, height: 640)
+
+        subject.render(session: engineSession)
+        subject.render(session: engineSession)
+
+        XCTAssertEqual(engineSession.webviewProvider.webView.removeFromSuperviewCalled, 0)
+        XCTAssertEqual(subject.subviews.count, 1)
+        XCTAssertTrue(subject.constraints.isEmpty)
+        XCTAssertTrue(engineSession.webView.translatesAutoresizingMaskIntoConstraints)
+        XCTAssertEqual(engineSession.webView.frame, subject.bounds)
+    }
+
+    func testHostedWebView_resizesWithItsContainerWithoutBorrowedConstraints() {
+        let subject = createSubject()
+        subject.render(session: engineSession)
+
+        subject.frame = CGRect(x: 0, y: 0, width: 640, height: 320)
+        subject.setNeedsLayout()
+        subject.layoutIfNeeded()
+
+        XCTAssertEqual(engineSession.webView.frame, subject.bounds)
+        XCTAssertTrue(subject.constraints.isEmpty)
+    }
+
     func testRemoveSetsIsActiveFalse() async {
         let subject = createSubject()
         let newEngineSession = await MockWKEngineSession()

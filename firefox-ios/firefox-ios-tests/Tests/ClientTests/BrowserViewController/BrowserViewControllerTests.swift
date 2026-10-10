@@ -9,6 +9,7 @@ import XCTest
 import Glean
 import Common
 import Shared
+import WebKit
 
 @testable import Client
 
@@ -21,6 +22,52 @@ class BrowserViewControllerTests: XCTestCase, StoreTestUtility {
     var appStartupTelemetry: MockAppStartupTelemetry!
     var appState: AppState!
     var recordVisitManager: MockRecordVisitObservationManager!
+
+    @MainActor
+    func testWebViewHosting_repeatedUpdatesDoNotAddConstraintsAndResizeNormally() {
+        let webView = WKWebView()
+        let subject = WebviewViewController(webView: webView)
+        subject.loadViewIfNeeded()
+        subject.view.frame = CGRect(x: 0, y: 0, width: 430, height: 731)
+        subject.update(webView: webView)
+        subject.update(webView: webView)
+        subject.viewDidLayoutSubviews()
+
+        XCTAssertTrue(webView.superview === subject.view)
+        XCTAssertEqual(webView.frame, subject.view.bounds)
+        XCTAssertTrue(webView.translatesAutoresizingMaskIntoConstraints)
+        XCTAssertTrue(subject.view.constraints.isEmpty)
+    }
+
+    @MainActor
+    @available(iOS 16.0, *)
+    func testWebViewHosting_doesNotStealFullscreenViewAndRestoresItsBrowserLayout() {
+        let webView = FullscreenHostingTestWebView()
+        let subject = WebviewViewController(webView: webView)
+        subject.loadViewIfNeeded()
+        let fullscreenContainer = UIView(frame: CGRect(x: 0, y: 0, width: 932, height: 430))
+
+        let states: [WKWebView.FullscreenState] = [.enteringFullscreen, .inFullscreen, .exitingFullscreen]
+        for state in states {
+            webView.simulatedFullscreenState = state
+            fullscreenContainer.addSubview(webView)
+            webView.frame = fullscreenContainer.bounds
+            subject.update(webView: webView)
+            subject.viewDidLayoutSubviews()
+
+            XCTAssertTrue(webView.superview === fullscreenContainer)
+            XCTAssertEqual(webView.frame, fullscreenContainer.bounds)
+        }
+
+        webView.simulatedFullscreenState = .notInFullscreen
+        subject.view.frame = CGRect(x: 0, y: 0, width: 430, height: 731)
+        subject.update(webView: webView)
+        subject.viewDidLayoutSubviews()
+
+        XCTAssertTrue(webView.superview === subject.view)
+        XCTAssertEqual(webView.frame, subject.view.bounds)
+        XCTAssertTrue(subject.view.constraints.isEmpty)
+    }
 
     override func setUp() async throws {
         try await super.setUp()
@@ -922,5 +969,14 @@ class MockAppStartupTelemetry: AppStartupTelemetry {
 
     func sendStartupTelemetry() {
         sendStartupTelemetryCalled += 1
+    }
+}
+
+@available(iOS 16.0, *)
+private final class FullscreenHostingTestWebView: WKWebView {
+    var simulatedFullscreenState: WKWebView.FullscreenState = .notInFullscreen
+
+    override var fullscreenState: WKWebView.FullscreenState {
+        simulatedFullscreenState
     }
 }

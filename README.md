@@ -12,7 +12,7 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 - Calm light and dark themes, scalable interface text, Arabic and other upstream locales, and original Aster artwork.
 - Usage data, crash reports, daily usage, remote studies and rollouts disabled by default; enabling technical data does not silently enable studies.
 
-Brave Rewards, Wallet, Leo, Brave Sync and its paid VPN/backend services are not implemented. Firefox Account integration remains inherited provider code and is not certified for the independent app. Aster does not present Brave service substitutes or claim identical feature parity. See [ASTER-COVERAGE.md](ASTER-COVERAGE.md) for the exact scope.
+Brave Playlist, Rewards, Wallet, Leo, Brave Sync and its paid VPN/backend services are not implemented. Native video playback does not provide a saved-media background-playback library. Firefox Account integration remains inherited provider code and is not certified for the independent app. Aster does not present Brave service substitutes or claim identical feature parity. See [ASTER-COVERAGE.md](ASTER-COVERAGE.md) for the exact scope.
 
 ## Build and install
 

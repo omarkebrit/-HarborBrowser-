@@ -1,14 +1,15 @@
 # Aster validation report
 
-Native execution is in progress. The full upstream `UnitTest` plan passed in [GitHub run 38070463479](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38070463479) at commit `6409ca02d6eff3f235907e3f53aaa5dbe3f9b18f`, including real Keychain, consent, media-configuration and content-blocker tests. A following CI verifier incorrectly expected device-style entitlements from an ad-hoc simulator signature; it is corrected to verify Xcode-generated simulator rights and the actual signed app identity. The newly added offline support routes and thirteenth acceptance test require the next native run. No passing UI or device-build result is claimed yet.
+Native execution is in progress. In [GitHub run 38071980382](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38071980382), source `a75348a9458a780a9e3b6a3e0056b0b37ba31317`, the full upstream `UnitTest` plan and simulator signing checks passed. The main UI selection executed 15 tests: 11 passed and four failed. Passing cases include actual MP4/HLS/iframe/blob decoding, private storage and history isolation, advertising blocking with exception/re-enable controls, reader/bookmarks/reading list, offline Help/Privacy, local navigation, Arabic/RTL, large text and three upstream UI cases. The failures were popup accessibility hit detection, the autoplay fixture's metadata-gated attempt, black element fullscreen, and loss of 25 tabs on process relaunch. The next native run verifies the media fixes and captures session-save/restore diagnostics. No production IPA or complete passing UI result is claimed yet.
 
 ## Local checks completed
 
 - Native project and property-list edits reviewed; new acceptance source and advertising folder registered in Xcode.
-- Python fixture-server HTTP contracts: 39 checks covering HEAD, byte ranges, suffix ranges, invalid requests, missing resources and correct payloads.
+- Python fixture-server HTTP contracts: 58 checks covering HEAD, byte ranges, suffix ranges, invalid requests, missing resources and correct payloads.
 - Fixture JavaScript syntax checked with Node; original six-second media confirmed as H.264 video and AAC audio, including HLS segments.
 - Localization string syntax validated, icon assets rendered with opaque 1024-pixel images, primary palette text contrast checked.
 - New consent, native media configuration and advertising/safelist tests added to existing registered unit targets.
+- Fullscreen hosts use frames/autoresizing and respect WebKit's entering/fullscreen/exiting ownership; registered regression tests cover repeated updates and resizing. Real native fullscreen validation remains required.
 
 ## Required native checks
 

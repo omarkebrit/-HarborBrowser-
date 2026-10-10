@@ -32,6 +32,7 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
         const status = document.getElementById('status');
         const diagnostic = document.getElementById('diagnostic');
         let frames = 0;
+        let automaticAttempted = false;
         if (v.requestVideoFrameCallback) {
             const frame = () => { frames++; v.requestVideoFrameCallback(frame); };
             v.requestVideoFrameCallback(frame);
@@ -46,9 +47,8 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
                 status.textContent = 'Audio and video playing';
         }
         v.addEventListener('loadedmetadata', () => {
-            status.textContent = 'Ready for playback';
+            if (!automaticAttempted) status.textContent = 'Ready for playback';
             report();
-            AUTOPLAY
         });
         v.addEventListener('timeupdate', report);
         v.addEventListener('error', () => {
@@ -59,11 +59,19 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
             v.play().catch(error => { status.textContent = 'Playback failed: ' + error.name; });
         };
         SOURCE
+        AUTOPLAY
     """
     automatic = """
-        v.play().catch(error => { status.textContent = 'Automatic playback blocked: ' + error.name; });
+        automaticAttempted = true;
+        v.muted = false; v.volume = 1;
+        status.textContent = 'Attempting automatic playback';
+        v.play().then(report).catch(error => {
+            status.textContent = 'Automatic playback blocked: ' + error.name;
+            report();
+        });
         setTimeout(() => {
-            if (v.paused && v.currentTime === 0 && v.readyState >= 1)
+            report();
+            if (v.paused && v.currentTime === 0 && !v.error)
                 status.textContent = 'Automatic playback blocked';
         }, 1500);
     """ if autoplay else ""

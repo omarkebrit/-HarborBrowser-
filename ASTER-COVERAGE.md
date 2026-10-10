@@ -18,6 +18,7 @@
 | Help and privacy notice | Bundled authenticated internal pages, readable offline | Native Settings navigation, visible notice content, authorization/resource unit assertions |
 | Default browser | Apple-managed entitlement not included | Needs approval/provisioning before offering this capability |
 | Account synchronization | Inherited Firefox Account provider code | Independent identifier/redirect and end-to-end service use unverified; onboarding promotion disabled |
+| Brave Playlist and saved-media background playback | Not implemented | Needs a dedicated media library/player and device validation |
 | Brave Sync, Rewards, Wallet, Leo, News and paid VPN | Not implemented | Requires separate implementations and/or service agreements |
 | Installation | Unsigned device IPA from GitHub | Compilation is verified by CI; installation needs Apple signing |
 

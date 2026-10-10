@@ -443,6 +443,7 @@ final class TabManagerImplementation: NSObject,
         logger.log("Tabs restore started with empty tabs; \(tabs.isEmpty), crashed at last launch is \(logger.crashedLastLaunch)",
                    level: .debug,
                    category: .tabs)
+        logSessionRestoreGate()
 
         guard !AppConstants.isRunningUITests || AppConstants.isSessionRestoreEnabledForTests,
               !DebugSettingsBundleOptions.skipSessionRestore
@@ -474,6 +475,7 @@ final class TabManagerImplementation: NSObject,
         logger.log("Tabs restore started using TabRestorer; pre-restore tab count: \(tabs.count), crashed at last launch is \(logger.crashedLastLaunch)",
                    level: .debug,
                    category: .tabs)
+        logSessionRestoreGate()
 
         guard !AppConstants.isRunningUITests || AppConstants.isSessionRestoreEnabledForTests,
               !DebugSettingsBundleOptions.skipSessionRestore
@@ -513,6 +515,15 @@ final class TabManagerImplementation: NSObject,
 
         AppEventQueue.started(event)
         AppEventQueue.completed(event)
+    }
+
+    private func logSessionRestoreGate() {
+        guard AppConstants.isRunningUITests else { return }
+        logger.log("UI-test session restore gate", level: .info, category: .tabs,
+                   extra: ["windowUUID": windowUUID.uuidString,
+                           "windowIsNew": String(windowIsNew),
+                           "restoreArgument": String(AppConstants.isSessionRestoreEnabledForTests),
+                           "skipSetting": String(DebugSettingsBundleOptions.skipSessionRestore)])
     }
 
     private func ensureAtLeastOneSelectedTab() {
@@ -947,6 +958,14 @@ final class TabManagerImplementation: NSObject,
     }
 
     private func saveAllTabData() {
+        if AppConstants.isRunningUITests {
+            logger.log("UI-test background tab save", level: .info, category: .tabs,
+                       extra: ["windowUUID": windowUUID.uuidString,
+                               "restoreFinished": String(tabRestoreHasFinished),
+                               "normalTabCount": String(normalTabs.count),
+                               "hasSelectedTab": String(selectedTab != nil),
+                               "hasSelectedURL": String(selectedTab?.url != nil)])
+        }
         // Only preserve tabs after the restore has finished
         guard tabRestoreHasFinished, let tab = selectedTab, let url = tab.url else { return }
         // Skip a plain Firefox Home tab with no navigation history, but still save when home was

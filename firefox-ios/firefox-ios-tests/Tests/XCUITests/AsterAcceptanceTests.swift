@@ -218,10 +218,13 @@ final class AsterAcceptanceTests: BaseTestCase {
         toolbar.assertTabsButtonValue(expectedCount: "1")
         XCTAssertFalse(app.webViews.staticTexts["Unsolicited popup opened"].exists)
         app.webViews.buttons["Open player window"].waitAndTap()
-        expectText("Ready for playback", timeout: 20)
+        expectPopupText("Ready for playback", timeout: 20)
         toolbar.assertTabsButtonValue(expectedCount: "2")
-        app.webViews.buttons["Play test media"].waitAndTap()
-        expectText("Audio and video playing", timeout: 15)
+        let play = app.webViews.buttons["Play test media"].firstMatch
+        mozWaitForElementToExist(play)
+        XCTAssertTrue(app.webViews["contentView"].firstMatch.frame.contains(play.frame))
+        play.tap(force: true)
+        expectPopupText("Audio and video playing", timeout: 15)
         captureDisplay("Genuine gesture opened playing video tab")
     }
 
@@ -238,7 +241,14 @@ final class AsterAcceptanceTests: BaseTestCase {
             NSPredicate(format: "label BEGINSWITH %@", "Automatic playback blocked")
         ).firstMatch
         mozWaitForElementToExist(blockedStatus, timeout: 15)
+        let diagnostic = app.webViews.staticTexts.matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Frames: ")
+        ).firstMatch
+        mozWaitForElementToExist(diagnostic)
+        XCTAssertTrue(diagnostic.label.contains("paused: true"))
+        XCTAssertTrue(diagnostic.label.contains("time: 0.00"))
         XCTAssertFalse(app.webViews.staticTexts["Audio and video playing"].exists)
+        captureDisplay("Real automatic playback attempt remains paused")
         app.webViews.buttons["Play test media"].waitAndTap()
         expectText("Audio and video playing", timeout: 15)
         captureDisplay("User gesture plays sound under restrictive autoplay")
@@ -370,6 +380,20 @@ final class AsterAcceptanceTests: BaseTestCase {
         screenshot.name = title
         screenshot.lifetime = .keepAlways
         add(screenshot)
+    }
+
+    private func expectPopupText(_ text: String, timeout: TimeInterval) {
+        let element = app.webViews.staticTexts[text].firstMatch
+        guard element.waitForExistence(timeout: timeout) else {
+            XCTFail("Missing rendered popup text: \(text)")
+            return
+        }
+        let viewport = app.webViews["contentView"].firstMatch
+        let onscreen = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            element.frame.width > 0 && element.frame.height > 0 && viewport.frame.contains(element.frame)
+        }, object: element)
+        XCTAssertEqual(XCTWaiter().wait(for: [onscreen], timeout: 5), .completed,
+                       "Popup text must appear inside the visible native browser viewport: \(text)")
     }
 
     private func waitForPredicate(_ predicate: String, element: XCUIElement) {
