@@ -163,6 +163,14 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         }
         if preferences.requireHTTPS && scheme == "http" && action.targetFrame?.isMainFrame != false {
             guard let secureURL = BrowserAddress.validated(url, requireHTTPS: true) else { decisionHandler(.cancel, page); return }
+            let method = action.request.httpMethod?.uppercased() ?? "GET"
+            if !["GET", "HEAD"].contains(method), action.request.httpBody == nil, action.request.httpBodyStream == nil {
+                // WebKit does not always expose a form's body to delegates.
+                // Never silently replay a submission without its payload.
+                decisionHandler(.cancel, page)
+                error = "This form could not be upgraded without losing its submission data. Open the website’s HTTPS address and submit the form there."
+                return
+            }
             if action.targetFrame == nil {
                 // The new tab owns its redirect tracking; opening a popup does
                 // not consume an upgrade attempt in the source document.
