@@ -6,7 +6,7 @@ import Common
 import Foundation
 import UIKit
 
-/// Utility functions related to SUMO and Webcompat
+/// Product help, privacy notices, and provider support links.
 public struct SupportUtils {
     public static var URLForPrivateBrowsingLearnMore: URL? {
         // Returns the predefined URL associated to private homepage message card learn more action.
@@ -15,7 +15,7 @@ public struct SupportUtils {
 
     public static var URLForGetHelp: URL? {
         // Returns the predefined URL associated to the menu's Get Help button action.
-        return URL(string: "https://support.mozilla.org/products/ios")
+        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/README.md")
     }
 
     public static var URLForPocketLearnMore: URL? {
@@ -28,15 +28,15 @@ public struct SupportUtils {
     }
 
     public static var URLForPrivacyNotice: URL? {
-        return URL(string: "https://www.mozilla.org/privacy/firefox/")
+        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md")
     }
 
     public static var URLForUpdatedPrivacyNotice: URL? {
-        return URL(string: "https://www.mozilla.org/privacy/firefox/next/")
+        return URLForPrivacyNotice
     }
 
     public static var URLForUpdatedPrivacyNoticeDiff: URL? {
-        return URL(string: "https://www.mozilla.org/privacy/firefox/update/")
+        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/commits/feat/aster-browser/PRIVACY.md")
     }
 
     public static var URLForRelayAccountManagement: URL? {
@@ -67,19 +67,6 @@ public struct SupportUtils {
     }
 
     public static func URLForPrivacyNotice(source: String, campaign: String, content: String?) -> URL? {
-        let defaultURL = URL(string: "https://www.mozilla.org/privacy/firefox")
-
-        guard let languageIdentifier = Locale.preferredLanguages.first else {
-            return defaultURL
-        }
-
-        var privacyNoticeString =
-                    "https://www.mozilla.org/\(languageIdentifier)/privacy/firefox/?utm_medium=firefox-mobile&utm_source=\(source)&utm_campaign=\(campaign)"
-
-        if let content {
-            privacyNoticeString.append("&utm_content=\(content)")
-        }
-
-        return URL(string: privacyNoticeString) ?? defaultURL
+        return URLForPrivacyNotice
     }
 }

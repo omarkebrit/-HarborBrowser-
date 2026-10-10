@@ -14,7 +14,7 @@ class SendFeedbackSetting: Setting {
     }
 
     override var url: URL? {
-        return URL(string: "https://connect.mozilla.org/")
+        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/issues")
     }
 
     override var accessibilityIdentifier: String? {

@@ -5,6 +5,7 @@
 import MozillaAppServices
 import XCTest
 import OnboardingKit
+import Shared
 
 @testable import Client
 
@@ -372,7 +373,8 @@ class NimbusOnboardingKitFeatureLayerTests: XCTestCase {
             XCTFail("Expected a card")
             return
         }
-        XCTAssertTrue(card.buttons.primary.title.contains("Firefox"))
+        XCTAssertTrue(card.buttons.primary.title.contains(AppName.shortName.rawValue))
+        XCTAssertFalse(card.buttons.primary.title.contains("%@"))
     }
 
     // MARK: - Multiple Choice Button Tests
@@ -502,7 +504,8 @@ class NimbusOnboardingKitFeatureLayerTests: XCTestCase {
             XCTFail("Expected a card with popup")
             return
         }
-        XCTAssertTrue(popup.instructionSteps.allSatisfy { $0.contains("Firefox") })
+        XCTAssertTrue(popup.instructionSteps.allSatisfy { $0.contains(AppName.shortName.rawValue) })
+        XCTAssertTrue(popup.instructionSteps.allSatisfy { !$0.contains("%@") })
     }
 
     // MARK: - Condition Evaluation Tests
@@ -580,7 +583,7 @@ class NimbusOnboardingKitFeatureLayerTests: XCTestCase {
             XCTFail("Expected a card")
             return
         }
-        XCTAssertTrue(card.title.contains("Firefox"))
+        XCTAssertTrue(card.title.contains(AppName.shortName.rawValue))
         XCTAssertFalse(card.title.contains("%@"))
     }
 
@@ -596,7 +599,7 @@ class NimbusOnboardingKitFeatureLayerTests: XCTestCase {
             XCTFail("Expected a card")
             return
         }
-        XCTAssertTrue(card.body.contains("Firefox"))
+        XCTAssertTrue(card.body.contains(AppName.shortName.rawValue))
         XCTAssertFalse(card.body.contains("%@"))
     }
 

@@ -1,6 +1,6 @@
 # Aster validation report
 
-Native execution is pending the first GitHub run. No passing simulator or device-build result is claimed before that run completes.
+Native execution is in progress. The first run compiled the native app code and the 40,675-rule production pack; an unresolved identifier in the added UI test source stopped test execution. That test identifier is now corrected. No passing simulator or device-build result is claimed before the required run completes.
 
 ## Local checks completed
 
@@ -13,8 +13,8 @@ Native execution is pending the first GitHub run. No passing simulator or device
 ## Required native checks
 
 - Full upstream `UnitTest` plan, including the newly added consent, media and content-blocker assertions.
-- Eleven `AsterAcceptanceTests` plus selected upstream URL-bar and night-mode UI checks on an iPhone 15 Pro Max simulator.
-- Positive-control advertising exception test, original-file native download, separate private storage, 25-tab process restoration, decoded video transports, fullscreen and rotation, popup handling, restrictive autoplay, reader and large text.
+- Twelve `AsterAcceptanceTests` plus selected upstream URL-bar and night-mode UI checks on an iPhone 15 Pro Max simulator.
+- Positive-control advertising exception test, original-file native download, separate private storage, 25-tab process restoration, decoded video transports, fullscreen and rotation, popup handling, restrictive autoplay, reader, large text and Arabic/RTL navigation.
 - Actual WebKit compilation of the generated advertising rules.
 - Unsigned production iPhone build after the required tests pass.
 

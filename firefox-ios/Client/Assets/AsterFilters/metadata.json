@@ -1,27 +1,25 @@
 {
-  "mode": "curated-starter",
-  "ruleCount": 18,
-  "source": "Independently authored Aster startup rules",
-  "rulesSHA256": "d9bea1143b22cdcd39149cf95384295459e73a63ab29a4adcd6c1b926e552d9f",
-  "domains": [
-    "doubleclick.net",
-    "googlesyndication.com",
-    "googleadservices.com",
-    "adnxs.com",
-    "adsrvr.org",
-    "criteo.com",
-    "criteo.net",
-    "taboola.com",
-    "outbrain.com",
-    "pubmatic.com",
-    "rubiconproject.com",
-    "openx.net",
-    "casalemedia.com",
-    "advertising.com",
-    "adform.net",
-    "smartadserver.com",
-    "amazon-adsystem.com",
-    "scorecardresearch.com"
+  "mode": "adguard",
+  "ruleCount": 40675,
+  "generatedAt": "2026-10-10T16:29:50.599407+00:00",
+  "converter": "SafariConverterLib 4.3.0",
+  "converterCommit": "7a2e93f0afa70479cc59985f332025236c3f0c39",
+  "converterReleaseSHA256": "6687be9f1a77abd5299299086c5fbffd0d1b5baec755eb4808aa2f53e275d3c0",
+  "safariTarget": 16,
+  "sources": [
+    {
+      "id": 2,
+      "name": "AdGuard Base",
+      "url": "https://filters.adtidy.org/ios/filters/2_optimized.txt",
+      "sha256": "f6c161378dbef20b02fee4827c7a946a3481211593ef47d06ae66fc48459fb4d"
+    },
+    {
+      "id": 11,
+      "name": "AdGuard Mobile Ads",
+      "url": "https://filters.adtidy.org/ios/filters/11_optimized.txt",
+      "sha256": "8135dcfccf30a1131ae200fbe90d12e1ddbdcb435bc72dd40942e0b359e338fb"
+    }
   ],
-  "scope": "Limited advertising hostnames. Production CI generates official AdGuard Base and Mobile Ads; native ETP remains separate."
+  "rulesSHA256": "ddbba6fde5c04ede1564a4c37e20db6762704ed4a75fe3f758b38db8ddf779ac",
+  "scope": "AdGuard Base and Mobile Ads; native ETP remains a separate layer. No added blanket cookie rule or video exceptions."
 }

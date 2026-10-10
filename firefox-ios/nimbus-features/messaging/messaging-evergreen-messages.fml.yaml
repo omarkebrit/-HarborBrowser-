@@ -47,9 +47,9 @@ import:
                 surface: microsurvey
                 style: MICROSURVEY
                 trigger-if-all:
-                  - SECOND_HOMEPAGE_VIEW
+                  - NEVER
                 title: Microsurvey/Microsurvey.Prompt.TitleLabel.v127
-                text: "How satisfied are you with your Firefox homepage?" # Should not show this message if this is nil
+                text: "How satisfied are you with your Aster homepage?" # Should not show this message if this is nil
                 button-label: Microsurvey/Microsurvey.Prompt.Button.v127
                 should-randomize-options: false
                 microsurveyConfig:

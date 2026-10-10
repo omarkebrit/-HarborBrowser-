@@ -19,6 +19,9 @@ final class AsterAcceptanceTests: BaseTestCase {
         if name.contains("testLargeTextAndAppearanceKeepNavigationAccessible") {
             launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
         }
+        if name.contains("testArabicRTLNavigationUsesLocalizedNativeControls") {
+            launchArguments += ["-AppleLanguages", "(ar)", "-AppleLocale", "ar_SA"]
+        }
         if name.contains("testReaderBookmarkAndReadingListPreserveOriginalArticle") {
             for feature in ["apple-summarizer-feature", "hosted-summarizer-feature"] {
                 launchArguments += [LaunchArguments.LoadExperiment + "defaultEnabledOff",
@@ -60,10 +63,48 @@ final class AsterAcceptanceTests: BaseTestCase {
         find.assertResultsCountIsDisplayed("1 of 3")
         navigator.goto(BrowserTab)
         navigator.goto(LibraryPanel_History)
-        let history = app.tables[HistoryPanelA11y.tableView]
+        let history = app.tables[AccessibilityIdentifiers.LibraryPanels.HistoryPanel.tableView]
         mozWaitForElementToExist(history.staticTexts["Aster navigation one"])
         mozWaitForElementToExist(history.staticTexts["Aster navigation two"])
         captureDisplay("Local history and navigation")
+    }
+
+    func testArabicRTLNavigationUsesLocalizedNativeControls() {
+        let address = app.textFields[AccessibilityIdentifiers.Browser.AddressToolbar.searchTextField]
+        mozWaitForElementToExist(address)
+        XCTAssertTrue(address.isHittable)
+        address.waitAndTap()
+        address.tapAndTypeTextWhenFocused(origin + "/navigation/one.html")
+        address.typeText("\r")
+        navigator.nowAt(BrowserTab)
+        expectText("First local page ready")
+        app.webViews.links["Open second local page"].firstMatch.waitAndTap()
+        expectText("Second local page ready")
+
+        let back = app.buttons[AccessibilityIdentifiers.Toolbar.backButton]
+        let forward = app.buttons[AccessibilityIdentifiers.Toolbar.forwardButton]
+        mozWaitForElementToExist(back)
+        mozWaitForElementToExist(forward)
+        XCTAssertEqual(back.label, "السابق")
+        XCTAssertEqual(forward.label, "التالي")
+        XCTAssertTrue(back.isHittable)
+        XCTAssertGreaterThan(back.frame.midX, forward.frame.midX,
+                             "The native navigation toolbar must mirror for Arabic")
+        assertAccessibleToolbar()
+        captureDisplay("Actual Arabic RTL browser navigation")
+        back.waitAndTap()
+        expectText("First local page ready")
+        XCTAssertTrue(forward.isEnabled)
+        forward.waitAndTap()
+        expectText("Second local page ready")
+        toolbar.tapOnTabsButton()
+        tabTray.assertCellExists(named: "Aster navigation two")
+        captureDisplay("Actual Arabic RTL tab tray")
+        tabTray.tapOnCell(named: "Aster navigation two")
+        navigator.nowAt(BrowserTab)
+        expectText("Second local page ready")
+        XCTAssertTrue(address.isHittable)
+        assertAccessibleToolbar()
     }
 
     func testTwentyFiveTabsSurviveProcessRelaunch() {
@@ -121,7 +162,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         let address = app.textFields[AccessibilityIdentifiers.Browser.AddressToolbar.searchTextField]
         XCTAssertFalse((address.value as? String ?? "").contains("mode=private"))
         navigator.goto(LibraryPanel_History)
-        let history = app.tables[HistoryPanelA11y.tableView]
+        let history = app.tables[AccessibilityIdentifiers.LibraryPanels.HistoryPanel.tableView]
         mozWaitForElementToExist(history.staticTexts["Aster regular browser state"])
         XCTAssertFalse(history.staticTexts["Aster private browser state"].exists,
                        "Private page titles must not enter regular history")
@@ -189,7 +230,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         let blocked = app.tables.firstMatch.cells[AccessibilityIdentifiers.Settings.Autoplay.blockAudioAndVideo]
         blocked.waitAndTap()
         waitForPredicate("selected == true", element: blocked)
-        navigator.goto(BrowserTab)
+        navigator.goto(NewTabScreen)
         newTab()
         navigator.openURL(origin + "/media/autoplay.html")
         navigator.nowAt(BrowserTab)
@@ -277,9 +318,13 @@ final class AsterAcceptanceTests: BaseTestCase {
     private func expectText(_ text: String, timeout: TimeInterval = 10,
                             file: StaticString = #filePath, line: UInt = #line) {
         let element = app.webViews.staticTexts[text].firstMatch
-        XCTAssertTrue(element.waitForExistence(timeout: timeout), "Missing rendered page text: \(text)",
-                      file: file, line: line)
-        XCTAssertTrue(element.isHittable, "Page text exists but is not visible: \(text)", file: file, line: line)
+        guard element.waitForExistence(timeout: timeout) else {
+            XCTFail("Missing rendered page text: \(text)", file: file, line: line)
+            return
+        }
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: element)
+        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: min(timeout, 5)), .completed,
+                       "Page text exists but is not visible: \(text)", file: file, line: line)
     }
 
     private func captureDisplay(_ title: String) {

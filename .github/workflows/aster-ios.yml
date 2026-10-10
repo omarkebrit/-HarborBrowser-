@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main, feat/aster-browser]
-  pull_request:
-    branches: [main]
 
 permissions:
   contents: read
@@ -63,6 +61,16 @@ jobs:
           path: firefox-ios/Client/Assets/AsterFilters/
           if-no-files-found: error
           retention-days: 7
+      - name: Restore native compilation intermediates
+        id: native-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-
       - name: Resolve the pinned Swift packages
         shell: bash
         run: |
@@ -138,6 +146,7 @@ jobs:
             -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
             -resultBundlePath "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" \
             -only-testing:XCUITests/AsterAcceptanceTests \
+            -skip-testing:XCUITests/AsterAcceptanceTests/testNativeDownloadPreservesFixtureFile \
             -only-testing:XCUITests/UrlBarTests/testNewTabUrlBar \
             -only-testing:XCUITests/UrlBarTests/testClearTextInAddressBar \
             -only-testing:XCUITests/NightModeTests/testNightModeUI \
@@ -146,6 +155,19 @@ jobs:
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/acceptance-tests.log"
+          download_container=$(xcrun simctl get_app_container "$ASTER_SIMULATOR_UDID" com.omarkebrit.aster data)
+          rm -f "$download_container/Documents/Downloads/aster-payload.txt"
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterDownloadTests.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests/testNativeDownloadPreservesFixtureFile \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/download-tests.log"
       - name: Verify the downloaded fixture bytes in the app container
         shell: bash
         run: |
@@ -167,7 +189,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in AsterUnitTests AsterAcceptanceTests; do
+          for suite in AsterUnitTests AsterAcceptanceTests AsterDownloadTests; do
             xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
               > "$ASTER_RESULTS/$suite-summary.json"
           done
@@ -175,7 +197,7 @@ jobs:
           import json, os, pathlib, sys
           root = pathlib.Path(sys.argv[1])
           lines = ['Aster native validation', '']
-          for suite in ('AsterUnitTests', 'AsterAcceptanceTests'):
+          for suite in ('AsterUnitTests', 'AsterAcceptanceTests', 'AsterDownloadTests'):
               result = json.loads((root / (suite + '-summary.json')).read_text())
               passed, failed = int(result.get('passedTests', 0)), int(result.get('failedTests', 0))
               if passed < 1 or failed != 0:
@@ -185,6 +207,14 @@ jobs:
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
               summary.write('\n'.join(lines) + '\n')
           PY
+      - name: Save compilation intermediates for subsequent fixes
+        if: ${{ always() && !cancelled() }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - name: Build the unsigned iPhone release app
         shell: bash
         run: |
@@ -213,7 +243,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         shell: bash
         run: |
-          for suite in AsterUnitTests AsterAcceptanceTests; do
+          for suite in AsterUnitTests AsterAcceptanceTests AsterDownloadTests; do
             if [ -d "$ASTER_RESULTS/$suite.xcresult" ]; then
               xcrun xcresulttool export attachments --path "$ASTER_RESULTS/$suite.xcresult" \
                 --output-path "$ASTER_RESULTS/$suite-attachments" || true

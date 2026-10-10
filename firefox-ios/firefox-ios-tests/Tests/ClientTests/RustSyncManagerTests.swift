@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 @testable import Client
+import Common
 import Shared
 import Sync
 import TestKit
@@ -59,6 +60,25 @@ class RustSyncManagerTests: XCTestCase {
         profile.removeDirectory()
         profile = nil
         super.tearDown()
+    }
+
+    func testCanSendUsageData_requiresTechnicalConsentAndRespondsToRevocation() {
+        profile.prefs.removeObjectForKey(AppConstants.prefSendUsageData)
+        profile.prefs.setBool(true, forKey: AppConstants.prefSendDailyUsagePing)
+
+        XCTAssertFalse(rustSyncManager.canSendUsageData())
+        XCTAssertNil(profile.prefs.boolForKey(AppConstants.prefSendUsageData))
+
+        profile.prefs.setBool(true, forKey: AppConstants.prefSendUsageData)
+        XCTAssertTrue(rustSyncManager.canSendUsageData())
+
+        profile.prefs.setBool(false, forKey: AppConstants.prefSendUsageData)
+        XCTAssertFalse(rustSyncManager.canSendUsageData())
+
+        profile.prefs.removeObjectForKey(AppConstants.prefSendUsageData)
+        XCTAssertFalse(rustSyncManager.canSendUsageData())
+        XCTAssertNil(profile.prefs.boolForKey(AppConstants.prefSendUsageData))
+        XCTAssertEqual(profile.prefs.boolForKey(AppConstants.prefSendDailyUsagePing), true)
     }
 
     func testGetEnginesAndKeys_withLoginsVerified() {

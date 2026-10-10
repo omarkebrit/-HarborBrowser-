@@ -246,7 +246,7 @@ public class RustSyncManager: NSObject, SyncManager, @unchecked Sendable {
     }
 
     func canSendUsageData() -> Bool {
-        return profile?.prefs.boolForKey(AppConstants.prefSendUsageData) ?? true
+        return profile?.prefs.boolForKey(AppConstants.prefSendUsageData) ?? false
     }
 
     private func notifySyncing(notification: Notification.Name) {

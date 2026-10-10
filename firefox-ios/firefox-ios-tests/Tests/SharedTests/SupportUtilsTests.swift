@@ -17,8 +17,6 @@ class SupportUtilsTests: XCTestCase {
     }
 
     func testURLForPrivacyNotice_withoutContentParam() {
-        let languageIdentifier = Locale.preferredLanguages.first!
-
         let urlString = SupportUtils.URLForPrivacyNotice(
             source: "modal",
             campaign: "microsurvey",
@@ -27,13 +25,11 @@ class SupportUtilsTests: XCTestCase {
 
         XCTAssertEqual(
             urlString,
-            "https://www.mozilla.org/\(languageIdentifier)/privacy/firefox/?utm_medium=firefox-mobile&utm_source=modal&utm_campaign=microsurvey"
+            "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md"
         )
     }
 
     func testURLForPrivacyNotice_withContentParam() {
-        let languageIdentifier = Locale.preferredLanguages.first!
-
         let urlString = SupportUtils.URLForPrivacyNotice(
             source: "modal",
             campaign: "microsurvey",
@@ -42,7 +38,7 @@ class SupportUtilsTests: XCTestCase {
 
         XCTAssertEqual(
             urlString,
-            "https://www.mozilla.org/\(languageIdentifier)/privacy/firefox/?utm_medium=firefox-mobile&utm_source=modal&utm_campaign=microsurvey&utm_content=homepage"
+            "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md"
         )
     }
 }

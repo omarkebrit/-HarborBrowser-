@@ -495,12 +495,14 @@ class AppSettingsTableViewController: SettingsTableViewController,
     }
 
     private func getAboutSettings() -> [SettingSection] {
-        let aboutSettings = [
-            AppStoreReviewSetting(settingsDelegate: parentCoordinator),
+        var aboutSettings: [Setting] = [
             VersionSetting(settingsDelegate: self),
-            LicenseAndAcknowledgementsSetting(settingsDelegate: parentCoordinator),
-            YourRightsSetting(settingsDelegate: parentCoordinator)
+            LicenseAndAcknowledgementsSetting(settingsDelegate: parentCoordinator)
         ]
+
+        if featureFlagsProvider.isEnabled(.tosFeature) || featureFlagsProvider.isEnabled(.touFeature) {
+            aboutSettings.append(YourRightsSetting(settingsDelegate: parentCoordinator))
+        }
 
         return [SettingSection(title: NSAttributedString(string: .AppSettingsAbout),
                                children: aboutSettings)]
