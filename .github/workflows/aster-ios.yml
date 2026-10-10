@@ -111,7 +111,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf '\n127.0.0.1 ads.doubleclick.net\n' | sudo tee -a /etc/hosts >/dev/null
+          printf '\n127.0.0.1 aster-acceptance.adnxs.com\n' | sudo tee -a /etc/hosts >/dev/null
           python3 scripts/aster-test-server.py > "$ASTER_RESULTS/fixture-server.log" 2>&1 &
           fixture_pid=$!
           trap 'kill "$fixture_pid" 2>/dev/null || true' EXIT

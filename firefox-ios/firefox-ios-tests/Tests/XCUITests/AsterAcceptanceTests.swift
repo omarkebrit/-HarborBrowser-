@@ -19,6 +19,12 @@ final class AsterAcceptanceTests: BaseTestCase {
         if name.contains("testLargeTextAndAppearanceKeepNavigationAccessible") {
             launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
         }
+        if name.contains("testReaderBookmarkAndReadingListPreserveOriginalArticle") {
+            for feature in ["apple-summarizer-feature", "hosted-summarizer-feature"] {
+                launchArguments += [LaunchArguments.LoadExperiment + "defaultEnabledOff",
+                                    LaunchArguments.ExperimentFeatureName + feature]
+            }
+        }
         try await super.setUp()
     }
 
