@@ -3,30 +3,71 @@ import WebKit
 import UniformTypeIdentifiers
 import QuickLook
 
-struct WebSurface: UIViewRepresentable {
+@MainActor
+struct WebSurface: UIViewControllerRepresentable {
     let webView: WKWebView
-    func makeUIView(context: Context) -> UIView {
+
+    func makeUIViewController(context: Context) -> WebSurfaceController {
+        WebSurfaceController(webView: webView)
+    }
+
+    func updateUIViewController(_ controller: WebSurfaceController, context: Context) {
+        controller.requestLayout()
+    }
+
+    static func dismantleUIViewController(_ controller: WebSurfaceController, coordinator: ()) {
+        controller.detach()
+    }
+}
+
+// WebKit's fullscreen controller temporarily moves the entire WKWebView. It
+// preserves frame/autoresizingMask, not its original Auto Layout constraints.
+// A native child controller supplies UIKit's rotation/layout lifecycle while
+// leaving WebKit in charge of its view for the whole fullscreen presentation.
+@MainActor
+final class WebSurfaceController: UIViewController {
+    let webView: WKWebView
+    private var fullscreenObservation: NSKeyValueObservation?
+
+    init(webView: WKWebView) {
+        self.webView = webView
+        super.init(nibName: nil, bundle: nil)
+        fullscreenObservation = webView.observe(\.fullscreenState, options: [.new]) { [weak self] _, _ in
+            Task { @MainActor in self?.requestLayout() }
+        }
+        // NSKeyValueObservation invalidates itself on deallocation. Its closure
+        // holds this controller weakly; detach also invalidates it explicitly.
+    }
+
+    required init?(coder: NSCoder) { fatalError("WebSurfaceController is created in code") }
+
+    override func loadView() {
         let container = UIView()
         container.backgroundColor = .systemBackground
-        attach(to: container)
-        return container
-    }
-    func updateUIView(_ container: UIView, context: Context) { attach(to: container) }
-    private func attach(to container: UIView) {
-        guard webView.superview !== container else { return }
-        container.subviews.forEach { $0.removeFromSuperview() }
+        view = container
+        guard webView.fullscreenState == .notInFullscreen else { return }
         webView.removeFromSuperview()
-        webView.translatesAutoresizingMaskIntoConstraints = false
+        webView.translatesAutoresizingMaskIntoConstraints = true
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        webView.frame = container.bounds
         container.addSubview(webView)
-        NSLayoutConstraint.activate([
-            webView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            webView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            webView.topAnchor.constraint(equalTo: container.topAnchor),
-            webView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-        ])
     }
-    static func dismantleUIView(_ container: UIView, coordinator: ()) {
-        container.subviews.forEach { $0.removeFromSuperview() }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard webView.fullscreenState == .notInFullscreen, webView.superview === view else { return }
+        webView.frame = view.bounds
+    }
+
+    func requestLayout() {
+        guard isViewLoaded, webView.fullscreenState == .notInFullscreen else { return }
+        view.setNeedsLayout()
+    }
+
+    func detach() {
+        fullscreenObservation?.invalidate(); fullscreenObservation = nil
+        guard isViewLoaded, webView.fullscreenState == .notInFullscreen, webView.superview === view else { return }
+        webView.removeFromSuperview()
     }
 }
 struct BrowserScreen: View {
@@ -86,7 +127,7 @@ struct TabScreen: View {
                 Label("Private browsing", systemImage: "eye.slash.fill").font(.caption.bold()).foregroundStyle(.purple).padding(6)
             }
             ZStack {
-                WebSurface(webView: tab.webView)
+                WebSurface(webView: tab.webView).id(ObjectIdentifier(tab.webView))
                 if tab.address.isEmpty { home }
             }
             if let error = tab.error {
@@ -95,9 +136,9 @@ struct TabScreen: View {
             if finding {
                 HStack {
                     TextField("Find on page", text: $query).onSubmit { tab.find(query) }.accessibilityIdentifier("FindInput")
-                    Button { tab.find(query, backwards: true) } label: { Image(systemName: "chevron.up") }.accessibilityLabel("Previous match")
-                    Button { tab.find(query) } label: { Image(systemName: "chevron.down") }.accessibilityLabel("Next match")
-                    Button { finding = false; query = ""; tab.find("") } label: { Image(systemName: "xmark.circle.fill") }.accessibilityLabel("Close find")
+                    Button { tab.find(query, backwards: true) } label: { Image(systemName: "chevron.up").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("Previous match")
+                    Button { tab.find(query) } label: { Image(systemName: "chevron.down").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("Next match")
+                    Button { finding = false; query = ""; tab.find("") } label: { Image(systemName: "xmark.circle.fill").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("Close find")
                 }.padding()
                 if !tab.findResult.isEmpty { Text(tab.findResult).font(.caption) }
             }
@@ -106,6 +147,7 @@ struct TabScreen: View {
                 HStack(spacing: 10) {
                     Button { panel = "Site" } label: {
                         Image(systemName: tab.protection == "Protected" ? "checkmark.shield.fill" : "shield.lefthalf.filled")
+                            .frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
                     }.accessibilityLabel("Site controls")
                     TextField("Search or enter address", text: $address)
                         .keyboardType(.webSearch).textInputAutocapitalization(.never).autocorrectionDisabled()
@@ -113,28 +155,29 @@ struct TabScreen: View {
                         .onSubmit { browser.open(address); editingAddress = false }
                     Button {
                         if tab.loading { tab.webView.stopLoading() } else { tab.reload() }
-                    } label: { Image(systemName: tab.loading ? "xmark" : "arrow.clockwise") }.accessibilityLabel(tab.loading ? "Stop loading" : "Reload")
+                    } label: { Image(systemName: tab.loading ? "xmark" : "arrow.clockwise").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel(tab.loading ? "Stop loading" : "Reload")
                 }.padding(12).background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
                 HStack {
-                    Button { tab.webView.goBack() } label: { Image(systemName: "chevron.left") }.disabled(!tab.canGoBack).accessibilityLabel("Back")
+                    Button { tab.webView.goBack() } label: { Image(systemName: "chevron.left").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.disabled(!tab.canGoBack).accessibilityLabel("Back")
                     Spacer()
-                    Button { tab.webView.goForward() } label: { Image(systemName: "chevron.right") }.disabled(!tab.canGoForward).accessibilityLabel("Forward")
+                    Button { tab.webView.goForward() } label: { Image(systemName: "chevron.right").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.disabled(!tab.canGoForward).accessibilityLabel("Forward")
                     Spacer()
-                    Button { browser.addTab(isPrivate: tab.isPrivate) } label: { Image(systemName: "plus") }.accessibilityLabel("New tab")
+                    Button { browser.addTab(isPrivate: tab.isPrivate) } label: { Image(systemName: "plus").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("New tab")
                     Spacer()
-                    Button { panel = "Tabs" } label: { Text("\(browser.tabs.count)").font(.system(size: 14, weight: .semibold)).frame(width: 25, height: 25).overlay(RoundedRectangle(cornerRadius: 6).stroke(lineWidth: 1.5)) }.accessibilityLabel("Tabs")
+                    Button { panel = "Tabs" } label: { Text("\(browser.tabs.count)").font(.system(size: 14, weight: .semibold)).frame(width: 25, height: 25).overlay(RoundedRectangle(cornerRadius: 6).stroke(lineWidth: 1.5)).frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("Tabs")
                     Spacer()
                     Menu {
                         Button { browser.bookmarkCurrent() } label: { Label("Add bookmark", systemImage: "bookmark") }.disabled(tab.webView.url == nil)
                         Button { panel = "Library" } label: { Label("Bookmarks & history", systemImage: "books.vertical") }
                         Button { panel = "Downloads" } label: { Label("Downloads", systemImage: "arrow.down.circle") }
+                        Button { browser.openPlaybackCheck() } label: { Label("Video playback check", systemImage: "play.rectangle") }
                         Button { finding = true } label: { Label("Find on page", systemImage: "magnifyingglass") }
                         Button { tab.setDesktop(!tab.desktop) } label: { Label(tab.desktop ? "Request mobile site" : "Request desktop site", systemImage: "desktopcomputer") }
                         if let url = tab.webView.url { ShareLink(item: url) { Label("Share page", systemImage: "square.and.arrow.up") } }
                         Button { browser.addTab(isPrivate: true) } label: { Label("New private tab", systemImage: "eye.slash") }
                         Divider()
                         Button { panel = "Settings" } label: { Label("Settings", systemImage: "gearshape") }
-                    } label: { Image(systemName: "ellipsis.circle") }.accessibilityIdentifier("BrowserMenu")
+                    } label: { Image(systemName: "ellipsis.circle").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityIdentifier("BrowserMenu")
                 }.font(.title3).padding(.horizontal, 6)
             }.padding(.horizontal, 14).padding(.vertical, 10).background(.regularMaterial)
         }
@@ -144,7 +187,7 @@ struct TabScreen: View {
     private var home: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 28) {
-                HStack { Label("HARBOR", systemImage: "sailboat.fill").font(.headline).tracking(3); Spacer(); Button { panel = "Settings" } label: { Image(systemName: "gearshape") }.accessibilityLabel("Settings") }
+                HStack { Label("HARBOR", systemImage: "sailboat.fill").font(.headline).tracking(3); Spacer(); Button { panel = "Settings" } label: { Image(systemName: "gearshape").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }.accessibilityLabel("Settings") }
                 VStack(alignment: .leading, spacing: 12) {
                     Text(tab.isPrivate ? "A little more\nprivacy." : "A calmer\nway to browse.").font(.system(size: 42, weight: .bold, design: .rounded))
                     Text(tab.isPrivate ? "Private tabs keep browsing history off this device. Websites and your network can still see activity." : "Your web. With fewer distractions.").foregroundStyle(.secondary)
@@ -156,9 +199,9 @@ struct TabScreen: View {
                     shortcut("DuckDuckGo", "magnifyingglass", "https://duckduckgo.com")
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    Label(library.preferences.blockAds ? "Protection enabled" : "Protection paused", systemImage: "shield.lefthalf.filled").font(.headline)
+                    Label(library.preferences.blockAds ? (browser.ruleCount > 0 ? "Protection enabled" : "Protection unavailable") : "Protection paused", systemImage: "shield.lefthalf.filled").font(.headline)
                     Text("\(browser.ruleCount.formatted()) blocking rules loaded").font(.subheadline).foregroundStyle(.secondary)
-                    Text("Video compatibility is available for YouTube.").font(.caption).foregroundStyle(.secondary)
+                    Text(browser.ruleCount > 0 ? "Video compatibility is available in site controls." : browser.status).font(.caption).foregroundStyle(.secondary)
                 }.frame(maxWidth: .infinity, alignment: .leading).padding(20).background(Color.teal.opacity(0.09), in: RoundedRectangle(cornerRadius: 20))
                 if !library.bookmarks.isEmpty {
                     HStack { Text("FAVORITES").font(.caption.bold()).tracking(2); Spacer(); Button("See all") { panel = "Library" } }
@@ -177,11 +220,12 @@ struct TabsPanel: View {
     @Environment(\.dismiss) private var dismiss
     let finish: () -> Void
     @State private var privateMode = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     var body: some View {
         VStack {
             Picker("Tab type", selection: $privateMode) { Text("Regular").tag(false); Text("Private").tag(true) }.pickerStyle(.segmented).padding()
             ScrollView {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: dynamicTypeSize.isAccessibilitySize ? 240 : 160), spacing: 14)], spacing: 14) {
                     ForEach(browser.tabs.filter { $0.isPrivate == privateMode }) { tab in
                         TabCard(tab: tab, selected: tab.id == browser.selected, open: { browser.select(tab); finish() }, close: { browser.close(tab) })
                     }
@@ -216,7 +260,7 @@ struct TabCard: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("OpenTab-" + tab.title)
             .overlay(RoundedRectangle(cornerRadius: 18).stroke(selected ? Color.teal : .clear, lineWidth: 2).allowsHitTesting(false))
-            Button(action: close) { Image(systemName: "xmark.circle.fill").padding(12).contentShape(Rectangle()) }
+            Button(action: close) { Image(systemName: "xmark.circle.fill").frame(minWidth: 44, minHeight: 44).contentShape(Rectangle()) }
                 .buttonStyle(.plain).accessibilityLabel("Close " + tab.title)
         }
     }
@@ -261,6 +305,8 @@ struct BookmarkEditor: View {
 struct DownloadsPanel: View {
     @ObservedObject var manager: DownloadManager
     @State private var preview: URL?
+    @State private var pendingDeletion: DownloadItem?
+    @State private var confirmDeletion = false
     var body: some View {
         List {
             Section { Text("Downloads stay on this device, including files saved from private tabs. Share a file to save it elsewhere.").font(.footnote).foregroundStyle(.secondary) }
@@ -268,13 +314,39 @@ struct DownloadsPanel: View {
             ForEach(manager.items) { item in
                 VStack(alignment: .leading, spacing: 8) {
                     Text(item.name).font(.headline).lineLimit(2)
-                    Text(item.state + (item.bytes > 0 ? " · " + ByteCountFormatter.string(fromByteCount: item.bytes, countStyle: .file) : "")).font(.caption).foregroundStyle(.secondary)
-                    if item.state == "Complete" {
-                        HStack { Button("Preview") { preview = manager.fileURL(item) }; Spacer(); ShareLink(item: manager.fileURL(item)) { Label("Share", systemImage: "square.and.arrow.up") } }.buttonStyle(.borderless)
-                    } else if item.state == "Downloading" { Button("Cancel") { manager.cancel(item) } }
-                }.padding(.vertical, 4).swipeActions { Button("Delete", role: .destructive) { manager.remove(item) } }
+                    Text(downloadStatus(item) + (item.bytes > 0 ? " · " + ByteCountFormatter.string(fromByteCount: item.bytes, countStyle: .file) : "")).font(.caption).foregroundStyle(.secondary)
+                    if item.state == "Complete", fileExists(item) {
+                        HStack {
+                            Button { preview = manager.fileURL(item) } label: { Text("Preview").frame(minHeight: 44) }
+                            Spacer()
+                            ShareLink(item: manager.fileURL(item)) { Label("Share", systemImage: "square.and.arrow.up").frame(minHeight: 44) }
+                        }.buttonStyle(.borderless)
+                    } else if item.state == "Complete" {
+                        Text("The downloaded file is no longer on this device.").font(.caption).foregroundStyle(.secondary)
+                    } else if item.state == "Downloading" {
+                        Button { manager.cancel(item) } label: { Text("Cancel").frame(minHeight: 44) }
+                    }
+                }.padding(.vertical, 4).swipeActions {
+                    Button("Delete", role: .destructive) { pendingDeletion = item; confirmDeletion = true }
+                }
             }
         }.quickLookPreview($preview)
+            .confirmationDialog("Delete download?", isPresented: $confirmDeletion, titleVisibility: .visible) {
+                Button("Delete file", role: .destructive) {
+                    if let pendingDeletion { manager.remove(pendingDeletion) }
+                    pendingDeletion = nil
+                }
+                Button("Cancel", role: .cancel) { pendingDeletion = nil }
+            } message: {
+                Text("The downloaded file and its list entry will be removed from this device. Any active download will be cancelled.")
+            }
+    }
+    private func fileExists(_ item: DownloadItem) -> Bool {
+        var isDirectory: ObjCBool = false
+        return FileManager.default.fileExists(atPath: manager.fileURL(item).path, isDirectory: &isDirectory) && !isDirectory.boolValue
+    }
+    private func downloadStatus(_ item: DownloadItem) -> String {
+        item.state == "Complete" && !fileExists(item) ? "File unavailable" : item.state
     }
 }
 struct SettingsPanel: View {
@@ -295,13 +367,18 @@ struct SettingsPanel: View {
             Section {
                 Toggle("Block ads & trackers", isOn: $library.preferences.blockAds)
                 Toggle("Block automatic pop-ups", isOn: $library.preferences.blockPopups)
+                Toggle("Upgrade page connections to HTTPS", isOn: $library.preferences.requireHTTPS)
+                    .accessibilityIdentifier("UpgradeHTTPS")
+                    .onChange(of: library.preferences.requireHTTPS) { _ in browser.applySettings() }
                 Toggle("JavaScript", isOn: $library.preferences.javaScript)
                 if !library.preferences.disabledHosts.isEmpty {
                     NavigationLink("Site exceptions (\(library.preferences.disabledHosts.count))") {
                         List { ForEach(library.preferences.disabledHosts.sorted(), id: \.self) { host in Text(host).swipeActions { Button("Remove", role: .destructive) { library.preferences.disabledHosts.remove(host) } } } }.navigationTitle("Site exceptions")
                     }
                 }
-            } header: { Text("Privacy & protection") } footer: { Text("Disabling JavaScript can break video players and sign-in pages. Private tabs do not save history or restore after closing Harbor.") }
+            } header: { Text("Privacy & protection") } footer: {
+                Text("HTTPS upgrades apply to main-page HTTP addresses. They do not rewrite page resources or guarantee every connection is HTTPS. Sites without HTTPS may fail to load. Disabling JavaScript can break video players and sign-in pages. Private tabs do not save history or restore after closing Harbor.")
+            }
             Section {
                 Toggle("YouTube compatibility", isOn: $library.preferences.youtubeCompatibility)
                 NavigationLink("Video site compatibility") {
@@ -311,7 +388,9 @@ struct SettingsPanel: View {
                     }.navigationTitle("Video compatibility")
                 }
                 Toggle("Allow media autoplay", isOn: $library.preferences.allowAutoplay)
-            } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites to avoid player failures; ads may appear. Autoplay changes apply to new tabs. Inline playback, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
+                    .accessibilityIdentifier("AllowMediaAutoplay")
+                Button("Video playback check") { browser.openPlaybackCheck() }
+            } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites; ads may appear. Playback and pop-up changes recreate open pages when safe. Submitted forms stay open; use a new tab for those pages. Inline playback, full screen, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
             Section("Filter lists") {
                 LabeledContent("Loaded rules", value: browser.ruleCount.formatted())
                 Text(browser.filterDescription).font(.caption).foregroundStyle(.secondary)
@@ -323,7 +402,11 @@ struct SettingsPanel: View {
                 Button("Clear browsing history", role: .destructive) { clearHistory = true }
                 Button("Clear cookies & website data", role: .destructive) { clearData = true }.disabled(browser.busy)
             }
-            Section { LabeledContent("Harbor", value: "0.3.1"); Text("Built for a calmer web. Filter lists refresh when a new app build is installed.").font(.footnote).foregroundStyle(.secondary) }
+            Section {
+                LabeledContent("Harbor", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown")
+                NavigationLink("Browser features & limitations") { BrowserFeaturesPanel() }
+                Text("Built for a calmer web. Filter lists refresh when a new app build is installed.").font(.footnote).foregroundStyle(.secondary)
+            }
         }
         .onDisappear { browser.applySettings() }
         .fileImporter(isPresented: $importing, allowedContentTypes: [.json]) { result in if case .success(let url) = result { Task { await browser.importRules(url) } } }
@@ -335,6 +418,7 @@ struct SitePanel: View {
     @ObservedObject var browser: BrowserModel
     @ObservedObject var tab: BrowserTab
     @ObservedObject var library: BrowserLibrary
+    @State private var confirmClearSiteData = false
     var body: some View {
         Form {
             Section {
@@ -353,11 +437,74 @@ struct SitePanel: View {
                     }
                 }
             }
+            if tab.webView.url?.host != nil {
+                Section {
+                    Button("Reload for video playback") { browser.reloadCurrentForVideo() }
+                        .accessibilityIdentifier("ReloadForVideo")
+                        .disabled(browser.busy)
+                    Button("Video playback check") { browser.openPlaybackCheck() }
+                } header: { Text("Video playback") } footer: {
+                    Text("Reload enables JavaScript and autoplay, opens the mobile page, and pauses filters for this site. Ads may appear. The playback check uses a video included with Harbor.")
+                }
+            }
             Section("Page display") {
                 Toggle("Desktop site", isOn: Binding(get: { tab.desktop }, set: { tab.setDesktop($0) }))
                 Stepper("Page zoom: \(Int(tab.zoom * 100))%", value: Binding(get: { tab.zoom }, set: { tab.setZoom($0) }), in: 0.5...2.0, step: 0.1)
                 Button("Reset zoom") { tab.setZoom(1) }
             }
+            if tab.webView.url?.host != nil {
+                Section {
+                    Button("Clear this site's data", role: .destructive) { confirmClearSiteData = true }
+                        .accessibilityIdentifier("ClearCurrentSiteData")
+                        .disabled(browser.busy)
+                } footer: {
+                    Text("Remove this website's cookies and stored data, and close matching site tabs. Shared data for its parent domain may also be removed.")
+                }
+            }
         }
+        .alert("Clear this website's stored data?", isPresented: $confirmClearSiteData) {
+            Button("Clear site data", role: .destructive) { Task { await browser.clearCurrentSiteData() } }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("You may be signed out of this website. Matching site tabs will close. Shared parent-domain data may also be removed. Unrelated websites, bookmarks, history, and downloads stay saved.")
+        }
+    }
+}
+
+struct BrowserFeaturesPanel: View {
+    var body: some View {
+        List {
+            Section("Browsing") {
+                feature("Tabs & private browsing", "Regular tabs can be restored. Private tabs use a separate temporary website store and do not save history.", "square.on.square")
+                feature("Bookmarks & history", "Save, search, and edit bookmarks. Search your saved page visits and share pages.", "books.vertical")
+                feature("Page controls", "Find text, adjust zoom, request desktop sites, and choose a search engine or appearance.", "text.magnifyingglass")
+            }
+            Section("Protection") {
+                feature("Ads & tracking filters", "WebKit filter rules, site exceptions, pop-up controls, and custom JSON rule imports. Some ads and trackers may still load.", "shield.lefthalf.filled")
+                feature("HTTPS upgrades", "Optionally upgrade main-page HTTP navigation to HTTPS. This does not encrypt every resource loaded by a page.", "lock.fill")
+                feature("Screen privacy", "Website content is covered when Harbor is inactive, including in the app switcher. Existing tabs remain open.", "eye.slash")
+            }
+            Section("Files & media") {
+                feature("Downloads", "Save, cancel, preview, share, and delete downloads. Files remain saved even when downloaded from a private tab.", "arrow.down.circle")
+                feature("Video & audio", "Inline playback, AirPlay, and Picture in Picture when supported by the website and iOS. Video compatibility can pause filtering, so ads may appear.", "play.rectangle")
+            }
+            Section {
+                Text("Harbor does not include Brave VPN, Sync, Wallet, Leo, Tor browsing, or Brave Rewards.")
+                Text("Private browsing does not hide your connection from websites or your network provider. Filter lists refresh with app updates.")
+                    .foregroundStyle(.secondary)
+            } header: {
+                Text("Limitations")
+            } footer: {
+                Text("Harbor is an independent WebKit browser and is not affiliated with Brave.")
+            }
+        }
+        .navigationTitle("Browser features")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    private func feature(_ title: String, _ detail: String, _ symbol: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: symbol).font(.headline)
+            Text(detail).font(.subheadline).foregroundStyle(.secondary)
+        }.padding(.vertical, 5)
     }
 }

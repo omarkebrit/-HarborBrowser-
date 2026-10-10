@@ -6,6 +6,7 @@ import CryptoKit
 final class BlockingStore {
     private(set) var ruleCount = 0
     private(set) var description = ""
+    private(set) var warning: String?
     private var customURL: URL {
         let folder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
@@ -53,11 +54,25 @@ final class BlockingStore {
         description = enhanced ? "AdGuard Base + Tracking + Mobile Ads + Popups" : "Starter rules (enhanced pack missing)"
     }
     func load() async throws -> [WKContentRuleList] {
-        let custom = FileManager.default.fileExists(atPath: customURL.path) ? try Data(contentsOf: customURL) : nil
-        let data = try merged(custom)
-        let list = try await compile(data)
-        try record(data)
-        return [list]
+        warning = nil
+        do {
+            let custom = FileManager.default.fileExists(atPath: customURL.path) ? try Data(contentsOf: customURL) : nil
+            let data = try merged(custom)
+            let list = try await compile(data)
+            try record(data)
+            return [list]
+        } catch {
+            // A bad imported pack or a failed large compilation must not make
+            // the browser unusable. Keep the smaller bundled protection active
+            // and disclose that the selected filters could not be loaded.
+            guard let url = Bundle.main.url(forResource: "baseline", withExtension: "json") else { throw error }
+            let data = try Data(contentsOf: url)
+            let list = try await compile(data)
+            try record(data)
+            description = "Starter rules (enhanced/custom filters unavailable)"
+            warning = "Selected filters could not load; starter protection is active. Remove custom filters to retry."
+            return [list]
+        }
     }
     func importRules(_ url: URL) async throws -> WKContentRuleList {
         let accessing = url.startAccessingSecurityScopedResource()
@@ -67,6 +82,7 @@ final class BlockingStore {
         let list = try await compile(data)
         try custom.write(to: customURL, options: .atomic)
         try record(data)
+        warning = nil
         return list
     }
     func resetCustom() async throws -> [WKContentRuleList] {
@@ -74,6 +90,7 @@ final class BlockingStore {
         let list = try await compile(data)
         if FileManager.default.fileExists(atPath: customURL.path) { try FileManager.default.removeItem(at: customURL) }
         try record(data)
+        warning = nil
         return [list]
     }
 }

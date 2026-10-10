@@ -1,6 +1,22 @@
-# Harbor 0.3.1 for iOS
+# Harbor 0.5.0 for iOS
 
-SwiftUI / WKWebView browser for iOS 16+. Build with the included GitHub Actions workflow; the IPA is unsigned and requires your own signing.
+SwiftUI / WKWebView browser for iOS 16+, including iPhone 15 Pro Max. Build with GitHub Actions from your iPhone; no personal Mac is needed. The default IPA is unsigned and needs your own eligible signing method. An optional signed TestFlight workflow is available when you supply Apple distribution credentials. See [GitHub setup](GITHUB-SETUP.md).
+
+Harbor is an independent browser, not full Brave feature parity. [Feature coverage](FEATURE-COVERAGE.md) lists what works and which Brave services are absent.
+
+## 0.5.0 video rebuild
+
+Rebuilt the WebKit media configuration and page presentation. Video players can enter HTML full screen without SwiftUI moving their webview out of the player. Buttons using JavaScript to open a player in a new tab now work; unsolicited pop-ups still require your permission setting. MP4, HLS, blob and embedded players remain in WebKit instead of becoming downloads, while explicit file downloads remain available.
+
+Removed Harbor's blanket third-party-cookie filter, which could interrupt cross-origin players. WebKit's own cookie policy and the upstream targeted ad/tracker rules remain active. If a large/custom rule pack fails to compile, Harbor falls back to its smaller bundled rules and displays a warning; a protection failure no longer prevents the browser from opening.
+
+Playback and pop-up settings now apply to existing safely reloadable tabs by recreating their webviews. Submitted forms stay open to avoid silently resubmitting them. **Site controls → Reload for video playback** enables JavaScript/autoplay, returns to mobile view and pauses filters for the current site; ads may appear. **Menu → Video playback check** opens a bundled video that works without an internet connection, so you can check picture and sound on your physical iPhone.
+
+GitHub uses explicit clean builds for the device and simulator, and publishes the IPA only after tests succeed. Expanded native regressions cover the generated filter pack, seeking, MP4, HLS, iframe and blob playback, tapped versus unsolicited pop-ups, sound after changing playback settings, full screen/rotation, and the bundled video check. Test results do not certify playback on every website.
+
+## 0.4.0
+
+Optional main-page HTTPS upgrades, rejection of addresses containing embedded credentials, current-site data deletion, an app-switcher privacy cover, safer download deletion, and larger toolbar controls. Adds an original app icon, a privacy manifest, and opt-in signed CI distribution. Existing saved preferences migrate without resetting them.
 
 ## Browsing
 
@@ -8,7 +24,7 @@ Persistent bookmarks and history, regular-tab restoration, private tabs with a s
 
 ## Video compatibility
 
-Inline playback, AirPlay, Picture in Picture and autoplay configuration are enabled. YouTube compatibility is on by default and bypasses content rules on youtube.com, its subdomains and youtu.be. This can allow ads; it is a playback-first workaround, not a claim of ad-free YouTube. Disable it in site controls to try filtering. JavaScript must remain enabled for YouTube. Autoplay preferences apply to new tabs.
+Inline playback, HTML full screen, AirPlay, Picture in Picture and autoplay configuration are enabled. YouTube compatibility is on by default and bypasses content rules on youtube.com, its subdomains and youtu.be. This can allow ads; it is a playback-first workaround, not a claim of ad-free YouTube. Disable it in site controls to try filtering. JavaScript must remain enabled for YouTube. Playback setting changes recreate existing safely reloadable pages; submitted forms require a new tab.
 
 ## Protection
 
