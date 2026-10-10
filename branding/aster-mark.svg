@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+  <title>Aster</title>
+  <defs>
+    <path id="petal" d="M0 -35C-55 -72-76 -196 0 -288C76 -196 55 -72 0 -35Z"/>
+  </defs>
+  <g transform="translate(320 320)" fill="#27675E">
+    <use href="#petal"/>
+    <use href="#petal" transform="rotate(60)"/>
+    <use href="#petal" transform="rotate(120)"/>
+    <use href="#petal" transform="rotate(180)"/>
+    <use href="#petal" transform="rotate(240)"/>
+    <use href="#petal" transform="rotate(300)"/>
+  </g>
+</svg>

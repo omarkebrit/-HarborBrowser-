@@ -1,0 +1,10 @@
+{
+  "project": "Firefox for iOS",
+  "repository": "https://github.com/mozilla-mobile/firefox-ios",
+  "tag": "firefox-v158.0",
+  "commit": "1a0bf7b01230c165e8d66c7e07a66b7c8f52a83a",
+  "license": "MPL-2.0",
+  "independent_display_name": "Aster",
+  "application_identifier": "com.omarkebrit.aster",
+  "upstream_application_version_preserved": "158.0"
+}

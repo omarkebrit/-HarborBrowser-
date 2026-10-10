@@ -1,0 +1,1 @@
+The committed startup rules were authored for Aster and are distributed under the repository's Mozilla Public License 2.0. These rules match a small set of advertising hostnames and do not copy AdGuard filters. A production build replaces them with the generated upstream pack and its source lists, notices and licenses. See README.txt and metadata.json for provenance and limits.

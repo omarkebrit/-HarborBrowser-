@@ -1,0 +1,27 @@
+{
+  "mode": "curated-starter",
+  "ruleCount": 18,
+  "source": "Independently authored Aster startup rules",
+  "rulesSHA256": "d9bea1143b22cdcd39149cf95384295459e73a63ab29a4adcd6c1b926e552d9f",
+  "domains": [
+    "doubleclick.net",
+    "googlesyndication.com",
+    "googleadservices.com",
+    "adnxs.com",
+    "adsrvr.org",
+    "criteo.com",
+    "criteo.net",
+    "taboola.com",
+    "outbrain.com",
+    "pubmatic.com",
+    "rubiconproject.com",
+    "openx.net",
+    "casalemedia.com",
+    "advertising.com",
+    "adform.net",
+    "smartadserver.com",
+    "amazon-adsystem.com",
+    "scorecardresearch.com"
+  ],
+  "scope": "Limited advertising hostnames. Production CI generates official AdGuard Base and Mobile Ads; native ETP remains separate."
+}

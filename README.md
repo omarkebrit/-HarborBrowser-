@@ -1,25 +1,29 @@
-# Harbor 0.3.1 for iOS
+# Aster for iPhone
 
-SwiftUI / WKWebView browser for iOS 16+. Build with the included GitHub Actions workflow; the IPA is unsigned and requires your own signing.
+A native iOS browser with a quiet sage, teal and slate interface, independent artwork, tabs, private browsing, downloads, reader mode and advertising protection. Designed for iPhone 15 Pro Max; supports iOS 15 and later where supported by the pinned upstream release.
 
-## Browsing
+Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mobile/firefox-ios), pinned to `firefox-v158.0`, commit `1a0bf7b01230c165e8d66c7e07a66b7c8f52a83a`. Mozilla's mature browser foundation replaces the earlier Harbor implementation. Aster is not affiliated with Mozilla or Brave. The upstream source, MPL 2.0 license and third-party notices are preserved. See [README.upstream.md](README.upstream.md).
 
-Persistent bookmarks and history, regular-tab restoration, private tabs with a separate nonpersistent website store, recent closed tabs, four search engines, system/light/dark themes, page zoom, desktop mode, find in page, native JavaScript dialogs, sharing and link context menus. Downloads support preview, sharing, cancellation and deletion, and remain saved even when initiated from private tabs.
+## What is included
 
-## Video compatibility
+- Real WKWebView browsing, persistent tabs, separate private storage, history, bookmarks, reading list, reader mode, search and native downloads.
+- Native tracking protection plus bundled advertising rules, with an explicit exception for each site.
+- Inline MP4, HLS, iframe and blob playback, Picture in Picture, AirPlay and HTML element fullscreen where supported by iOS and the website.
+- Calm light and dark themes, scalable interface text, Arabic and other upstream locales, and original Aster artwork.
+- Usage data, crash reports, daily usage, remote studies and rollouts disabled by default; enabling technical data does not silently enable studies.
 
-Inline playback, AirPlay, Picture in Picture and autoplay configuration are enabled. YouTube compatibility is on by default and bypasses content rules on youtube.com, its subdomains and youtu.be. This can allow ads; it is a playback-first workaround, not a claim of ad-free YouTube. Disable it in site controls to try filtering. JavaScript must remain enabled for YouTube. Autoplay preferences apply to new tabs.
+Brave Rewards, Wallet, Leo, Brave Sync and its paid VPN/backend services are not implemented. Firefox Account integration remains inherited provider code and is not certified for the independent app. Aster does not present Brave service substitutes or claim identical feature parity. See [ASTER-COVERAGE.md](ASTER-COVERAGE.md) for the exact scope.
 
-## Protection
+## Build and install
 
-CI compiles AdGuard Base, Tracking Protection, Mobile Ads and Popups optimized filters to WebKit rules, retaining exceptions. Filter source/license reports are included in the app and CI artifacts. Custom WebKit JSON rules can be imported. Per-host exceptions and global toggles are available. Lists refresh with each app build; no background updater is included.
+Run **Build and test Aster for iPhone** in GitHub Actions. The workflow prepares pinned dependencies, generates and compiles a production advertising filter pack, runs the full upstream unit plan and native acceptance tests on an iPhone 15 Pro Max simulator, then builds an iPhone release app. It publishes an IPA only if required steps pass.
+
+**The IPA is unsigned and requires valid Apple signing before installation on an iPhone.** GitHub compilation does not replace Apple's signing requirements. TestFlight requires an Apple Developer account, provisioning and App Store Connect credentials. No signing credentials are included. [BUILD-INSTALL.md](BUILD-INSTALL.md) explains the available routes.
+
+The inherited application version stays `158.0` so upstream migration and feature gates keep working. The display name is Aster and the application identifier is `com.omarkebrit.aster`.
 
 ## Validation
 
-CI validates the full rule pack in WebKit, builds an unsigned device app, and runs unit/UI tests on an iPhone simulator. Tests cover address parsing, private history, persistence, protection state transitions, actual local HTML5 video playback, native JavaScript confirmation, bookmarks and settings. A controlled video test does not certify live YouTube playback, DRM, every download endpoint or every website. Test YouTube on the signed physical-device build.
+[TEST-REPORT.md](TEST-REPORT.md) records the evidence and remaining limits. Simulator tests cannot certify all websites, protected DRM streams, physical-device battery use, AirPlay receivers, Face ID or signed installation. A decoded audio track in a simulator is not proof of sound output on a physical iPhone.
 
-## 0.3.1 compatibility fixes
-
-Tab cards are selectable across their full surface, with independent close controls and explicit sheet dismissal. Webviews attach inside a container when switching tabs. Video responses and player iframe navigations stay in WebKit rather than being treated as file downloads. Erome and its subdomains use video compatibility by default (filtering is paused, ads can appear); other hosts can opt in using site controls. No adult-content filter is included. YouTube automatic app handoffs are cancelled without repeatedly navigating the web page, and Safari-compatible browser tokens are appended to WebKit's actual device user agent. Retry preserves a failed initial URL. Existing preferences migrate without resetting them.
-
-Regression checks include entire-card tab selection and returning to earlier tabs, HTTP range-based video playback, Erome compatibility against a deliberately blocking media rule using a controlled nonadult fixture, and live YouTube homepage rendering. The Erome test uses no real Erome content and does not certify playback of every live Erome video.
+Active CI is limited to `.github/workflows/aster-ios.yml`. Upstream workflows are archived under `.github/upstream-workflows/` and do not execute. The previous Harbor app remains available in repository history and its existing branch.
