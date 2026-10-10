@@ -122,7 +122,7 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         // document before clearing storage so its old scripts cannot refill it.
         onChanged = nil; onVisited = nil; onOpen = nil; onOpenRequest = nil; onWindow = nil; onClose = nil
         observations.forEach { $0.invalidate() }; observations = []
-        webView.stopLoading(); webView.pauseAllMediaPlayback(); webView.uiDelegate = nil
+        webView.stopLoading(); await webView.pauseAllMediaPlayback(); webView.uiDelegate = nil
         let retired = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
             let delegate = SiteDataRetirementDelegate { continuation.resume(returning: $0) }
             retirementDelegate = delegate
