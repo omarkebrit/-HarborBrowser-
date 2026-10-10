@@ -388,6 +388,7 @@ struct SettingsPanel: View {
                     }.navigationTitle("Video compatibility")
                 }
                 Toggle("Allow media autoplay", isOn: $library.preferences.allowAutoplay)
+                    .accessibilityIdentifier("AllowMediaAutoplay")
                 Button("Video playback check") { browser.openPlaybackCheck() }
             } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites; ads may appear. Playback and pop-up changes recreate open pages when safe. Submitted forms stay open; use a new tab for those pages. Inline playback, full screen, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
             Section("Filter lists") {

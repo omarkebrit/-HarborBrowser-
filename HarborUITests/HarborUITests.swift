@@ -47,7 +47,7 @@ final class HarborUITests: XCTestCase {
         app.buttons["Settings"].tap()
         let settings = app.collectionViews.firstMatch
         XCTAssertTrue(settings.waitForExistence(timeout: 5), "Settings must present its scrollable form")
-        let autoplay = app.switches["Allow media autoplay"]
+        let autoplay = app.switches["AllowMediaAutoplay"]
         for _ in 0..<10 {
             if autoplay.exists && autoplay.isHittable { break }
             let start = settings.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
@@ -58,7 +58,15 @@ final class HarborUITests: XCTestCase {
         XCTAssertTrue(foundAutoplay, "The autoplay switch must become visible when scrolling Settings")
         guard foundAutoplay else { preserveScreenshot(app, name: "Missing autoplay setting"); return }
         XCTAssertEqual(autoplay.value as? String, "1")
-        autoplay.tap()
+        // SwiftUI exposes the whole Form row as a named switch. Tap its actual
+        // native switch, rather than the row's center label.
+        let nativeSwitch = autoplay.descendants(matching: .switch).firstMatch
+        if nativeSwitch.exists { nativeSwitch.tap() }
+        else { autoplay.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap() }
+        let disabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "0"), object: autoplay)
+        let changedAutoplay = XCTWaiter.wait(for: [disabled], timeout: 5) == .completed
+        XCTAssertTrue(changedAutoplay, "Tapping the autoplay switch must turn it off")
+        guard changedAutoplay else { preserveScreenshot(app, name: "Autoplay switch did not change"); return }
         XCTAssertEqual(autoplay.value as? String, "0", "The test must actually change the existing tab's autoplay setting")
         app.buttons["Done"].tap()
         let play = app.webViews.buttons["Play with sound"]
