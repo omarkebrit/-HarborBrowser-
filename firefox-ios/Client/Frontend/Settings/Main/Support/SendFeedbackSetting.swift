@@ -17,6 +17,10 @@ class SendFeedbackSetting: Setting {
         return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/issues")
     }
 
+    override var status: NSAttributedString? {
+        return NSAttributedString(string: "GitHub account and repository access required.")
+    }
+
     override var accessibilityIdentifier: String? {
         return AccessibilityIdentifiers.Settings.SendFeedback.title
     }

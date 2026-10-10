@@ -15,7 +15,7 @@ public struct SupportUtils {
 
     public static var URLForGetHelp: URL? {
         // Returns the predefined URL associated to the menu's Get Help button action.
-        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/README.md")
+        return URL(string: "\(InternalURL.baseUrl)/about/aster-help")
     }
 
     public static var URLForPocketLearnMore: URL? {
@@ -28,7 +28,7 @@ public struct SupportUtils {
     }
 
     public static var URLForPrivacyNotice: URL? {
-        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md")
+        return URL(string: "\(InternalURL.baseUrl)/about/aster-privacy")
     }
 
     public static var URLForUpdatedPrivacyNotice: URL? {
@@ -36,7 +36,7 @@ public struct SupportUtils {
     }
 
     public static var URLForUpdatedPrivacyNoticeDiff: URL? {
-        return URL(string: "https://github.com/omarkebrit/-HarborBrowser-/commits/feat/aster-browser/PRIVACY.md")
+        return URLForPrivacyNotice
     }
 
     public static var URLForRelayAccountManagement: URL? {

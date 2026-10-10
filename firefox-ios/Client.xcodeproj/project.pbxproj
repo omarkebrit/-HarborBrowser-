@@ -2447,6 +2447,7 @@
 		FF0002AA2F000002000BBBBB /* ClearablesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0002AA2F000001000BBBBB /* ClearablesTests.swift */; };
 		FF0005AD2F000004000BBBBB /* MockQuickAnswersStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0005AC2F000003000BBBBB /* MockQuickAnswersStore.swift */; };
 		A57E00000000000000000002 /* AsterFilters in Resources */ = {isa = PBXBuildFile; fileRef = A57E00000000000000000001 /* AsterFilters */; };
+		A57E00000000000000000006 /* AsterSupport in Resources */ = {isa = PBXBuildFile; fileRef = A57E00000000000000000005 /* AsterSupport */; };
 		A57E00000000000000000004 /* AsterAcceptanceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A57E00000000000000000003 /* AsterAcceptanceTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -12515,6 +12516,7 @@
 		FFC049AA898EF4096E22F595 /* es-CL */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-CL"; path = "es-CL.lproj/ClearHistoryConfirm.strings"; sourceTree = "<group>"; };
 		FFEB4308B5A82E56F1EEEC56 /* oc */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = oc; path = oc.lproj/AuthenticationManager.strings; sourceTree = "<group>"; };
 		A57E00000000000000000001 /* AsterFilters */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AsterFilters; sourceTree = "<group>"; };
+		A57E00000000000000000005 /* AsterSupport */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AsterSupport; sourceTree = "<group>"; };
 		A57E00000000000000000003 /* AsterAcceptanceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsterAcceptanceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -17937,6 +17939,7 @@
 			isa = PBXGroup;
 			children = (
 				A57E00000000000000000001 /* AsterFilters */,
+				A57E00000000000000000005 /* AsterSupport */,
 				C2F335322ECE33720071588A /* translations-engine.worker.js */,
 				C2F335332ECE33720071588A /* TranslationsEngine.js */,
 				ED287B732E4D4C0500527204 /* LiquidGlassAppIcons */,
@@ -19152,6 +19155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57E00000000000000000002 /* AsterFilters in Resources */,
+				A57E00000000000000000006 /* AsterSupport in Resources */,
 				EEB971C42FC48C5100D6C232 /* NewYorkMedium-Bold.otf in Resources */,
 				EEB971C52FC48C5100D6C232 /* NewYorkMedium-BoldItalic.otf in Resources */,
 				EEB971C62FC48C5100D6C232 /* NewYorkMedium-Regular.otf in Resources */,

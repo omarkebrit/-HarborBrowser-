@@ -2,6 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
+import Foundation
+import Shared
+
 final class AboutHomeHandler: InternalSchemeResponse {
     static let path = "about/home"
 
@@ -34,5 +37,30 @@ final class AboutLicenseHandler: InternalSchemeResponse {
         else { return nil }
 
         return (response, data)
+    }
+}
+
+final class AsterSupportPageHandler: InternalSchemeResponse {
+    private let path: String
+    private let resourceName: String
+
+    init(path: String, resourceName: String) {
+        self.path = path
+        self.resourceName = resourceName
+    }
+
+    func response(forRequest request: URLRequest, useOldErrorPage: Bool = false) -> (URLResponse, Data)? {
+        guard let url = request.url,
+              url.scheme == InternalURL.scheme,
+              url.host == "local",
+              url.path == "/\(path)",
+              request.isPrivileged,
+              let resource = Bundle.main.url(forResource: resourceName,
+                                             withExtension: "html",
+                                             subdirectory: "AsterSupport"),
+              let data = try? Data(contentsOf: resource)
+        else { return nil }
+
+        return (InternalSchemeHandler.response(forUrl: url), data)
     }
 }

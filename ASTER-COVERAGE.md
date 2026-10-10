@@ -15,6 +15,7 @@
 | Appearance and accessibility | Aster light/dark palette, original icon, scalable text | Native large-text navigation and theme switching; source palette contrast checks |
 | Languages | Upstream locales with app-name updates | String syntax checked; full translation and Arabic device review remain outstanding |
 | Privacy consent | Technical data, crashes, daily usage, studies and rollouts default off | Consent and independent-toggle unit coverage |
+| Help and privacy notice | Bundled authenticated internal pages, readable offline | Native Settings navigation, visible notice content, authorization/resource unit assertions |
 | Default browser | Apple-managed entitlement not included | Needs approval/provisioning before offering this capability |
 | Account synchronization | Inherited Firefox Account provider code | Independent identifier/redirect and end-to-end service use unverified; onboarding promotion disabled |
 | Brave Sync, Rewards, Wallet, Leo, News and paid VPN | Not implemented | Requires separate implementations and/or service agreements |

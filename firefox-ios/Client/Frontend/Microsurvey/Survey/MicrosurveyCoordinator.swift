@@ -50,9 +50,9 @@ final class MicrosurveyCoordinator: BaseCoordinator, MicrosurveyCoordinatorDeleg
             source: UTMParams.source,
             campaign: UTMParams.campaign,
             content: content
-        ) else { return }
+        ), let authorizedURL = PrivilegedRequest(url: url).url else { return }
         let currentTab = tabManager.selectedTab?.isPrivate ?? false
-        tabManager.addTabsForURLs([url], zombie: false, shouldSelectTab: true, isPrivate: currentTab)
+        tabManager.addTabsForURLs([authorizedURL], zombie: false, shouldSelectTab: true, isPrivate: currentTab)
         router.dismiss(animated: true, completion: nil)
         parentCoordinator?.didFinish(from: self)
     }

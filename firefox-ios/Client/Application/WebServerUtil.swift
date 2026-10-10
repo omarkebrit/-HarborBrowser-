@@ -39,6 +39,8 @@ final class WebServerUtil {
         let responders: [(String, InternalSchemeResponse)] = [
             (AboutHomeHandler.path, AboutHomeHandler()),
             (AboutLicenseHandler.path, AboutLicenseHandler()),
+            ("about/aster-help", AsterSupportPageHandler(path: "about/aster-help", resourceName: "help")),
+            ("about/aster-privacy", AsterSupportPageHandler(path: "about/aster-privacy", resourceName: "privacy")),
             (ErrorPageHandler.path, ErrorPageHandler())
         ]
         responders.forEach { (path, responder) in

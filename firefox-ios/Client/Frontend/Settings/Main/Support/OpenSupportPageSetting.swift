@@ -6,7 +6,7 @@ import Common
 import Foundation
 import Shared
 
-/// Opens the SUMO page in a new tab
+/// Opens the bundled help page within Settings.
 class OpenSupportPageSetting: Setting {
     private weak var settingsDelegate: SupportSettingsDelegate?
 
@@ -29,6 +29,6 @@ class OpenSupportPageSetting: Setting {
 
     override func onClick(_ navigationController: UINavigationController?) {
         guard let url = SupportUtils.URLForGetHelp else { return }
-        settingsDelegate?.pressedOpenSupportPage(url: url)
+        settingsDelegate?.askedToOpen(url: url, withTitle: title)
     }
 }

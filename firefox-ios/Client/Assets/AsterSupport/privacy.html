@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Aster privacy information</title>
+  <style>
+:root {
+  color-scheme: light dark;
+  --background: #eef3f5;
+  --paper: #ffffff;
+  --text: #193440;
+  --muted: #48616d;
+  --accent: #006b60;
+  --border: #cbdce2;
+}
+* { box-sizing: border-box; }
+html { font-size: 100%; }
+body {
+  margin: 0;
+  padding: max(1.25rem, env(safe-area-inset-top))
+           max(1rem, env(safe-area-inset-right))
+           max(2rem, env(safe-area-inset-bottom))
+           max(1rem, env(safe-area-inset-left));
+  background: var(--background);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+main {
+  width: 100%;
+  max-width: 45rem;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 5vw, 3rem);
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+}
+h1, h2, h3 { line-height: 1.25; letter-spacing: -.015em; }
+h1 { margin: 0 0 1.25rem; font-size: 2rem; }
+h2 {
+  margin: 2rem 0 .75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 1.3rem;
+}
+p { margin: 0 0 1rem; }
+p:last-child { margin-bottom: 0; }
+a { color: var(--accent); text-decoration: underline; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: .2rem; }
+.intro { color: var(--muted); font-size: 1.1rem; }
+.action {
+  display: inline-block;
+  min-height: 44px;
+  padding: .6rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: .65rem;
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #10232d;
+    --paper: #17313e;
+    --text: #e7f1f5;
+    --muted: #bed2dc;
+    --accent: #8bdfcb;
+    --border: #3b5664;
+  }
+}
+</style>
+</head>
+<body>
+<main>
+<article>
+<h1>Aster privacy information</h1>
+<p>Aster is an independent browser built from Firefox for iOS. It is not operated by Mozilla or Brave. This document describes this fork&#x27;s configured behavior; websites and optional service providers have their own policies.</p>
+<h2>Browser data</h2>
+<p>Regular browsing can store history, bookmarks, saved logins, tabs, website cookies and local storage on the device. Downloads are saved in the application&#x27;s Documents/Downloads directory. Browser controls let you clear supported categories of data. Files you export or share can remain outside the app.</p>
+<p>Private tabs use separate nonpersistent website data and do not add their page titles to regular browsing history. Private browsing does not conceal your IP address from websites, your network or service providers. It does not erase files you intentionally download or export.</p>
+<h2>Protection and network requests</h2>
+<p>Native tracking protection and the bundled advertising rules block matching requests. You may create an exception for a site. Lists cannot detect every tracker, block every advertisement or guarantee that a site will keep working. CI refreshes the advertising lists when building the application; there is no in-app advertising-list background updater.</p>
+<p>Visiting a page sends requests to that page and its allowed resources. Search, suggestions, safe-browsing checks, images, remote configuration and other inherited browser functions may contact their configured providers. Usage collection being off does not make the browser offline. Search settings and site permissions affect some of these requests.</p>
+<h2>Optional data and services</h2>
+<p>Technical/interaction collection, crash reports, daily usage, remote studies and rollouts are configured off by default. Missing consent remains off, including in the inherited Sync provider. Enabling technical collection does not automatically enable studies. Preferences can be revoked in settings.</p>
+<p>Inherited collection and account code uses Mozilla&#x27;s infrastructure; opting into those functions may send data to Mozilla rather than an Aster-operated service. Aster has no dedicated analytics or account server. Refer to <a href="https://www.mozilla.org/privacy/" rel="noreferrer noopener">Mozilla&#x27;s privacy notices</a> before using optional Mozilla services. Firefox Account integration is inherited and has not been certified end to end for Aster&#x27;s independent application identifier.</p>
+<p>Microphone, camera, location, photos and other device permissions are controlled by iOS and the browser&#x27;s site-permission controls. A website&#x27;s permissions do not remove its own privacy responsibilities.</p>
+<h2>Reports and contributions</h2>
+<p>Opening the project support or feedback links does not submit a report automatically. If you submit a GitHub issue, its contents are governed by the repository visibility and GitHub&#x27;s policies. Review screenshots, addresses and logs before sharing them.</p>
+<p>This is an engineering description of the current fork, not a claim that all privacy behavior has been audited. Physical-device checks and a complete service/network audit remain outstanding.</p>
+</article>
+</main>
+</body>
+</html>

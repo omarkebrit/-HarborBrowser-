@@ -288,6 +288,44 @@ final class AsterAcceptanceTests: BaseTestCase {
         captureDisplay("Light browser with large text")
     }
 
+    func testBundledPrivacyAndHelpAreAccessibleFromSettings() {
+        open("/navigation/one.html", expecting: "First local page ready")
+        navigator.goto(SettingsScreen)
+        guard tapSettingsCell(AccessibilityIdentifiers.Settings.PrivacyPolicy.title) else { return }
+        expectText("Aster privacy information")
+        expectText("Browser data")
+        let privacyDescription = app.webViews.staticTexts.matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Aster is an independent browser built from Firefox for iOS.")
+        ).firstMatch
+        mozWaitForElementToExist(privacyDescription)
+        waitForPredicate("hittable == true", element: privacyDescription)
+        XCTAssertTrue(privacyDescription.label.contains("It is not operated by Mozilla or Brave."))
+        captureDisplay("Bundled privacy notice through native Settings")
+
+        navigationControllerBackAction(for: app)()
+        mozWaitForElementToExist(app.tables[AccessibilityIdentifiers.Settings.tableViewController])
+        guard tapSettingsCell(AccessibilityIdentifiers.Settings.Help.title) else { return }
+        expectText("Aster Help")
+        expectText("Browse and navigate")
+        let helpDescription = app.webViews.staticTexts.matching(
+            NSPredicate(format: "label BEGINSWITH %@", "Aster is an independent browser built from Firefox for iOS.")
+        ).firstMatch
+        mozWaitForElementToExist(helpDescription)
+        waitForPredicate("hittable == true", element: helpDescription)
+        XCTAssertTrue(helpDescription.label.contains(
+            "This Help page is stored on your device and can be read offline."
+        ))
+        captureDisplay("Bundled offline help through native Settings")
+
+        navigationControllerBackAction(for: app)()
+        app.buttons[AccessibilityIdentifiers.Settings.navigationBarItem].waitAndTap()
+        navigator.nowAt(BrowserTab)
+        expectText("First local page ready")
+        toolbar.assertTabsButtonValue(expectedCount: "1")
+        assertAccessibleToolbar()
+        captureDisplay("Native dismissal preserves original browser tab")
+    }
+
     func testNativeShieldsBlockTrackerAndHonorSiteException() {
         open("/shields.html", expecting: "Allowed script ran")
         expectText("Tracker blocked", timeout: 20)
@@ -350,6 +388,19 @@ final class AsterAcceptanceTests: BaseTestCase {
             XCTAssertGreaterThanOrEqual(button.frame.width, 40)
             XCTAssertGreaterThanOrEqual(button.frame.height, 40)
         }
+    }
+
+    private func tapSettingsCell(_ identifier: String) -> Bool {
+        let table = app.tables[AccessibilityIdentifiers.Settings.tableViewController]
+        mozWaitForElementToExist(table)
+        let cell = table.cells[identifier]
+        for _ in 0..<10 where !cell.isHittable { table.swipeUp() }
+        guard cell.exists && cell.isHittable else {
+            XCTFail("Settings cell is not accessible after scrolling: \(identifier)")
+            return false
+        }
+        cell.waitAndTap()
+        return true
     }
 
     private func setSiteProtection(enabled: Bool) {

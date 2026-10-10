@@ -130,21 +130,32 @@ jobs:
             exit 0
           fi
           codesign --verify --strict "$simulator_app"
-          codesign --display --entitlements :- "$simulator_app" \
-            > "$ASTER_RESULTS/simulator-entitlements.plist" 2> "$ASTER_RESULTS/simulator-signature.txt"
-          python3 - "$ASTER_RESULTS/simulator-entitlements.plist" <<'PY'
-          import plistlib, sys
+          codesign --display --verbose=4 --entitlements :- "$simulator_app" \
+            > "$ASTER_RESULTS/simulator-codesign-entitlements.plist" 2> "$ASTER_RESULTS/simulator-signature.txt"
+          simulated_entitlements="$RUNNER_TEMP/aster-simulator/Build/Intermediates.noindex/Client.build/Debug-iphonesimulator/Client.build/Client.app-Simulated.xcent"
+          cp "$simulated_entitlements" "$ASTER_RESULTS/simulator-entitlements.plist"
+          cp "$simulator_app/Info.plist" "$ASTER_RESULTS/simulator-app-info.plist"
+          python3 - "$ASTER_RESULTS/simulator-entitlements.plist" \
+            "$ASTER_RESULTS/simulator-app-info.plist" "$ASTER_RESULTS/simulator-signature.txt" <<'PY'
+          import pathlib, plistlib, sys
           with open(sys.argv[1], 'rb') as source:
               entitlements = plistlib.load(source)
-          identifier = entitlements.get('application-identifier')
+          with open(sys.argv[2], 'rb') as source:
+              app_info = plistlib.load(source)
+          signature = pathlib.Path(sys.argv[3]).read_text()
           expected = 'com.omarkebrit.aster'
-          if identifier != expected:
-              sys.exit(f'::error::The simulator application identifier must be {expected}, got {identifier!r}.')
+          if app_info.get('CFBundleIdentifier') != expected:
+              sys.exit('::error::The simulator host bundle identifier does not match Aster.')
+          if f'Identifier={expected}' not in signature.splitlines() or 'Signature=adhoc' not in signature.splitlines():
+              sys.exit('::error::The simulator host must have its matching local ad-hoc signature.')
+          identifier = entitlements.get('application-identifier')
+          if identifier != 'FAKETEAMID.' + expected:
+              sys.exit(f'::error::The Xcode-generated simulator application identifier is unexpected: {identifier!r}.')
           if identifier not in entitlements.get('keychain-access-groups', []):
-              sys.exit('::error::The signed simulator host lacks its matching keychain access group.')
+              sys.exit('::error::The simulator host lacks its matching Xcode-generated keychain access group.')
           if 'group.' + expected not in entitlements.get('com.apple.security.application-groups', []):
-              sys.exit('::error::The signed simulator host lacks its Aster shared app group.')
-          print('Verified local simulator application identifier, keychain group, and shared app group.')
+              sys.exit('::error::The simulator host lacks its Aster shared app group.')
+          print('Verified local ad-hoc signature, bundle identifier, and Xcode-generated simulator keychain/app groups.')
           PY
       - name: Run local browser acceptance and upstream UI tests
         shell: bash
@@ -235,7 +246,7 @@ jobs:
               passed, failed = int(result.get('passedTests', 0)), int(result.get('failedTests', 0))
               if passed < 1 or failed != 0:
                   sys.exit(f'::error::{suite} must execute passing tests with zero failures before an IPA is published.')
-              expected = {'AsterAcceptanceTests': 14, 'AsterDownloadTests': 1}.get(suite)
+              expected = {'AsterAcceptanceTests': 15, 'AsterDownloadTests': 1}.get(suite)
               if expected is not None and (passed != expected or int(result.get('skippedTests', 0)) != 0):
                   sys.exit(f'::error::{suite} must execute all {expected} selected tests without skips.')
               lines.append(f'- {suite}: {passed} passed; {int(result.get("skippedTests", 0))} skipped.')
@@ -294,7 +305,6 @@ jobs:
             build-output/*.log
             build-output/*.txt
             build-output/*.json
-            build-output/*.plist
             build-output/*.plist
             build-output/*.xcresult
             build-output/*-attachments/

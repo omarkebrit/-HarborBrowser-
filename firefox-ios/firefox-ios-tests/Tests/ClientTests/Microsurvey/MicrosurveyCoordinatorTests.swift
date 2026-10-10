@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 import Common
+import Shared
 import XCTest
 
 @testable import Client
@@ -58,7 +59,9 @@ final class MicrosurveyCoordinatorTests: XCTestCase {
 
         XCTAssertEqual(mockRouter.dismissCalled, 1)
         XCTAssertEqual(mockTabManager.addTabsForURLsCalled, 1)
-        XCTAssertEqual(mockTabManager.addTabsURLs, [URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md")])
+        let localURL = try XCTUnwrap(URL(string: "internal://local/about/aster-privacy"))
+        let authorizedURL = try XCTUnwrap(InternalURL.authorize(url: localURL))
+        XCTAssertEqual(mockTabManager.addTabsURLs, [authorizedURL])
     }
 
     @MainActor
@@ -70,7 +73,9 @@ final class MicrosurveyCoordinatorTests: XCTestCase {
 
         XCTAssertEqual(mockRouter.dismissCalled, 1)
         XCTAssertEqual(mockTabManager.addTabsForURLsCalled, 1)
-        XCTAssertEqual(mockTabManager.addTabsURLs, [URL(string: "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md")])
+        let localURL = try XCTUnwrap(URL(string: "internal://local/about/aster-privacy"))
+        let authorizedURL = try XCTUnwrap(InternalURL.authorize(url: localURL))
+        XCTAssertEqual(mockTabManager.addTabsURLs, [authorizedURL])
     }
 
     private func createSubject(file: StaticString = #filePath,

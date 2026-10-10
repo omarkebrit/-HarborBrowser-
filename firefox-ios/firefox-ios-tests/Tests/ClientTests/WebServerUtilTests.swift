@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 import XCTest
+import Shared
 @testable import Client
 
 @MainActor
@@ -45,6 +46,40 @@ final class WebServerUtilTests: XCTestCase {
         // but the server is (re)started on every foreground.
         XCTAssertEqual(mockReaderMode.registerCalled, 1)
         XCTAssertEqual(mockWebServer.startIfNeededCalled, 3)
+    }
+
+    func testLocalSupportPages_serveBundledHTMLForAuthorizedRoutes() throws {
+        createSubject().setUpWebServer()
+        let pages = [(SupportUtils.URLForGetHelp, "Aster Help"),
+                     (SupportUtils.URLForPrivacyNotice, "Aster privacy information")]
+
+        for (optionalURL, heading) in pages {
+            let url = try XCTUnwrap(optionalURL)
+            let handler = try XCTUnwrap(InternalSchemeHandler.responders[String(url.path.dropFirst())])
+            let request = PrivilegedRequest(url: url) as URLRequest
+            let (response, data) = try XCTUnwrap(handler.response(forRequest: request, useOldErrorPage: false))
+            let html = try XCTUnwrap(String(data: data, encoding: .utf8))
+
+            XCTAssertEqual(response.url, request.url)
+            XCTAssertEqual(response.mimeType, "text/html")
+            XCTAssertTrue(html.contains(heading))
+            XCTAssertTrue(html.contains("default-src 'none'"))
+            XCTAssertNil(html.range(of: "<(script|img|iframe|link)\\b", options: .regularExpression))
+        }
+    }
+
+    func testLocalSupportPages_rejectUnprivilegedOrUnrelatedRequests() throws {
+        createSubject().setUpWebServer()
+        let url = try XCTUnwrap(SupportUtils.URLForPrivacyNotice)
+        let handler = try XCTUnwrap(InternalSchemeHandler.responders[String(url.path.dropFirst())])
+
+        XCTAssertNil(handler.response(forRequest: URLRequest(url: url), useOldErrorPage: false))
+        for invalidURL in ["internal://local/about/aster-help",
+                           "internal://other/about/aster-privacy",
+                           "https://example.com/about/aster-privacy"] {
+            let request = PrivilegedRequest(url: try XCTUnwrap(URL(string: invalidURL))) as URLRequest
+            XCTAssertNil(handler.response(forRequest: request, useOldErrorPage: false))
+        }
     }
 
     private func createSubject() -> WebServerUtil {

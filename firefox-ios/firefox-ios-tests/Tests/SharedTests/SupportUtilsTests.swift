@@ -8,6 +8,26 @@ import Shared
 import XCTest
 
 class SupportUtilsTests: XCTestCase {
+    func testLocalProductPages_canBeAuthorizedWithoutNetworkOrCampaignParameters() throws {
+        let urls = [SupportUtils.URLForGetHelp,
+                    SupportUtils.URLForPrivacyNotice,
+                    SupportUtils.URLForUpdatedPrivacyNotice,
+                    SupportUtils.URLForUpdatedPrivacyNoticeDiff]
+
+        for optionalURL in urls {
+            let url = try XCTUnwrap(optionalURL)
+            XCTAssertEqual(url.scheme, "internal")
+            XCTAssertEqual(url.host, "local")
+            XCTAssertNil(url.query)
+            XCTAssertTrue(try XCTUnwrap(InternalURL(url)).isAboutURL)
+
+            let authorizedURL = try XCTUnwrap(InternalURL.authorize(url: url))
+            let internalURL = try XCTUnwrap(InternalURL(authorizedURL))
+            XCTAssertTrue(internalURL.isAuthorized)
+            XCTAssertEqual(internalURL.stripAuthorization, url.absoluteString)
+        }
+    }
+
     func testURLForTopic() {
         let appVersion = AppInfo.appVersion
         let languageIdentifier = Locale.preferredLanguages.first!
@@ -25,7 +45,7 @@ class SupportUtilsTests: XCTestCase {
 
         XCTAssertEqual(
             urlString,
-            "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md"
+            "internal://local/about/aster-privacy"
         )
     }
 
@@ -38,7 +58,7 @@ class SupportUtilsTests: XCTestCase {
 
         XCTAssertEqual(
             urlString,
-            "https://github.com/omarkebrit/-HarborBrowser-/blob/feat/aster-browser/PRIVACY.md"
+            "internal://local/about/aster-privacy"
         )
     }
 }

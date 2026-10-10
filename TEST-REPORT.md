@@ -1,6 +1,6 @@
 # Aster validation report
 
-Native execution is in progress. The first run compiled the native app code and the 40,675-rule production pack; an unresolved identifier in the added UI test source stopped test execution. That test identifier is now corrected. No passing simulator or device-build result is claimed before the required run completes.
+Native execution is in progress. The full upstream `UnitTest` plan passed in [GitHub run 38070463479](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38070463479) at commit `6409ca02d6eff3f235907e3f53aaa5dbe3f9b18f`, including real Keychain, consent, media-configuration and content-blocker tests. A following CI verifier incorrectly expected device-style entitlements from an ad-hoc simulator signature; it is corrected to verify Xcode-generated simulator rights and the actual signed app identity. The newly added offline support routes and thirteenth acceptance test require the next native run. No passing UI or device-build result is claimed yet.
 
 ## Local checks completed
 
@@ -13,8 +13,8 @@ Native execution is in progress. The first run compiled the native app code and 
 ## Required native checks
 
 - Full upstream `UnitTest` plan, including the newly added consent, media and content-blocker assertions.
-- Twelve `AsterAcceptanceTests` plus selected upstream URL-bar and night-mode UI checks on an iPhone 15 Pro Max simulator.
-- Positive-control advertising exception test, original-file native download, separate private storage, 25-tab process restoration, decoded video transports, fullscreen and rotation, popup handling, restrictive autoplay, reader, large text and Arabic/RTL navigation.
+- Thirteen `AsterAcceptanceTests` plus selected upstream URL-bar and night-mode UI checks on an iPhone 15 Pro Max simulator.
+- Positive-control advertising exception test, original-file native download, separate private storage, 25-tab process restoration, decoded video transports, fullscreen and rotation, popup handling, restrictive autoplay, reader, bundled offline Help/Privacy, large text and Arabic/RTL navigation.
 - Actual WebKit compilation of the generated advertising rules.
 - Unsigned production iPhone build after the required tests pass.
 

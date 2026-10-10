@@ -7,6 +7,8 @@ cd "$aster_root"
 command -v node >/dev/null
 command -v npm >/dev/null
 command -v xcodebuild >/dev/null
+command -v python3 >/dev/null
+python3 scripts/aster-generate-support.py --check
 
 nimbus_ref=47b9efa112d5dc6adee6b757703742e5c19022f6
 nimbus_script_sha=443a72235811e6367914f80b2eacc900d55913442cb9d594930170e0e2cc5da4
@@ -62,4 +64,4 @@ npm run build
 python3 Scripts/aster/prepare_ad_filters.py
 swift Scripts/aster/validate_ad_filters.swift firefox-ios/Client/Assets/AsterFilters/ads.json
 
-printf 'Prepared pinned Nimbus generator, SwiftLint, user scripts, and verified advertising rules.\n'
+printf 'Prepared pinned Nimbus generator, SwiftLint, user scripts, and verified advertising rules and bundled support pages.\n'

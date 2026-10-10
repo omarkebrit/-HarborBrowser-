@@ -66,7 +66,7 @@ final class TermsOfUseLinkViewController: UIViewController,
         applyTheme()
 
         observeEstimatedProgress()
-        webView.load(URLRequest(url: url))
+        webView.load(PrivilegedRequest(url: url) as URLRequest)
     }
 
     private func setupViews() {
