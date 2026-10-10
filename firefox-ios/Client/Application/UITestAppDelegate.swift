@@ -274,19 +274,20 @@ class UITestAppDelegate: AppDelegate {
 
         // Clear the documents directory
         let rootPath = UITestAppDelegate.appRootDir()
-        let manager = FileManager.default
-        let documents = URL(fileURLWithPath: rootPath)
         do {
-            let docContents = try manager.contentsOfDirectory(atPath: rootPath)
-            for content in docContents {
-                do {
-                    try manager.removeItem(at: documents.appendingPathComponent(content))
-                } catch {
-                    // Couldn't delete some document contents.
-                }
-            }
+            try Self.clearApplicationFiles(at: URL(fileURLWithPath: rootPath))
         } catch {
             fatalError("Could not retrieve documents at \(rootPath): \(error)")
+        }
+    }
+
+    static func clearApplicationFiles(at root: URL, fileManager: FileManager = .default) throws {
+        // The shared container root includes hidden metadata that maintains its app-group identity.
+        let contents = try fileManager.contentsOfDirectory(at: root,
+                                                          includingPropertiesForKeys: nil,
+                                                          options: .skipsHiddenFiles)
+        for content in contents {
+            try? fileManager.removeItem(at: content)
         }
     }
 

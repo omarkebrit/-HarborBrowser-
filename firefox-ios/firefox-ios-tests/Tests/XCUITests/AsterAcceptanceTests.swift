@@ -197,10 +197,10 @@ final class AsterAcceptanceTests: BaseTestCase {
         defer { exitFullscreenIfNeeded(); XCUIDevice.shared.orientation = .portrait }
         open("/media/fullscreen.html", expecting: "Waiting for fullscreen")
         app.webViews.buttons["Enter fullscreen"].waitAndTap()
-        expectText("Fullscreen video playing in portrait", timeout: 15)
+        expectMediaText("Fullscreen video playing in portrait", timeout: 15)
         captureDisplay("Actual portrait fullscreen video")
         XCUIDevice.shared.orientation = .landscapeLeft
-        expectText("Fullscreen video playing in landscape", timeout: 15)
+        expectMediaText("Fullscreen video playing in landscape", timeout: 15)
         captureDisplay("Actual landscape fullscreen video")
         let exit = app.webViews.buttons["Exit fullscreen"].firstMatch
         mozWaitForElementToExist(exit)
@@ -249,7 +249,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         XCTAssertFalse(app.webViews.staticTexts["Audio and video playing"].exists)
         captureDisplay("Real automatic playback attempt remains paused")
         app.webViews.buttons["Play test media"].waitAndTap()
-        expectText("Audio and video playing", timeout: 15)
+        expectMediaText("Audio and video playing", timeout: 15)
         captureDisplay("User gesture plays sound under restrictive autoplay")
     }
 
@@ -364,7 +364,7 @@ final class AsterAcceptanceTests: BaseTestCase {
 
     private func expectText(_ text: String, timeout: TimeInterval = 10,
                             file: StaticString = #filePath, line: UInt = #line) {
-        let element = app.webViews.staticTexts[text].firstMatch
+        let element = app.webViews.staticTexts.matching(NSPredicate(format: "label == %@", text)).firstMatch
         guard element.waitForExistence(timeout: timeout) else {
             XCTFail("Missing rendered page text: \(text)", file: file, line: line)
             return
@@ -372,6 +372,25 @@ final class AsterAcceptanceTests: BaseTestCase {
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: element)
         XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: min(timeout, 5)), .completed,
                        "Page text exists but is not visible: \(text)", file: file, line: line)
+    }
+
+    // Native screenshots prove these autoplay/fullscreen labels render despite XCTest activation-point errors.
+    private func expectMediaText(_ text: String, timeout: TimeInterval,
+                                 file: StaticString = #filePath, line: UInt = #line) {
+        let element = app.webViews.staticTexts.matching(NSPredicate(format: "label == %@", text)).firstMatch
+        guard element.waitForExistence(timeout: timeout) else {
+            XCTFail("Missing rendered media text: \(text)", file: file, line: line)
+            return
+        }
+        let viewport = app.webViews["contentView"].firstMatch
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            let frame = element.frame
+            return frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                && frame.width > 0 && frame.height > 0 && viewport.frame.contains(frame)
+                && self.app.windows.firstMatch.frame.contains(frame)
+        }, object: element)
+        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: min(timeout, 5)), .completed,
+                       "Media text must render inside the native viewport and display: \(text)", file: file, line: line)
     }
 
     private func captureDisplay(_ title: String) {

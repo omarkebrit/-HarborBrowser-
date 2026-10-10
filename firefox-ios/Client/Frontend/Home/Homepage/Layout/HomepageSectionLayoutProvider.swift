@@ -627,8 +627,11 @@ final class HomepageSectionLayoutProvider: FeatureFlaggable {
             return 0
         }
         let maxRows = topSitesState.numberOfRows
-        let cols = topSitesState.numberOfTilesPerRow
-        let maxCells = maxRows * cols
+        let maxCells = maxRows * topSitesState.numberOfTilesPerRow
+        let cols = TopSitesSectionLayoutProvider.numberOfColumns(
+            for: environment.traitCollection,
+            maximum: topSitesState.numberOfTilesPerRow
+        )
 
         guard maxRows > 0, cols > 0, maxCells > 0 else {
             measurementsCache.setHeight(0, for: measurementKey)
@@ -662,11 +665,15 @@ final class HomepageSectionLayoutProvider: FeatureFlaggable {
         }
         allCells = Array(allCells.prefix(maxCells))
 
+        let leadingInset = UX.leadingInset(traitCollection: environment.traitCollection)
+        let availableWidth = containerWidth - leadingInset * 2 - CGFloat(cols - 1) * UX.standardSpacing
+        let cellWidth = max(0, availableWidth) / CGFloat(cols)
+
         // Group into rows and compute each rows max height
         let rowHeights = stride(from: 0, to: allCells.count, by: cols).map { start in
             let end = min(start + cols, allCells.count)
             let rowCells = Array(allCells[start..<end])
-            return HomepageDimensionCalculator.getTallestViewHeight(views: rowCells, viewWidth: 0)
+            return HomepageDimensionCalculator.getTallestViewHeight(views: rowCells, viewWidth: cellWidth)
         }
 
         // Sum up row heights
@@ -674,8 +681,7 @@ final class HomepageSectionLayoutProvider: FeatureFlaggable {
 
         // Add inter-row spacing
         let totalRows = Int(ceil(Double(allCells.count) / Double(cols)))
-        let presentedRows = min(maxRows, totalRows)
-        totalHeight += CGFloat(max(presentedRows - 1, 0)) * UX.standardSpacing
+        totalHeight += CGFloat(max(totalRows - 1, 0)) * UX.standardSpacing
 
         // Add section insets
         totalHeight += UX.headerSectionSpacing

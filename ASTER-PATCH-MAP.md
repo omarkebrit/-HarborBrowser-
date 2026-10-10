@@ -16,6 +16,8 @@ The initial import is the complete, pinned upstream release described in `UPSTRE
 | Real UI acceptance | `firefox-ios/firefox-ios-tests/Tests/XCUITests/AsterAcceptanceTests.swift`, `scripts/aster-test-server.py`, `test-fixtures/aster/media/` |
 | Native build/evidence | `.github/workflows/aster-ios.yml`, `scripts/aster-ci-prepare.sh`, `scripts/aster-collect-session-evidence.py` |
 | Session restoration diagnostics | `Client/TabManagement/TabManagerImplementation.swift`, `BrowserKit/Sources/TabDataStore/TabDataStore.swift`; counts and gate state exclude page URLs and titles |
+| Test profile reset and container identity | `Client/Application/UITestAppDelegate.swift`, registered `AppLaunchUtilTests.swift`; app-owned data is removed while hidden container-manager metadata survives |
+| Largest accessibility text sizes | Homepage `TopSitesSectionLayoutProvider.swift` and `HomepageSectionLayoutProvider.swift`; narrower column counts preserve shortcut names and all configured tiles |
 
 The native project registers the added resource folder and acceptance source. Internal Mozilla module and scheme names are preserved to avoid breaking the browser's build structure. Upstream service implementations are retained as upstream code, with their limitations described in the coverage and privacy documents.
 

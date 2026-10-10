@@ -53,6 +53,39 @@ final class AppLaunchUtilTests: XCTestCase {
         XCTAssertNotNil(TelemetryContextualIdentifier.contextId)
     }
 
+    func testUITestProfileResetPreservesContainerMetadataAndRemovesAppData() throws {
+        let fileManager = FileManager.default
+        let root = fileManager.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try fileManager.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? fileManager.removeItem(at: root) }
+
+        let metadata = root.appendingPathComponent(".com.apple.mobile_container_manager.metadata.plist")
+        let originalMetadata = try PropertyListSerialization.data(
+            fromPropertyList: ["MCMMetadataIdentifier": "group.com.omarkebrit.aster"],
+            format: .binary,
+            options: 0
+        )
+        try originalMetadata.write(to: metadata)
+
+        for directory in ["profile.testProfile", "profile.profile"] {
+            let profileRoot = root.appendingPathComponent(directory, isDirectory: true)
+            try fileManager.createDirectory(at: profileRoot, withIntermediateDirectories: true)
+            try Data("stale browsing state".utf8).write(to: profileRoot.appendingPathComponent(".private-app-cache"))
+        }
+        let exportedFile = root.appendingPathComponent("old-export.json")
+        try Data("stale exported data".utf8).write(to: exportedFile)
+
+        try UITestAppDelegate.clearApplicationFiles(at: root, fileManager: fileManager)
+
+        XCTAssertEqual(try Data(contentsOf: metadata), originalMetadata,
+                       "Resetting app data must preserve the system's app-group container registration")
+        for directory in ["profile.testProfile", "profile.profile"] {
+            XCTAssertFalse(fileManager.fileExists(atPath: root.appendingPathComponent(directory).path))
+        }
+        XCTAssertFalse(fileManager.fileExists(atPath: exportedFile.path))
+        XCTAssertTrue(fileManager.fileExists(atPath: root.path))
+    }
+
     // MARK: Helper methods
 
     func createSubject() -> AppLaunchUtil {

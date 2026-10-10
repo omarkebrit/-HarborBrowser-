@@ -16,8 +16,9 @@ struct TopSitesSectionLayoutProvider {
         for traitCollection: UITraitCollection,
         numberOfTilesPerRow: Int
     ) -> NSCollectionLayoutSection {
+        let columns = numberOfColumns(for: traitCollection, maximum: numberOfTilesPerRow)
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1.0 / CGFloat(numberOfTilesPerRow)),
+            widthDimension: .fractionalWidth(1.0 / CGFloat(columns)),
             heightDimension: .estimated(UX.estimatedCellSize.height)
         )
 
@@ -30,7 +31,7 @@ struct TopSitesSectionLayoutProvider {
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
             subitem: item,
-            count: numberOfTilesPerRow
+            count: columns
         )
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(HomepageSectionLayoutProvider.UX.standardSpacing)
 
@@ -41,5 +42,16 @@ struct TopSitesSectionLayoutProvider {
         section.contentInsets.trailing = leadingInset
 
         return section
+    }
+
+    static func numberOfColumns(for traitCollection: UITraitCollection, maximum: Int) -> Int {
+        switch traitCollection.preferredContentSizeCategory {
+        case .accessibilityMedium, .accessibilityLarge:
+            return min(2, maximum)
+        case .accessibilityExtraLarge, .accessibilityExtraExtraLarge, .accessibilityExtraExtraExtraLarge:
+            return 1
+        default:
+            return maximum
+        }
     }
 }
