@@ -1,6 +1,12 @@
-# Harbor 0.3.1 for iOS
+# Harbor 0.4.0 for iOS
 
-SwiftUI / WKWebView browser for iOS 16+. Build with the included GitHub Actions workflow; the IPA is unsigned and requires your own signing.
+SwiftUI / WKWebView browser for iOS 16+, including iPhone 15 Pro Max. Build with GitHub Actions from your iPhone; no personal Mac is needed. The default IPA is unsigned and needs your own eligible signing method. An optional signed TestFlight workflow is available when you supply Apple distribution credentials. See [GitHub setup](GITHUB-SETUP.md).
+
+Harbor is an independent browser, not full Brave feature parity. [Feature coverage](FEATURE-COVERAGE.md) lists what works and which Brave services are absent.
+
+## 0.4.0
+
+Optional main-page HTTPS upgrades, rejection of addresses containing embedded credentials, current-site data deletion, an app-switcher privacy cover, safer download deletion, and larger toolbar controls. Adds an original app icon, a privacy manifest, and opt-in signed CI distribution. Existing saved preferences migrate without resetting them.
 
 ## Browsing
 

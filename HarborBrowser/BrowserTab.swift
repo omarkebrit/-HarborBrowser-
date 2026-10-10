@@ -24,11 +24,14 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     var onChanged: (() -> Void)?
     var onVisited: ((String, URL) -> Void)?
     var onOpen: ((URL, Bool) -> Void)?
+    var onOpenRequest: ((URLRequest, Bool) -> Void)?
     var onWindow: ((WKWebViewConfiguration) -> WKWebView?)?
     var onClose: (() -> Void)?
     private var appliedRuleIdentifiers: [String]?
     private var lastRequestedURL: URL?
+    private var upgradedHTTPURLs: Set<String> = []
     private var observations: [NSKeyValueObservation] = []
+    private var retirementDelegate: SiteDataRetirementDelegate?
     init(isPrivate: Bool, store: WKWebsiteDataStore, rules: [WKContentRuleList], preferences: BrowserPreferences, downloads: DownloadManager, configuration: WKWebViewConfiguration? = nil) {
         self.isPrivate = isPrivate; self.rules = rules; self.preferences = preferences; self.downloads = downloads
         let config = configuration ?? WKWebViewConfiguration()
@@ -64,12 +67,21 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         onChanged?()
     }
     func navigate(_ text: String) {
-        guard let url = BrowserAddress.resolve(text, engine: preferences.searchEngine) else { error = "Enter a valid address or search."; return }
+        guard let url = BrowserAddress.resolve(text, engine: preferences.searchEngine, requireHTTPS: preferences.requireHTTPS) else { error = "Enter an HTTP or HTTPS address without a username or password, or a search."; return }
         load(url)
     }
     func load(_ url: URL) {
-        pendingURL = nil; lastRequestedURL = url; address = url.absoluteString; error = nil; applyProtection(url)
-        webView.load(URLRequest(url: url))
+        loadRequest(URLRequest(url: url))
+    }
+    func loadRequest(_ original: URLRequest) {
+        guard let request = BrowserAddress.requestForNavigation(original, requireHTTPS: preferences.requireHTTPS),
+              let destination = request.url else {
+            error = "This website address is not supported, or contains a username or password."; return
+        }
+        upgradedHTTPURLs = []
+        if let originalURL = original.url, destination != originalURL { upgradedHTTPURLs.insert(originalURL.absoluteString) }
+        pendingURL = nil; lastRequestedURL = destination; address = destination.absoluteString; error = nil; applyProtection(destination)
+        webView.load(request)
     }
     func applyProtection(_ url: URL?) {
         let host = url?.host?.lowercased()
@@ -87,7 +99,10 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
     }
     func reload() {
         error = nil
-        if let url = webView.url { applyProtection(url); webView.reload() }
+        if let url = webView.url {
+            if preferences.requireHTTPS && url.scheme?.lowercased() == "http" { load(url) }
+            else { upgradedHTTPURLs = []; applyProtection(url); webView.reload() }
+        }
         else if let url = lastRequestedURL ?? pendingURL { load(url) }
     }
     func update(preferences: BrowserPreferences, rules: [WKContentRuleList]) {
@@ -102,13 +117,29 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         reload()
     }
     func setZoom(_ value: Double) { zoom = value; webView.pageZoom = value }
+    func retireForSiteDataRemoval() async -> Bool {
+        // A SwiftUI view can temporarily retain a closed tab. Commit a blank
+        // document before clearing storage so its old scripts cannot refill it.
+        onChanged = nil; onVisited = nil; onOpen = nil; onOpenRequest = nil; onWindow = nil; onClose = nil
+        observations.forEach { $0.invalidate() }; observations = []
+        webView.stopLoading(); webView.pauseAllMediaPlayback(); webView.uiDelegate = nil
+        let retired = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            let delegate = SiteDataRetirementDelegate { continuation.resume(returning: $0) }
+            retirementDelegate = delegate
+            webView.navigationDelegate = delegate
+            delegate.navigation = webView.loadHTMLString("<!doctype html><html><head><title></title></head><body></body></html>", baseURL: nil)
+            delegate.startTimeout()
+        }
+        webView.navigationDelegate = nil; retirementDelegate = nil
+        return retired
+    }
     func find(_ text: String, backwards: Bool = false) {
         guard !text.isEmpty else { findResult = ""; return }
         let config = WKFindConfiguration(); config.backwards = backwards; config.wraps = true
         webView.find(text, configuration: config) { [weak self] result in self?.findResult = result.matchFound ? "Match found" : "No matches" }
     }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        error = nil; refresh()
+        upgradedHTTPURLs = []; error = nil; refresh()
         if let url = webView.url { onVisited?(title, url) }
     }
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
@@ -125,6 +156,36 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
         page.preferredContentMode = desktop ? .desktop : .mobile
         page.allowsContentJavaScript = preferences.javaScript
         guard let url = action.request.url, let scheme = url.scheme?.lowercased() else { decisionHandler(.cancel, page); return }
+        if ["http", "https"].contains(scheme), BrowserAddress.validated(url) == nil {
+            decisionHandler(.cancel, page)
+            if action.targetFrame?.isMainFrame != false { error = "This website address is invalid or contains a username or password." }
+            return
+        }
+        if preferences.requireHTTPS && scheme == "http" && action.targetFrame?.isMainFrame != false {
+            guard let secureURL = BrowserAddress.validated(url, requireHTTPS: true) else { decisionHandler(.cancel, page); return }
+            if action.targetFrame == nil {
+                // The new tab owns its redirect tracking; opening a popup does
+                // not consume an upgrade attempt in the source document.
+                decisionHandler(.cancel, page)
+                guard action.navigationType == .linkActivated || !preferences.blockPopups else { return }
+                var request = action.request
+                request.url = secureURL
+                onOpenRequest?(request, isPrivate)
+                return
+            }
+            if [.linkActivated, .backForward, .formSubmitted, .formResubmitted].contains(action.navigationType) { upgradedHTTPURLs = [] }
+            guard upgradedHTTPURLs.count < 5, upgradedHTTPURLs.insert(url.absoluteString).inserted else {
+                decisionHandler(.cancel, page)
+                error = "This website redirects back to HTTP. Its page could not be opened with the HTTPS upgrade setting enabled."
+                refresh(); return
+            }
+            decisionHandler(.cancel, page)
+            var request = action.request
+            request.url = secureURL
+            lastRequestedURL = secureURL; address = secureURL.absoluteString; error = nil; applyProtection(secureURL)
+            webView.load(request)
+            return
+        }
         if ["youtube", "vnd.youtube"].contains(scheme) {
             // Ignore automatic app handoffs instead of repeatedly redirecting the current page.
             decisionHandler(.cancel, page)
@@ -203,4 +264,36 @@ final class BrowserTab: NSObject, ObservableObject, Identifiable, WKNavigationDe
             ])
         })
     }
+}
+
+@MainActor
+private final class SiteDataRetirementDelegate: NSObject, WKNavigationDelegate {
+    var navigation: WKNavigation?
+    private var completion: ((Bool) -> Void)?
+    private var timeout: Task<Void, Never>?
+    init(completion: @escaping (Bool) -> Void) { self.completion = completion; super.init() }
+    func startTimeout() {
+        timeout = Task { [weak self] in
+            do { try await Task.sleep(nanoseconds: 5_000_000_000) } catch { return }
+            self?.finish(false)
+        }
+    }
+    private func finish(_ retired: Bool) {
+        guard let completion else { return }
+        self.completion = nil; timeout?.cancel(); timeout = nil
+        completion(retired)
+    }
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        guard let expected = self.navigation, navigation === expected else { return }
+        finish(true)
+    }
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        guard let expected = self.navigation, navigation === expected else { return }
+        finish(false)
+    }
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        guard let expected = self.navigation, navigation === expected else { return }
+        finish(false)
+    }
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { finish(true) }
 }

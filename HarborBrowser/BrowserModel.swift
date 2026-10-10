@@ -18,13 +18,13 @@ final class BrowserModel: ObservableObject {
     private var privateStore = WKWebsiteDataStore.nonPersistent()
     private var restoring = false
     var current: BrowserTab? { tabs.first { $0.id == selected } }
-    init() {
+    init(defaults: UserDefaults = .standard) {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--uitest-reset"), let name = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: name)
         }
         #endif
-        library = BrowserLibrary()
+        library = BrowserLibrary(defaults: defaults)
     }
     func prepare() async {
         guard !ready, !busy else { return }
@@ -59,6 +59,11 @@ final class BrowserModel: ObservableObject {
         tab.onChanged = { [weak self] in self?.saveSession() }
         tab.onVisited = { [weak self, weak tab] title, url in self?.library.visit(title: title, url: url, isPrivate: tab?.isPrivate ?? true) }
         tab.onOpen = { [weak self] url, privateMode in self?.addTab(isPrivate: privateMode, url: url) }
+        tab.onOpenRequest = { [weak self] request, privateMode in
+            guard let self, self.ready, !self.busy else { return }
+            let created = self.makeTab(isPrivate: privateMode)
+            self.selected = created.id; created.loadRequest(request); self.saveSession()
+        }
         tab.onWindow = { [weak self, weak tab] config in
             guard let self, let tab else { return nil }
             let created = self.makeTab(isPrivate: tab.isPrivate, configuration: config)
@@ -73,7 +78,7 @@ final class BrowserModel: ObservableObject {
         if let url { tab.load(url) }; saveSession()
     }
     func select(_ tab: BrowserTab) { selected = tab.id; if let url = tab.pendingURL { tab.load(url) }; saveSession() }
-    func open(_ text: String) { current?.navigate(text) }
+    func open(_ text: String) { guard !busy else { return }; current?.navigate(text) }
     func close(_ tab: BrowserTab) {
         if !tab.isPrivate, let url = tab.webView.url { recentlyClosed.insert(SavedPage(title: tab.title, url: url.absoluteString), at: 0); recentlyClosed = Array(recentlyClosed.prefix(10)) }
         tab.webView.stopLoading(); tab.webView.pauseAllMediaPlayback()
@@ -126,6 +131,56 @@ final class BrowserModel: ObservableObject {
             WKWebsiteDataStore.default().removeData(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), modifiedSince: .distantPast) { continuation.resume() }
         }
         busy = false; addTab(); status = "Cookies and site data cleared"
+    }
+    func clearCurrentSiteData() async {
+        guard !busy, let tab = current, let host = tab.webView.url?.host else { return }
+        busy = true; defer { busy = false }
+        let store = tab.webView.configuration.websiteDataStore
+        let types = WKWebsiteDataStore.allWebsiteDataTypes()
+        let records = await withCheckedContinuation { (continuation: CheckedContinuation<[WKWebsiteDataRecord], Never>) in
+            store.fetchDataRecords(ofTypes: types) { continuation.resume(returning: $0) }
+        }
+        // WebKit can group storage by a parent domain. Never use an unbounded
+        // suffix match: example.com must not match notexample.com.
+        let matchingRecords = records.filter { BrowserSiteData.matches($0.displayName, host: host, includeParentDomains: true) }
+        let groupedHosts = matchingRecords.map(\.displayName)
+        let affectedTabs = tabs.filter { candidate in
+            guard candidate.webView.configuration.websiteDataStore === store,
+                  let candidateHost = candidate.webView.url?.host ?? candidate.pendingURL?.host else { return false }
+            return BrowserSiteData.matches(candidateHost, host: host, includeParentDomains: true)
+                || groupedHosts.contains { BrowserSiteData.matches(candidateHost, host: $0) }
+        }
+        // Closing affected pages prevents running scripts from immediately
+        // repopulating storage while it is being removed.
+        affectedTabs.forEach { close($0) }
+        for affectedTab in affectedTabs {
+            guard await affectedTab.retireForSiteDataRemoval() else {
+                status = "Site tabs closed, but stored data could not be cleared safely. Try again after reopening the website."
+                return
+            }
+        }
+        // Refresh after retiring documents to include writes that completed
+        // while the original pages were shutting down.
+        let remainingRecords = await withCheckedContinuation { (continuation: CheckedContinuation<[WKWebsiteDataRecord], Never>) in
+            store.fetchDataRecords(ofTypes: types) { continuation.resume(returning: $0) }
+        }
+        let recordsToRemove = remainingRecords.filter { BrowserSiteData.matches($0.displayName, host: host, includeParentDomains: true) }
+        let storageTypes = types.subtracting([WKWebsiteDataTypeCookies])
+        if !recordsToRemove.isEmpty {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                store.removeData(ofTypes: storageTypes, for: recordsToRemove) { continuation.resume() }
+            }
+        }
+        let cookies = await withCheckedContinuation { (continuation: CheckedContinuation<[HTTPCookie], Never>) in
+            store.httpCookieStore.getAllCookies { continuation.resume(returning: $0) }
+        }
+        for cookie in cookies where BrowserSiteData.matches(cookie.domain, host: host, includeParentDomains: true) {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                store.httpCookieStore.delete(cookie) { continuation.resume() }
+            }
+        }
+        saveSession()
+        status = "Stored data cleared for \(host); matching site tabs closed"
     }
     #if DEBUG
     func showFixture() {
