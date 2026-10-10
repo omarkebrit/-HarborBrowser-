@@ -354,7 +354,7 @@ final class ShareManagerTests: XCTestCase {
     // MARK: - Custom SendToDeviceActivity
 
     func testCustomApplicationActivities_forSiteShare() throws {
-        let testShareActivityType = UIActivity.ActivityType("org.mozilla.ios.Fennec.sendToDevice")
+        let testShareActivityType = UIActivity.ActivityType("com.omarkebrit.aster.sendToDevice")
         let testActivityTitle = "Send Link to Device"
 
         let testShareType = ShareType.site(url: testWebURL)
@@ -368,7 +368,7 @@ final class ShareManagerTests: XCTestCase {
     }
 
     func testCustomApplicationActivities_forTabShare() throws {
-        let testShareActivityType = UIActivity.ActivityType("org.mozilla.ios.Fennec.sendToDevice")
+        let testShareActivityType = UIActivity.ActivityType("com.omarkebrit.aster.sendToDevice")
         let testActivityTitle = "Send Link to Device"
 
         let testShareType = ShareType.tab(url: testWebURL, tab: testTab)
@@ -382,7 +382,7 @@ final class ShareManagerTests: XCTestCase {
     }
 
     func testCustomApplicationActivities_forFileShareWithRemoteURL_AddsSendToDevice() throws {
-        let testShareActivityType = UIActivity.ActivityType("org.mozilla.ios.Fennec.sendToDevice")
+        let testShareActivityType = UIActivity.ActivityType("com.omarkebrit.aster.sendToDevice")
         let testActivityTitle = "Send Link to Device"
 
         let testShareType = ShareType.file(url: testFileURL, remoteURL: testWebURL)
@@ -410,7 +410,7 @@ final class ShareManagerTests: XCTestCase {
         setupNimbusSentFromFirefoxTesting(isEnabled: true, isTreatmentA: true)
 
         let expectedShareContentA =
-            "https://mozilla.org\n\nSent from Firefox 🦊 Try the mobile browser: https://mzl.la/4fOWPpd"
+            "https://mozilla.org\n\nSent from Aster 🦊 Try the mobile browser: https://mzl.la/4fOWPpd"
         let whatsAppActivityIdentifier = "net.whatsapp.WhatsApp.ShareExtension"
         let whatsAppActivity = UIActivity.ActivityType(rawValue: whatsAppActivityIdentifier)
 
@@ -463,7 +463,7 @@ final class ShareManagerTests: XCTestCase {
     func testGetActivityItems_forTab_withSentFromFirefoxEnabled_OverridesURL_withTreatmentB() throws {
         setupNimbusSentFromFirefoxTesting(isEnabled: true, isTreatmentA: false)
 
-        let expectedShareContentB = "https://mozilla.org\n\nSent from Firefox 🦊 https://mzl.la/3YSUOl8"
+        let expectedShareContentB = "https://mozilla.org\n\nSent from Aster 🦊 https://mzl.la/3YSUOl8"
         let whatsAppActivityIdentifier = "net.whatsapp.WhatsApp.ShareExtension"
         let whatsAppActivity = UIActivity.ActivityType(rawValue: whatsAppActivityIdentifier)
 
@@ -735,7 +735,7 @@ final class ShareManagerTests: XCTestCase {
     /// general settings screen).
     func testGetActivityItems_forTab_withSentFromFirefoxEnabled_respectsUserPreferencesToOptIn() throws {
         let expectedShareContentA =
-            "https://mozilla.org\n\nSent from Firefox 🦊 Try the mobile browser: https://mzl.la/4fOWPpd"
+            "https://mozilla.org\n\nSent from Aster 🦊 Try the mobile browser: https://mzl.la/4fOWPpd"
         // Setup Nimbus to emulate a user enrolled in Sent from Firefox with the Treatment A branch
         setupNimbusSentFromFirefoxTesting(isEnabled: true, isTreatmentA: true)
 

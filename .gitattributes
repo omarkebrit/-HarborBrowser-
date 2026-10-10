@@ -1,3 +1,6 @@
 # Don't include third party files in the Github language stats!
 ThirdParty/* linguist-vendored=true
 FxA/* linguist-vendored=true
+# Preserve downloaded filter bytes and keep generated rule/list diffs readable.
+firefox-ios/Client/Assets/AsterFilters/source-*.txt -text -diff linguist-vendored=true
+firefox-ios/Client/Assets/AsterFilters/ads.json -diff linguist-generated=true

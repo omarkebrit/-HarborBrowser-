@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 import XCTest
+import Shared
 @testable import Client
 
 class URLScannerTests: XCTestCase {
@@ -52,7 +53,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testSimpleFullURLQueryItem() {
-        let urlString = "firefox://open-url?url=https://example.com/path"
+        let urlString = "\(URL.mozPublicScheme)://open-url?url=https://example.com/path"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         XCTAssertEqual(scanner.value(query: "url"), "https://example.com/path")
@@ -60,7 +61,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testPrecedingNonURLParamBeforeURLQueryItem() {
-        let urlString = "firefox://open-url?arg1=abc&url=https://example.com/path?arg1=a"
+        let urlString = "\(URL.mozPublicScheme)://open-url?arg1=abc&url=https://example.com/path?arg1=a"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         XCTAssertEqual(scanner.value(query: "url"), "https://example.com/path?arg1=a")
@@ -69,7 +70,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testSingleQueryFullURLQueryItem() {
-        let urlString = "firefox://open-url?url=https://example.com/path?arg1=a"
+        let urlString = "\(URL.mozPublicScheme)://open-url?url=https://example.com/path?arg1=a"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         XCTAssertEqual(scanner.value(query: "url"), "https://example.com/path?arg1=a")
@@ -77,7 +78,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testTwoQueryParams() {
-        let urlString = "firefox://open-url?url=https://example.com/path?arg1=a&arg2=b"
+        let urlString = "\(URL.mozPublicScheme)://open-url?url=https://example.com/path?arg1=a&arg2=b"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         // Currently we do _not_ expect URLComponents to include all parameters to the URL.
@@ -88,7 +89,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testMultipleQueryParams() {
-        let urlString = "firefox://open-url?url=https://example.com/path?arg1=a&arg2=b&arg3=c"
+        let urlString = "\(URL.mozPublicScheme)://open-url?url=https://example.com/path?arg1=a&arg2=b&arg3=c"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         XCTAssertEqual(scanner.value(query: "url"), "https://example.com/path?arg1=a")
@@ -97,7 +98,7 @@ class URLScannerTests: XCTestCase {
     }
 
     func testMultipleLevelsOfNestedURLs() {
-        let urlString = "firefox://open-url?url=https://example.com/path?arg1=a&anotherURL=https://test.com"
+        let urlString = "\(URL.mozPublicScheme)://open-url?url=https://example.com/path?arg1=a&anotherURL=https://test.com"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)!
         XCTAssertEqual(scanner.fullURLQueryItem(), "https://example.com/path?arg1=a&anotherURL=https://test.com")
@@ -113,11 +114,34 @@ class URLScannerTests: XCTestCase {
     }
 
     func testOurScheme() {
-        let urlString = "firefox://abcdefg/path/to/resource"
+        let urlString = "\(URL.mozPublicScheme)://abcdefg/path/to/resource"
         let url = URL(string: urlString)!
         let scanner = URLScanner(url: url)
         XCTAssertNotNil(scanner)
         XCTAssertTrue(scanner!.isOurScheme)
+    }
+
+    func testInternalSchemeIsOurs() throws {
+        let url = try XCTUnwrap(URL(string: "\(URL.mozInternalScheme)://open-url?private=true"))
+        let scanner = try XCTUnwrap(URLScanner(url: url))
+
+        XCTAssertTrue(scanner.isOurScheme)
+        XCTAssertEqual(scanner.value(query: "private"), "true")
+    }
+
+    func testUppercasePublicSchemeIsOurs() throws {
+        let url = try XCTUnwrap(URL(string: "\(URL.mozPublicScheme.uppercased())://open-text?text=hello"))
+        let scanner = try XCTUnwrap(URLScanner(url: url))
+
+        XCTAssertEqual(scanner.scheme, URL.mozPublicScheme)
+        XCTAssertTrue(scanner.isOurScheme)
+    }
+
+    func testOtherBrowserSchemesAreRejected() throws {
+        for scheme in ["firefox", "fennec", "focus", "chrome"] {
+            let url = try XCTUnwrap(URL(string: "\(scheme)://open-url?url=https://example.com"))
+            XCTAssertNil(URLScanner(url: url), scheme)
+        }
     }
 
     func testHTTPScheme() {

@@ -56,6 +56,29 @@ final class MenuMainViewTests: XCTestCase {
         XCTAssertTrue(menuView.subviews.contains(where: { $0 is HeaderBanner }))
     }
 
+    func testPromotionDisabled_preservesHomepageActionsAndSiteProtections() throws {
+        menuView = MenuMainView(showsDefaultBrowserPromotion: false)
+        menuView.frame = CGRect(x: 0, y: 0, width: 375, height: 812)
+        setupDetails(isBrowserDefault: false, bannerShown: false)
+        var selectionCount = 0
+        let option = menuElement(a11yId: "bookmarks", isOptional: false) {
+            selectionCount += 1
+        }
+
+        menuView.reloadDataView(with: [MenuSection(isHomepage: true, options: [option])])
+        XCTAssertFalse(menuView.subviews.contains(where: { $0 is HeaderBanner }))
+        let menuTable = try XCTUnwrap(menuView.subviews.first { $0 is MenuTableView } as? MenuTableView)
+        XCTAssertEqual(menuTable.tableView.numberOfRows(inSection: 0), 1)
+        menuTable.tableView(menuTable.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
+        XCTAssertEqual(selectionCount, 1)
+
+        menuView.reloadDataView(with: [MenuSection(isHomepage: false, options: [option])])
+        XCTAssertFalse(menuView.subviews.contains(where: { $0 is HeaderBanner }))
+        XCTAssertTrue(menuView.siteProtectionHeader.superview === menuView)
+        menuTable.tableView(menuTable.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
+        XCTAssertEqual(selectionCount, 2)
+    }
+
     func testCloseBannerCallback() {
         let homepageSection = MenuSection(isExpanded: false, isHomepage: true, options: [])
         setupDetails(isBrowserDefault: false, bannerShown: false)
@@ -113,7 +136,11 @@ final class MenuMainViewTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    private func menuElement(a11yId: String, isOptional: Bool) -> MenuElement {
+    private func menuElement(
+        a11yId: String,
+        isOptional: Bool,
+        action: (@MainActor () -> Void)? = nil
+    ) -> MenuElement {
         MenuElement(
             title: a11yId,
             iconName: "",
@@ -123,7 +150,7 @@ final class MenuMainViewTests: XCTestCase {
             a11yHint: "",
             a11yId: a11yId,
             isOptional: isOptional,
-            action: nil
+            action: action
         )
     }
 

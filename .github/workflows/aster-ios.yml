@@ -39,6 +39,9 @@ jobs:
           xcodebuild -version | tee "$ASTER_RESULTS/toolchain.txt"
           xcrun --sdk iphoneos --show-sdk-version >> "$ASTER_RESULTS/toolchain.txt"
           git rev-parse HEAD > "$ASTER_RESULTS/source-commit.txt"
+          profile_dir="${TMPDIR:-/tmp}/aster-llvm-$GITHUB_RUN_ID"
+          mkdir -p "$profile_dir"
+          echo "LLVM_PROFILE_FILE=$profile_dir/%p-%m.profraw" >> "$GITHUB_ENV"
       - name: Set up Node 24
         uses: actions/setup-node@v4
         with:
@@ -112,9 +115,37 @@ jobs:
             -resultBundlePath "$ASTER_RESULTS/AsterUnitTests.xcresult" \
             -onlyUsePackageVersionsFromResolvedFile \
             -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/unit-tests.log"
+      - name: Verify the locally signed simulator host entitlements
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          simulator_app="$RUNNER_TEMP/aster-simulator/Build/Products/Debug-iphonesimulator/Client.app"
+          if [ ! -d "$simulator_app" ]; then
+            echo 'The simulator app was not produced; its signing evidence is unavailable.'
+            exit 0
+          fi
+          codesign --verify --strict "$simulator_app"
+          codesign --display --entitlements :- "$simulator_app" \
+            > "$ASTER_RESULTS/simulator-entitlements.plist" 2> "$ASTER_RESULTS/simulator-signature.txt"
+          python3 - "$ASTER_RESULTS/simulator-entitlements.plist" <<'PY'
+          import plistlib, sys
+          with open(sys.argv[1], 'rb') as source:
+              entitlements = plistlib.load(source)
+          identifier = entitlements.get('application-identifier')
+          expected = 'com.omarkebrit.aster'
+          if identifier != expected:
+              sys.exit(f'::error::The simulator application identifier must be {expected}, got {identifier!r}.')
+          if identifier not in entitlements.get('keychain-access-groups', []):
+              sys.exit('::error::The signed simulator host lacks its matching keychain access group.')
+          if 'group.' + expected not in entitlements.get('com.apple.security.application-groups', []):
+              sys.exit('::error::The signed simulator host lacks its Aster shared app group.')
+          print('Verified local simulator application identifier, keychain group, and shared app group.')
+          PY
       - name: Run local browser acceptance and upstream UI tests
         shell: bash
         run: |
@@ -152,7 +183,8 @@ jobs:
             -only-testing:XCUITests/NightModeTests/testNightModeUI \
             -onlyUsePackageVersionsFromResolvedFile \
             -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/acceptance-tests.log"
           download_container=$(xcrun simctl get_app_container "$ASTER_SIMULATOR_UDID" com.omarkebrit.aster data)
@@ -165,7 +197,8 @@ jobs:
             -only-testing:XCUITests/AsterAcceptanceTests/testNativeDownloadPreservesFixtureFile \
             -onlyUsePackageVersionsFromResolvedFile \
             -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/download-tests.log"
       - name: Verify the downloaded fixture bytes in the app container
@@ -202,6 +235,9 @@ jobs:
               passed, failed = int(result.get('passedTests', 0)), int(result.get('failedTests', 0))
               if passed < 1 or failed != 0:
                   sys.exit(f'::error::{suite} must execute passing tests with zero failures before an IPA is published.')
+              expected = {'AsterAcceptanceTests': 14, 'AsterDownloadTests': 1}.get(suite)
+              if expected is not None and (passed != expected or int(result.get('skippedTests', 0)) != 0):
+                  sys.exit(f'::error::{suite} must execute all {expected} selected tests without skips.')
               lines.append(f'- {suite}: {passed} passed; {int(result.get("skippedTests", 0))} skipped.')
           lines.append('Simulator checks do not certify physical-device battery use, all websites, DRM, or Brave paid services.')
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
@@ -258,6 +294,8 @@ jobs:
             build-output/*.log
             build-output/*.txt
             build-output/*.json
+            build-output/*.plist
+            build-output/*.plist
             build-output/*.xcresult
             build-output/*-attachments/
           if-no-files-found: warn

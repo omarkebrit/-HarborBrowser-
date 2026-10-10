@@ -32,7 +32,7 @@ import:
 
               I_AM_DEFAULT_BROWSER:     "is_default_browser"
               I_AM_NOT_DEFAULT_BROWSER: "is_default_browser == false"
-              SUPPORTS_DEFAULT_BROWSER: os_version|versionCompare('14.!') >= 0
+              SUPPORTS_DEFAULT_BROWSER: "false" # Aster does not include Apple's default-browser entitlement.
               INACTIVE_NEW_USER:        "is_inactive_new_user"
               ALLOWED_TIPS_NOTIFICATIONS: "allowed_tips_notifications"
 

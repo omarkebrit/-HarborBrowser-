@@ -32,9 +32,15 @@ public final class MenuMainView: UIView, ThemeApplicable {
     private var bannerShown = false
     // If banner is currently visible
     private var isBannerVisible = false
+    private var showsDefaultBrowserPromotion = true
 
     private var isPhoneLandscape = false
     private var menuData: [MenuSection] = []
+
+    public convenience init(showsDefaultBrowserPromotion: Bool = true) {
+        self.init(frame: .zero)
+        self.showsDefaultBrowserPromotion = showsDefaultBrowserPromotion
+    }
 
     // MARK: - UI Setup
     override public func layoutSubviews() {
@@ -48,7 +54,7 @@ public final class MenuMainView: UIView, ThemeApplicable {
         self.addSubview(tableView)
         if let section = data.first(where: { $0.isHomepage }), section.isHomepage {
             self.siteProtectionHeader.removeFromSuperview()
-            if isHeaderBanner, !isBrowserDefault, !bannerShown {
+            if showsDefaultBrowserPromotion, isHeaderBanner, !isBrowserDefault, !bannerShown {
                 isBannerVisible = true
                 self.addSubview(headerBanner)
                 viewConstraints.append(contentsOf: [

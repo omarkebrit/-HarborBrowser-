@@ -28,7 +28,9 @@ class MainMenuViewController: UIViewController,
     typealias SubscriberStateType = MainMenuState
 
     // MARK: - UI/UX elements
-    private lazy var menuContent: MenuMainView = .build()
+    private lazy var menuContent: MenuMainView = .build(nil) {
+        MenuMainView(showsDefaultBrowserPromotion: false)
+    }
     private var hintView: ContextualHintView = .build { view in
         view.isAccessibilityElement = true
     }

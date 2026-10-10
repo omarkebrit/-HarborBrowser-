@@ -4,6 +4,7 @@
 
 import XCTest
 import Common
+import Shared
 @testable import Client
 
 @MainActor
@@ -148,7 +149,7 @@ class AppSettingsTableViewControllerTests: XCTestCase {
 
         XCTAssertEqual(delegate.didFinishShowingSettingsCalled, 1)
         XCTAssertEqual(applicationHelper.lastOpenURL,
-                       URL(string: "fennec://deep-link?url=/action/show-intro-onboarding")!)
+                       URL(string: "\(URL.mozInternalScheme)://deep-link?url=/action/show-intro-onboarding")!)
     }
 
     func testShowExperiments_openExperiments() {

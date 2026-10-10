@@ -650,7 +650,9 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        if let scheme = url.scheme, !scheme.contains("firefox"), !shouldBlockExternalApps, !tab.isPrivate {
+        if let scheme = url.scheme,
+           ![URL.mozPublicScheme, URL.mozInternalScheme].contains(scheme.lowercased()),
+           !shouldBlockExternalApps, !tab.isPrivate {
             handleCustomSchemeURLNavigation(url: url, navigationAction: navigationAction)
         }
 
