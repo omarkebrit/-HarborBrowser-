@@ -408,7 +408,7 @@ struct SitePanel: View {
                 }
             }
         }
-        .confirmationDialog("Clear this website's stored data?", isPresented: $confirmClearSiteData, titleVisibility: .visible) {
+        .alert("Clear this website's stored data?", isPresented: $confirmClearSiteData) {
             Button("Clear site data", role: .destructive) { Task { await browser.clearCurrentSiteData() } }
             Button("Cancel", role: .cancel) { }
         } message: {

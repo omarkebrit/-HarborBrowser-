@@ -12,11 +12,14 @@ final class HarborUITests: XCTestCase {
         if !clear.isHittable { app.swipeUp() }
         XCTAssertTrue(clear.waitForExistence(timeout: 5))
         clear.tap()
-        XCTAssertTrue(app.buttons["Clear site data"].waitForExistence(timeout: 5))
-        app.buttons["Cancel"].tap()
+        let confirmation = app.alerts.firstMatch
+        XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
+        XCTAssertTrue(confirmation.buttons["Clear site data"].exists)
+        confirmation.buttons["Cancel"].tap()
         XCTAssertTrue(clear.exists, "Cancel must keep the current site open")
         clear.tap()
-        app.buttons["Clear site data"].tap()
+        XCTAssertTrue(confirmation.waitForExistence(timeout: 5))
+        confirmation.buttons["Clear site data"].tap()
         app.buttons["Done"].tap()
         XCTAssertTrue(app.staticTexts["A calmer\nway to browse."].waitForExistence(timeout: 10))
         app.buttons["BrowserMenu"].tap()
