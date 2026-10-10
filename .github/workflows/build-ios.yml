@@ -64,7 +64,7 @@ jobs:
           name: Harbor-filter-sources-and-report
           path: ${{ env.HARBOR_ROOT }}/HarborBrowser/Filters/
           retention-days: 30
-      - name: Build for iPhone without signing
+      - name: Clean build for iPhone without signing
         shell: bash
         run: |
           set -euo pipefail
@@ -78,7 +78,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY='' \
-            build
+            clean build
       - name: Package unsigned IPA
         shell: bash
         run: |
@@ -101,11 +101,30 @@ jobs:
           python3 "$(dirname "$HARBOR_PROJECT")/scripts/serve_test_media.py" > "$RUNNER_TEMP/media-fixture.log" 2>&1 &
           media_fixture_pid=$!
           trap 'kill "$media_fixture_pid" || true' EXIT
-          xcodebuild test -project "$HARBOR_PROJECT" -scheme HarborBrowser -configuration Debug \
+          python3 - <<'PY'
+          import time, urllib.request
+          for attempt in range(50):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8765/healthz', timeout=1) as response:
+                      if response.read() == b'ready\n':
+                          break
+              except OSError:
+                  time.sleep(0.1)
+          else:
+              raise SystemExit('The local media fixture did not become ready')
+          PY
+          xcodebuild clean test -project "$HARBOR_PROJECT" -scheme HarborBrowser -configuration Debug \
             -destination "platform=iOS Simulator,id=$device_id" \
             -derivedDataPath "$RUNNER_TEMP/harbor-simulator" \
             -resultBundlePath "$GITHUB_WORKSPACE/build-output/HarborTests.xcresult" \
             -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO
+      - name: Upload local media request diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Harbor-media-test-diagnostics
+          path: ${{ runner.temp }}/media-fixture.log
+          retention-days: 7
       - name: Export simulator screenshots
         if: ${{ !cancelled() }}
         shell: bash
@@ -127,7 +146,7 @@ jobs:
           path: build-output/HarborTests.xcresult
           retention-days: 7
       - name: Upload unsigned iPhone IPA
-        if: ${{ !cancelled() }}
+        if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: Harbor-iPhone-UNSIGNED-needs-signing

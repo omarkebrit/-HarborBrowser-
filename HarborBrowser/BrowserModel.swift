@@ -30,32 +30,41 @@ final class BrowserModel: ObservableObject {
         guard !ready, !busy else { return }
         busy = true; defer { busy = false }
         do {
-            rules = try await blocker.load(); ready = true; refreshFilterStatus()
-            restoring = true
-            if library.preferences.restoreTabs, let session = library.session, !session.urls.isEmpty {
-                for text in session.urls.prefix(20) {
-                    let tab = makeTab(isPrivate: false)
-                    tab.pendingURL = URL(string: text); tab.refresh()
-                }
-                selected = tabs[max(0, min(session.selectedIndex, tabs.count - 1))].id
-                if let tab = current, let url = tab.pendingURL { tab.load(url) }
-            } else { addTab() }
-            restoring = false
-            #if DEBUG
-            if ProcessInfo.processInfo.arguments.contains("--uitest-fixture") { showFixture() }
-            if ProcessInfo.processInfo.arguments.contains("--uitest-tabs") {
-                for name in ["First", "Second", "Third"] {
-                    let fixtureTab = makeTab(isPrivate: false)
-                    selected = fixtureTab.id
-                    fixtureTab.webView.loadHTMLString("<html><head><title>\(name) tab</title></head><body><h1>\(name) content</h1></body></html>", baseURL: URL(string: "https://fixture.example/\(name.lowercased())"))
-                }
+            rules = try await blocker.load(); refreshFilterStatus()
+        } catch {
+            rules = []; ruleCount = 0; filterDescription = "Protection unavailable"
+            status = "Filters could not load. Browsing is available without protection; retry from Settings."
+        }
+        ready = true
+        restoring = true
+        if library.preferences.restoreTabs, let session = library.session, !session.urls.isEmpty {
+            for text in session.urls.prefix(20) {
+                let tab = makeTab(isPrivate: false)
+                tab.pendingURL = URL(string: text); tab.refresh()
             }
-            #endif
-        } catch { status = "Protection could not load: \(error.localizedDescription)" }
+            selected = tabs[max(0, min(session.selectedIndex, tabs.count - 1))].id
+            if let tab = current, let url = tab.pendingURL { tab.load(url) }
+        } else { addTab() }
+        restoring = false
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--uitest-fixture") { showFixture() }
+        if ProcessInfo.processInfo.arguments.contains("--uitest-tabs") {
+            for name in ["First", "Second", "Third"] {
+                let fixtureTab = makeTab(isPrivate: false)
+                selected = fixtureTab.id
+                fixtureTab.webView.loadHTMLString("<html><head><title>\(name) tab</title></head><body><h1>\(name) content</h1></body></html>", baseURL: URL(string: "https://fixture.example/\(name.lowercased())"))
+            }
+        }
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "--uitest-video-page"), arguments.indices.contains(index + 1),
+           let url = URL(string: arguments[index + 1]), url.host == "127.0.0.1" {
+            current?.load(url)
+        }
+        #endif
     }
     @discardableResult
-    private func makeTab(isPrivate: Bool, configuration: WKWebViewConfiguration? = nil) -> BrowserTab {
-        let tab = BrowserTab(isPrivate: isPrivate, store: isPrivate ? privateStore : .default(), rules: rules, preferences: library.preferences, downloads: downloads, configuration: configuration)
+    private func makeTab(isPrivate: Bool, configuration: WKWebViewConfiguration? = nil, store: WKWebsiteDataStore? = nil, id: UUID = UUID()) -> BrowserTab {
+        let tab = BrowserTab(isPrivate: isPrivate, store: store ?? (isPrivate ? privateStore : .default()), rules: rules, preferences: library.preferences, downloads: downloads, configuration: configuration, id: id)
         tab.onChanged = { [weak self] in self?.saveSession() }
         tab.onVisited = { [weak self, weak tab] title, url in self?.library.visit(title: title, url: url, isPrivate: tab?.isPrivate ?? true) }
         tab.onOpen = { [weak self] url, privateMode in self?.addTab(isPrivate: privateMode, url: url) }
@@ -80,8 +89,8 @@ final class BrowserModel: ObservableObject {
     func select(_ tab: BrowserTab) { selected = tab.id; if let url = tab.pendingURL { tab.load(url) }; saveSession() }
     func open(_ text: String) { guard !busy else { return }; current?.navigate(text) }
     func close(_ tab: BrowserTab) {
-        if !tab.isPrivate, let url = tab.webView.url { recentlyClosed.insert(SavedPage(title: tab.title, url: url.absoluteString), at: 0); recentlyClosed = Array(recentlyClosed.prefix(10)) }
-        tab.webView.stopLoading(); tab.webView.pauseAllMediaPlayback()
+        if !tab.isPrivate, let url = tab.webView.url, BrowserAddress.validated(url) != nil { recentlyClosed.insert(SavedPage(title: tab.title, url: url.absoluteString), at: 0); recentlyClosed = Array(recentlyClosed.prefix(10)) }
+        tab.webView.stopLoading(); tab.webView.pauseAllMediaPlayback(); tab.webView.closeAllMediaPresentations(completionHandler: nil)
         tabs.removeAll { $0.id == tab.id }
         if !tabs.contains(where: { $0.isPrivate }) { privateStore = .nonPersistent() }
         if selected == tab.id, let next = tabs.last { select(next) }
@@ -90,13 +99,58 @@ final class BrowserModel: ObservableObject {
     }
     func saveSession() {
         guard ready, !restoring else { return }
-        let normal = tabs.filter { !$0.isPrivate && ($0.webView.url != nil || $0.pendingURL != nil) }
+        let normal = tabs.filter { !$0.isPrivate && ($0.webView.url ?? $0.pendingURL).flatMap { BrowserAddress.validated($0) } != nil }
         let urls = normal.compactMap { ($0.webView.url ?? $0.pendingURL)?.absoluteString }
         library.saveSession(BrowserSession(urls: Array(urls.prefix(20)), selectedIndex: normal.firstIndex { $0.id == selected } ?? 0))
     }
     func applySettings(reload: Bool = true) {
-        for tab in tabs { tab.update(preferences: library.preferences, rules: rules); if reload && tab.webView.url != nil { tab.reload() } }
+        for tab in tabs {
+            if tab.needsRecreation(for: library.preferences) {
+                recreate(tab)
+            } else {
+                tab.update(preferences: library.preferences, rules: rules)
+                if reload && tab.webView.url != nil { tab.reload() }
+            }
+        }
         saveSession()
+    }
+    private func recreate(_ tab: BrowserTab) {
+        guard let index = tabs.firstIndex(where: { $0 === tab }) else { return }
+        let request = tab.currentRequestForRecreation
+        guard request != nil || tab.address.isEmpty || tab.pendingURL != nil else {
+            tab.update(preferences: library.preferences, rules: rules)
+            tab.error = "Open a new tab to apply playback and pop-up settings. This submitted page was kept to avoid repeating its form."
+            return
+        }
+        let replacement = makeTab(isPrivate: tab.isPrivate, store: tab.webView.configuration.websiteDataStore, id: tab.id)
+        tabs.removeLast()
+        tabs[index] = replacement
+        tab.onChanged = nil; tab.onVisited = nil; tab.onOpen = nil; tab.onOpenRequest = nil; tab.onWindow = nil; tab.onClose = nil
+        tab.webView.stopLoading(); tab.webView.pauseAllMediaPlayback(); tab.webView.closeAllMediaPresentations(completionHandler: nil)
+        tab.webView.navigationDelegate = nil; tab.webView.uiDelegate = nil
+        if tab.desktop { replacement.setDesktop(true, reloadPage: false) }
+        replacement.setZoom(tab.zoom)
+        if let request { replacement.loadRequest(request) }
+        else if let url = tab.pendingURL { replacement.pendingURL = url; replacement.refresh() }
+    }
+    func reloadCurrentForVideo() {
+        guard !busy, let tab = current, let host = tab.webView.url?.host?.lowercased() else { return }
+        library.preferences.javaScript = true
+        library.preferences.allowAutoplay = true
+        library.preferences.videoCompatibilityHosts.insert(host)
+        tab.setDesktop(false, reloadPage: false)
+        applySettings()
+        status = "Video compatibility enabled for \(host); filtering is paused on this site."
+    }
+    func openPlaybackCheck() {
+        guard ready, !busy, let url = Bundle.main.url(forResource: "PlaybackCheck", withExtension: "html"),
+              let html = try? String(contentsOf: url, encoding: .utf8) else { return }
+        let tab = makeTab(isPrivate: current?.isPrivate ?? false)
+        var checkPreferences = library.preferences
+        checkPreferences.javaScript = true
+        tab.update(preferences: checkPreferences, rules: rules)
+        selected = tab.id
+        tab.webView.loadHTMLString(html, baseURL: nil)
     }
     func toggleSite(_ host: String) {
         if library.preferences.disabledHosts.contains(host) { library.preferences.disabledHosts.remove(host) }
@@ -110,7 +164,7 @@ final class BrowserModel: ObservableObject {
     }
     private func refreshFilterStatus() {
         ruleCount = blocker.ruleCount; filterDescription = blocker.description
-        status = "\(ruleCount.formatted()) filter rules ready"
+        status = blocker.warning ?? "\(ruleCount.formatted()) filter rules ready"
     }
     func importRules(_ url: URL) async {
         guard !busy else { return }; busy = true; defer { busy = false }
@@ -124,7 +178,7 @@ final class BrowserModel: ObservableObject {
     }
     func clearSiteData() async {
         guard !busy else { return }; busy = true
-        tabs.forEach { $0.webView.stopLoading(); $0.webView.pauseAllMediaPlayback() }
+        tabs.forEach { $0.webView.stopLoading(); $0.webView.pauseAllMediaPlayback(); $0.webView.closeAllMediaPresentations(completionHandler: nil) }
         tabs.removeAll(); selected = nil; privateStore = .nonPersistent(); recentlyClosed = []
         library.saveSession(BrowserSession(urls: [], selectedIndex: 0))
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in

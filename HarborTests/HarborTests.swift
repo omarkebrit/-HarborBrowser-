@@ -222,6 +222,67 @@ final class HarborTests: XCTestCase {
         XCTAssertEqual(tab.title, "Network Video Fixture")
         XCTAssertTrue(tab.downloads.items.allSatisfy { $0.state != "Downloading" }, "Playing media must not create a download")
     }
+    @MainActor func testDefaultProtectionAllowsNetworkVideoPlaybackAndSeeking() async throws {
+        let tab = try await protectedTab(isPrivate: false)
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        tab.load(URL(string: "http://127.0.0.1:8765/video.html")!)
+        try await playAndCheck(tab)
+        XCTAssertEqual(tab.protection, "Protected")
+        _ = try await tab.webView.evaluateJavaScript("document.getElementById('v').currentTime = 4; true")
+        var seekCompleted = false
+        for _ in 0..<100 {
+            if (try? await tab.webView.evaluateJavaScript("(() => { const v = document.getElementById('v'); return !v.seeking && v.currentTime > 4.1 && !v.paused; })()")) as? Bool == true {
+                seekCompleted = true; break
+            }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+        let seekDiagnostic = await playbackDiagnostic(tab)
+        XCTAssertTrue(seekCompleted, "Protected video must play after seeking: \(seekDiagnostic)")
+        XCTAssertTrue(tab.downloads.items.allSatisfy { $0.state != "Downloading" })
+    }
+    @MainActor func testProtectedIframeVideoPlayback() async throws {
+        let tab = try await protectedTab()
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        tab.load(URL(string: "http://127.0.0.1:8765/iframe.html")!)
+        try await playAndCheck(tab, selector: "document.getElementById('player')?.contentDocument?.getElementById('v')")
+        XCTAssertTrue(tab.downloads.items.allSatisfy { $0.state != "Downloading" }, "Iframe media must stay in the player")
+    }
+    @MainActor func testProtectedBlobVideoPlayback() async throws {
+        let tab = try await protectedTab()
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        tab.load(URL(string: "http://127.0.0.1:8765/blob.html")!)
+        try await playAndCheck(tab)
+        let source = try await tab.webView.evaluateJavaScript("document.getElementById('v').currentSrc") as? String
+        XCTAssertTrue(source?.hasPrefix("blob:") == true)
+    }
+    @MainActor func testDirectMP4NavigationPlaysInsteadOfDownloading() async throws {
+        let tab = try await protectedTab()
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        tab.load(URL(string: "http://127.0.0.1:8765/video.mp4")!)
+        try await playAndCheck(tab, selector: "document.querySelector('video')")
+        XCTAssertTrue(tab.downloads.items.allSatisfy { $0.state != "Downloading" }, "Direct video navigation must not be hijacked as a download")
+        XCTAssertEqual(tab.webView.url?.path, "/video.mp4")
+    }
+    @MainActor func testProtectedHLSVideoPlayback() async throws {
+        let tab = try await protectedTab()
+        let window = mount(tab)
+        defer { window.isHidden = true }
+        tab.load(URL(string: "http://127.0.0.1:8765/hls.html")!)
+        try await playAndCheck(tab)
+        let source = try await tab.webView.evaluateJavaScript("document.getElementById('v').currentSrc") as? String
+        XCTAssertTrue(source?.hasSuffix("playlist.m3u8") == true)
+        XCTAssertTrue(tab.downloads.items.allSatisfy { $0.state != "Downloading" }, "HLS playlists and segments must remain WebKit media")
+    }
+    @MainActor private func protectedTab(isPrivate: Bool = true) async throws -> BrowserTab {
+        let blocker = BlockingStore()
+        let lists = try await blocker.load()
+        XCTAssertGreaterThan(blocker.ruleCount, 1000, "Playback coverage must include the generated production filter pack")
+        return BrowserTab(isPrivate: isPrivate, store: .nonPersistent(), rules: lists, preferences: BrowserPreferences(), downloads: DownloadManager())
+    }
     @MainActor func testEromeCompatibilityAllowsMediaDespiteBlockingRule() async throws {
         let json = Data("[{\"trigger\":{\"url-filter\":\".*\",\"resource-type\":[\"media\"]},\"action\":{\"type\":\"block\"}}]".utf8)
         let rule = try await BlockingStore().compile(json)
@@ -257,24 +318,44 @@ final class HarborTests: XCTestCase {
         controller.view.addSubview(tab.webView); tab.webView.frame = controller.view.bounds
         window.makeKeyAndVisible(); return window
     }
-    @MainActor private func playAndCheck(_ tab: BrowserTab) async throws {
+    @MainActor private func playAndCheck(_ tab: BrowserTab, selector: String = "document.getElementById('v')") async throws {
         var documentReady = false
         for _ in 0..<150 {
-            if (try? await tab.webView.evaluateJavaScript("!!document.getElementById('v')")) as? Bool == true { documentReady = true; break }
+            if (try? await tab.webView.evaluateJavaScript("(() => { const v = \(selector); return !!v && !!(v.currentSrc || v.src); })()")) as? Bool == true { documentReady = true; break }
             try await Task.sleep(nanoseconds: 100_000_000)
         }
-        XCTAssertTrue(documentReady, "Video DOM must render: \(tab.error ?? "no navigation error")")
+        let initialDiagnostic = await playbackDiagnostic(tab, selector: selector)
+        XCTAssertTrue(documentReady, "Video DOM and source must render: \(initialDiagnostic)")
         guard documentReady else { return }
-        _ = try await tab.webView.evaluateJavaScript("document.getElementById('v').play(); true")
+        _ = try await tab.webView.evaluateJavaScript("(() => { const v = \(selector); v.play().catch(error => { window.playbackError = error.name + ': ' + error.message; }); return true; })()")
         var time = 0.0
         for _ in 0..<150 {
-            time = (try? await tab.webView.evaluateJavaScript("document.getElementById('v').currentTime")) as? Double ?? 0
-            if time > 0.1 { break }
+            time = (try? await tab.webView.evaluateJavaScript("(\(selector)).currentTime")) as? Double ?? 0
+            if time > 0.25 { break }
             try await Task.sleep(nanoseconds: 100_000_000)
         }
-        XCTAssertGreaterThan(time, 0.1, "HTTP video must advance after a play request")
-        let mediaError = try await tab.webView.evaluateJavaScript("document.getElementById('v').error?.code || 0") as? Int
-        XCTAssertEqual(mediaError, 0)
+        let diagnostic = await playbackDiagnostic(tab, selector: selector)
+        print("VIDEO_PLAYBACK_DIAGNOSTIC " + diagnostic)
+        XCTAssertGreaterThan(time, 0.25, "Video must advance after a play request: \(diagnostic)")
+        let mediaError = try await tab.webView.evaluateJavaScript("(\(selector)).error?.code || 0") as? Int
+        XCTAssertEqual(mediaError, 0, diagnostic)
+        let decodedWidth = try await tab.webView.evaluateJavaScript("(\(selector)).videoWidth") as? Int ?? 0
+        XCTAssertGreaterThan(decodedWidth, 0, "The player must decode actual video frames: \(diagnostic)")
+    }
+    @MainActor private func playbackDiagnostic(_ tab: BrowserTab, selector: String = "document.getElementById('v')") async -> String {
+        let script = """
+        (() => {
+            const v = \(selector);
+            return JSON.stringify({url: location.href, ua: navigator.userAgent,
+                source: v?.currentSrc || v?.src, time: v?.currentTime,
+                duration: v?.duration, paused: v?.paused, muted: v?.muted,
+                width: v?.videoWidth, ready: v?.readyState, network: v?.networkState,
+                error: v?.error?.code, message: v?.error?.message,
+                playError: window.playbackError, fixtureError: window.fixtureError});
+        })()
+        """
+        let state = (try? await tab.webView.evaluateJavaScript(script)) as? String ?? "No JavaScript media state"
+        return "\(state); navigation: \(tab.error ?? "none"); protection: \(tab.protection)"
     }
     @MainActor func testPrivateHistoryAndPersistence() {
         let suite = "harbor-test-" + UUID().uuidString
@@ -394,7 +475,7 @@ final class HarborTests: XCTestCase {
         tab.applyProtection(URL(string: "https://m.youtube.com/watch?v=test"))
         XCTAssertEqual(tab.protection, "Video compatibility")
         tab.applyProtection(URL(string: "https://example.com"))
-        XCTAssertEqual(tab.protection, "Protected")
+        XCTAssertEqual(tab.protection, "Protection unavailable")
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         let controller = UIViewController(); window.rootViewController = controller
         controller.view.addSubview(tab.webView); tab.webView.frame = controller.view.bounds

@@ -51,10 +51,9 @@ report = json.loads(result.stdout)
 (DEST / 'conversion-report.json').write_text(json.dumps(report, indent=2))
 raw = report['safariRulesJSON']
 rules = json.loads(raw)
-# Keep cookie policy ahead of the converter's exception rules; never split lists
-# arbitrarily, since ignore-previous-rules must remain with the rules it overrides.
-rules.insert(0, {'trigger': {'url-filter': '.*', 'load-type': ['third-party']},
-                 'action': {'type': 'block-cookies'}})
+# Preserve upstream exceptions and ordering. A blanket third-party cookie rule
+# breaks authenticated cross-origin players/CDNs; use WebKit's native cookie
+# policy plus the upstream targeted filters instead.
 if not 1000 < len(rules) <= 150000:
     raise ValueError(f'Unexpected converted count: {len(rules)}')
 # Reject converter truncation where the current result API reports it.
@@ -63,7 +62,8 @@ if report.get('discardedSafariRules', 0) != 0:
 (DEST / 'enhanced.json').write_text(json.dumps(rules, separators=(',', ':')))
 metadata = {'generatedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
             'ruleCount': len(rules), 'converter': 'SafariConverterLib 4.3.0',
-            'safariTarget': 16, 'sources': sources}
+            'safariTarget': 16, 'sources': sources,
+            'cookiePolicy': 'WebKit native policy and upstream targeted filters; no blanket cookie rule'}
 (DEST / 'metadata.json').write_text(json.dumps(metadata, indent=2))
 for filename, url in [
     ('FILTER-LICENSE-LGPL-3.0.txt', 'https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/LICENSE'),

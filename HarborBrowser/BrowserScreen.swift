@@ -13,6 +13,9 @@ struct WebSurface: UIViewRepresentable {
     }
     func updateUIView(_ container: UIView, context: Context) { attach(to: container) }
     private func attach(to container: UIView) {
+        // WebKit moves its view into its own controller for HTML fullscreen.
+        // SwiftUI state updates must not pull it out of that presentation.
+        guard webView.fullscreenState == .notInFullscreen else { return }
         guard webView.superview !== container else { return }
         container.subviews.forEach { $0.removeFromSuperview() }
         webView.removeFromSuperview()
@@ -86,7 +89,7 @@ struct TabScreen: View {
                 Label("Private browsing", systemImage: "eye.slash.fill").font(.caption.bold()).foregroundStyle(.purple).padding(6)
             }
             ZStack {
-                WebSurface(webView: tab.webView)
+                WebSurface(webView: tab.webView).id(ObjectIdentifier(tab.webView))
                 if tab.address.isEmpty { home }
             }
             if let error = tab.error {
@@ -129,6 +132,7 @@ struct TabScreen: View {
                         Button { browser.bookmarkCurrent() } label: { Label("Add bookmark", systemImage: "bookmark") }.disabled(tab.webView.url == nil)
                         Button { panel = "Library" } label: { Label("Bookmarks & history", systemImage: "books.vertical") }
                         Button { panel = "Downloads" } label: { Label("Downloads", systemImage: "arrow.down.circle") }
+                        Button { browser.openPlaybackCheck() } label: { Label("Video playback check", systemImage: "play.rectangle") }
                         Button { finding = true } label: { Label("Find on page", systemImage: "magnifyingglass") }
                         Button { tab.setDesktop(!tab.desktop) } label: { Label(tab.desktop ? "Request mobile site" : "Request desktop site", systemImage: "desktopcomputer") }
                         if let url = tab.webView.url { ShareLink(item: url) { Label("Share page", systemImage: "square.and.arrow.up") } }
@@ -157,9 +161,9 @@ struct TabScreen: View {
                     shortcut("DuckDuckGo", "magnifyingglass", "https://duckduckgo.com")
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    Label(library.preferences.blockAds ? "Protection enabled" : "Protection paused", systemImage: "shield.lefthalf.filled").font(.headline)
+                    Label(library.preferences.blockAds ? (browser.ruleCount > 0 ? "Protection enabled" : "Protection unavailable") : "Protection paused", systemImage: "shield.lefthalf.filled").font(.headline)
                     Text("\(browser.ruleCount.formatted()) blocking rules loaded").font(.subheadline).foregroundStyle(.secondary)
-                    Text("Video compatibility is available for YouTube.").font(.caption).foregroundStyle(.secondary)
+                    Text(browser.ruleCount > 0 ? "Video compatibility is available in site controls." : browser.status).font(.caption).foregroundStyle(.secondary)
                 }.frame(maxWidth: .infinity, alignment: .leading).padding(20).background(Color.teal.opacity(0.09), in: RoundedRectangle(cornerRadius: 20))
                 if !library.bookmarks.isEmpty {
                     HStack { Text("FAVORITES").font(.caption.bold()).tracking(2); Spacer(); Button("See all") { panel = "Library" } }
@@ -346,7 +350,8 @@ struct SettingsPanel: View {
                     }.navigationTitle("Video compatibility")
                 }
                 Toggle("Allow media autoplay", isOn: $library.preferences.allowAutoplay)
-            } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites to avoid player failures; ads may appear. Autoplay changes apply to new tabs. Inline playback, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
+                Button("Video playback check") { browser.openPlaybackCheck() }
+            } header: { Text("Video & audio") } footer: { Text("Video compatibility pauses content filtering on supported video sites; ads may appear. Playback and pop-up changes recreate open pages when safe. Submitted forms stay open; use a new tab for those pages. Inline playback, full screen, AirPlay and Picture in Picture are enabled when supported by the website and iOS.") }
             Section("Filter lists") {
                 LabeledContent("Loaded rules", value: browser.ruleCount.formatted())
                 Text(browser.filterDescription).font(.caption).foregroundStyle(.secondary)
@@ -391,6 +396,16 @@ struct SitePanel: View {
                         }))
                         Text("Pauses content filtering for this site to avoid player failures. Ads may appear.").font(.caption).foregroundStyle(.secondary)
                     }
+                }
+            }
+            if tab.webView.url?.host != nil {
+                Section {
+                    Button("Reload for video playback") { browser.reloadCurrentForVideo() }
+                        .accessibilityIdentifier("ReloadForVideo")
+                        .disabled(browser.busy)
+                    Button("Video playback check") { browser.openPlaybackCheck() }
+                } header: { Text("Video playback") } footer: {
+                    Text("Reload enables JavaScript and autoplay, opens the mobile page, and pauses filters for this site. Ads may appear. The playback check uses a video included with Harbor.")
                 }
             }
             Section("Page display") {
