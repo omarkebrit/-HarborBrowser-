@@ -33,6 +33,7 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
         const diagnostic = document.getElementById('diagnostic');
         let frames = 0;
         let automaticAttempted = false;
+        let automaticOutcome = 'not attempted';
         if (v.requestVideoFrameCallback) {
             const frame = () => { frames++; v.requestVideoFrameCallback(frame); };
             v.requestVideoFrameCallback(frame);
@@ -41,7 +42,8 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
             diagnostic.textContent = 'Frames: ' + frames + ', time: ' + v.currentTime.toFixed(2)
                 + ', paused: ' + v.paused + ', readyState: ' + v.readyState
                 + ', size: ' + v.videoWidth + 'x' + v.videoHeight
-                + ', error: ' + (v.error ? v.error.code : 'none');
+                + ', error: ' + (v.error ? v.error.code : 'none')
+                + ', automatic result: ' + automaticOutcome;
             if (!v.paused && !v.muted && v.volume > 0 && v.videoWidth > 0 && v.currentTime > 0.25
                     && (!v.requestVideoFrameCallback || frames > 0))
                 status.textContent = 'Audio and video playing';
@@ -63,17 +65,18 @@ def media_page(title, source="/media/video.mp4", blob=False, autoplay=False):
     """
     automatic = """
         automaticAttempted = true;
+        automaticOutcome = 'pending';
         v.muted = false; v.volume = 1;
         status.textContent = 'Attempting automatic playback';
-        v.play().then(report).catch(error => {
-            status.textContent = 'Automatic playback blocked: ' + error.name;
+        v.play().then(() => {
+            automaticOutcome = 'allowed'; report();
+        }).catch(error => {
+            automaticOutcome = error.name;
+            status.textContent = error.name === 'NotAllowedError'
+                ? 'Automatic playback blocked: NotAllowedError'
+                : 'Automatic playback failed: ' + error.name;
             report();
         });
-        setTimeout(() => {
-            report();
-            if (v.paused && v.currentTime === 0 && !v.error)
-                status.textContent = 'Automatic playback blocked';
-        }, 1500);
     """ if autoplay else ""
     assignment = ("fetch('/media/video.mp4').then(response => {"
                   "if (!response.ok) throw Error('Fetch ' + response.status); return response.blob();"

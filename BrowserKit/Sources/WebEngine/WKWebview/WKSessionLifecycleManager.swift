@@ -66,10 +66,10 @@ struct DefaultWKSessionLifecycleManager: WKSessionLifecycleManager {
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
         // and having multiple views with the same label confuses tests.
         let previousWebView = session.webView
+        if #available(iOS 16.0, *), previousWebView.fullscreenState != .notInFullscreen { return }
         previousWebView.endEditing(true)
         previousWebView.accessibilityLabel = nil
         previousWebView.accessibilityElementsHidden = true
         previousWebView.accessibilityIdentifier = nil
-        previousWebView.removeFromSuperview()
     }
 }

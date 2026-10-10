@@ -3,12 +3,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 import XCTest
+import UIKit
 @testable import WebEngine
 
 @MainActor
 @available(iOS 16.0, *)
 final class WKEngineViewTests: XCTestCase {
-    private var engineSession: WKEngineSession!
+    private var engineSession: MockWKEngineSession!
 
     override func setUp() async throws {
         try await super.setUp()
@@ -63,6 +64,40 @@ final class WKEngineViewTests: XCTestCase {
 
         XCTAssertFalse(engineSession.isActive)
         XCTAssertTrue(newEngineSession.isActive)
+    }
+
+    func testSwitchingSession_preservesFullscreenOwnerAndAccessibilityUntilExit() async {
+        let subject = createSubject()
+        subject.render(session: engineSession)
+        let fullscreenContainer = UIView(frame: CGRect(x: 0, y: 0, width: 932, height: 430))
+        let fullscreenWebView = engineSession.webviewProvider.webView!
+        fullscreenWebView.fullscreenState = .inFullscreen
+        fullscreenWebView.accessibilityLabel = "Fullscreen media"
+        fullscreenWebView.accessibilityIdentifier = "fullscreen-player"
+        fullscreenWebView.accessibilityElementsHidden = false
+        fullscreenContainer.addSubview(fullscreenWebView)
+        let priorRemovalCount = fullscreenWebView.removeFromSuperviewCalled
+        let nextSession = await MockWKEngineSession()
+
+        subject.render(session: nextSession)
+
+        XCTAssertFalse(engineSession.isActive)
+        XCTAssertTrue(nextSession.isActive)
+        XCTAssertTrue(fullscreenWebView.superview === fullscreenContainer)
+        XCTAssertEqual(fullscreenWebView.removeFromSuperviewCalled, priorRemovalCount)
+        XCTAssertEqual(fullscreenWebView.accessibilityLabel, "Fullscreen media")
+        XCTAssertEqual(fullscreenWebView.accessibilityIdentifier, "fullscreen-player")
+        XCTAssertFalse(fullscreenWebView.accessibilityElementsHidden)
+
+        fullscreenWebView.fullscreenState = .notInFullscreen
+        subject.addSubview(fullscreenWebView)
+        subject.setNeedsLayout()
+        subject.layoutIfNeeded()
+
+        XCTAssertNil(fullscreenWebView.superview)
+        XCTAssertTrue(fullscreenWebView.accessibilityElementsHidden)
+        XCTAssertNil(fullscreenWebView.accessibilityIdentifier)
+        XCTAssertTrue(nextSession.webView.superview === subject)
     }
 
     func createSubject() -> WKEngineView {

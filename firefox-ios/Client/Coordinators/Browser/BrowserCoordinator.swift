@@ -176,10 +176,8 @@ final class BrowserCoordinator: BaseCoordinator,
         self.homepageViewController = homepageController
         homepageController.restoreVerticalScrollOffset(force: didEmbed)
 
-        if didEmbed {
-            // [FXIOS-13651] Fix for WKWebView memory leak. (See comments on related PR.)
-            webviewController?.update(webView: nil)
-        }
+        // [FXIOS-13651] Fix for WKWebView memory leak. (See comments on related PR.)
+        webviewController?.update(webView: nil)
     }
 
     private func dispatchActionForEmbeddingHomepage(with isZeroSearch: Bool) {
@@ -204,6 +202,7 @@ final class BrowserCoordinator: BaseCoordinator,
             logger.log("Unable to embed private homepage", level: .debug, category: .coordinator)
             return
         }
+        webviewController?.update(webView: nil)
     }
 
     func navigateFromHomePanel(to url: URL, visitType: VisitType, isGoogleTopSite: Bool) {
@@ -1373,6 +1372,7 @@ final class BrowserCoordinator: BaseCoordinator,
         if nativeErrorPageViewController != nil {
             // Already showing a native error page, the existing instance will
             // pick up the new error state via its Redux subscription.
+            webviewController?.update(webView: nil)
             return
         }
 
@@ -1386,6 +1386,7 @@ final class BrowserCoordinator: BaseCoordinator,
             return
         }
         nativeErrorPageViewController = errorPageController
+        webviewController?.update(webView: nil)
     }
 
     private func setiPadLayoutDetents(for controller: UIViewController) {

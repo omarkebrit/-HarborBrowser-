@@ -69,6 +69,55 @@ class BrowserViewControllerTests: XCTestCase, StoreTestUtility {
         XCTAssertTrue(subject.view.constraints.isEmpty)
     }
 
+    @MainActor
+    @available(iOS 16.0, *)
+    func testWebViewHosting_switchDuringFullscreenRemovesReturnedOldView() {
+        let previousWebView = FullscreenHostingTestWebView()
+        let subject = WebviewViewController(webView: previousWebView)
+        subject.loadViewIfNeeded()
+        let fullscreenContainer = UIView()
+        previousWebView.simulatedFullscreenState = .inFullscreen
+        previousWebView.accessibilityElementsHidden = false
+        fullscreenContainer.addSubview(previousWebView)
+        let nextWebView = WKWebView()
+
+        subject.update(webView: nextWebView)
+
+        XCTAssertTrue(previousWebView.superview === fullscreenContainer)
+        XCTAssertFalse(previousWebView.accessibilityElementsHidden)
+        XCTAssertTrue(nextWebView.superview === subject.view)
+
+        previousWebView.simulatedFullscreenState = .notInFullscreen
+        subject.view.addSubview(previousWebView)
+        subject.viewDidLayoutSubviews()
+
+        XCTAssertNil(previousWebView.superview)
+        XCTAssertTrue(previousWebView.accessibilityElementsHidden)
+        XCTAssertTrue(nextWebView.superview === subject.view)
+        XCTAssertEqual(subject.view.subviews.count, 1)
+    }
+
+    @MainActor
+    @available(iOS 16.0, *)
+    func testWebViewHosting_switchToNativeContentDuringFullscreenRemovesReturnedOldView() {
+        let previousWebView = FullscreenHostingTestWebView()
+        let subject = WebviewViewController(webView: previousWebView)
+        subject.loadViewIfNeeded()
+        let fullscreenContainer = UIView()
+        previousWebView.simulatedFullscreenState = .inFullscreen
+        fullscreenContainer.addSubview(previousWebView)
+
+        subject.update(webView: nil)
+        XCTAssertTrue(previousWebView.superview === fullscreenContainer)
+
+        previousWebView.simulatedFullscreenState = .notInFullscreen
+        subject.view.addSubview(previousWebView)
+        subject.viewDidLayoutSubviews()
+
+        XCTAssertNil(previousWebView.superview)
+        XCTAssertTrue(subject.view.subviews.isEmpty)
+    }
+
     override func setUp() async throws {
         try await super.setUp()
         tabManager = MockTabManager()

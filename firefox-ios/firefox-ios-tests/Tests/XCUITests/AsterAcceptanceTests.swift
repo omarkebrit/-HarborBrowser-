@@ -237,9 +237,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         newTab()
         navigator.openURL(origin + "/media/autoplay.html")
         navigator.nowAt(BrowserTab)
-        let blockedStatus = app.webViews.staticTexts.matching(
-            NSPredicate(format: "label BEGINSWITH %@", "Automatic playback blocked")
-        ).firstMatch
+        let blockedStatus = app.webViews.staticTexts["Automatic playback blocked: NotAllowedError"].firstMatch
         mozWaitForElementToExist(blockedStatus, timeout: 15)
         let diagnostic = app.webViews.staticTexts.matching(
             NSPredicate(format: "label BEGINSWITH %@", "Frames: ")
@@ -247,6 +245,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         mozWaitForElementToExist(diagnostic)
         XCTAssertTrue(diagnostic.label.contains("paused: true"))
         XCTAssertTrue(diagnostic.label.contains("time: 0.00"))
+        XCTAssertTrue(diagnostic.label.contains("automatic result: NotAllowedError"))
         XCTAssertFalse(app.webViews.staticTexts["Audio and video playing"].exists)
         captureDisplay("Real automatic playback attempt remains paused")
         app.webViews.buttons["Play test media"].waitAndTap()

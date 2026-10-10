@@ -38,6 +38,8 @@ protocol WKEngineWebView: UIView {
     var engineConfiguration: WKEngineConfiguration { get }
 
     @available(iOS 16.0, *)
+    var fullscreenState: WKWebView.FullscreenState { get }
+    @available(iOS 16.0, *)
     var isFindInteractionEnabled: Bool { get set }
     @available(iOS 16.0, *)
     var findInteraction: UIFindInteraction? { get }

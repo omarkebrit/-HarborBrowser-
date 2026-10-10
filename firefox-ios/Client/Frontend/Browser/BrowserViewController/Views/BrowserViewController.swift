@@ -4734,11 +4734,17 @@ extension BrowserViewController: TabManagerDelegate {
         // Remove the old accessibilityLabel only when the selected tab isn't the previous tab.
         // When the previous webview isn't visible anymore we ensure proper clean up for tests.
         if let previousWebView = previousTab?.webView, selectedTab != previousTab {
-            previousWebView.endEditing(true)
-            previousWebView.accessibilityLabel = nil
-            previousWebView.accessibilityElementsHidden = true
-            previousWebView.accessibilityIdentifier = nil
-            previousWebView.removeFromSuperview()
+            var canRemovePreviousWebView = true
+            if #available(iOS 16.0, *) {
+                canRemovePreviousWebView = previousWebView.fullscreenState == .notInFullscreen
+            }
+            if canRemovePreviousWebView {
+                previousWebView.endEditing(true)
+                previousWebView.accessibilityLabel = nil
+                previousWebView.accessibilityElementsHidden = true
+                previousWebView.accessibilityIdentifier = nil
+                previousWebView.removeFromSuperview()
+            }
         }
 
         var needsReload = false

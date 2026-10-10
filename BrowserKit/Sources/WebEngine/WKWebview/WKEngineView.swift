@@ -11,6 +11,8 @@ final class WKEngineView: UIView, EngineView {
     private var logger: Logger
     private var sessionlifeCycleManager: WKSessionLifecycleManager
     private var fullscreenObservation: NSKeyValueObservation?
+    private var retiringFullscreenSessions: [ObjectIdentifier: WKEngineSession] = [:]
+    private var retiringFullscreenObservations: [ObjectIdentifier: NSKeyValueObservation] = [:]
 
     // TODO: FXIOS-13670 With Swift 6 we can use default params in the init
     @MainActor
@@ -59,7 +61,9 @@ final class WKEngineView: UIView, EngineView {
 
     private func remove(session: WKEngineSession) {
         fullscreenObservation = nil
-        if session.webView.superview === self {
+        if #available(iOS 16.0, *), session.webView.fullscreenState != .notInFullscreen {
+            retainFullscreenSessionUntilExit(session)
+        } else if session.webView.superview === self {
             session.webView.removeFromSuperview()
         }
         sessionlifeCycleManager.deactivate(session)
@@ -76,8 +80,7 @@ final class WKEngineView: UIView, EngineView {
         guard let session else { return }
 
         let webView = session.webView
-        if #available(iOS 16.0, *), let nativeWebView = webView as? WKWebView,
-           nativeWebView.fullscreenState != .notInFullscreen { return }
+        if #available(iOS 16.0, *), webView.fullscreenState != .notInFullscreen { return }
         if webView.superview !== self {
             addSubview(webView)
         }
@@ -88,13 +91,13 @@ final class WKEngineView: UIView, EngineView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        releaseCompletedFullscreenSessions()
         layoutHostedWebView()
     }
 
     private func layoutHostedWebView() {
         guard let webView = session?.webView, webView.superview === self else { return }
-        if #available(iOS 16.0, *), let nativeWebView = webView as? WKWebView,
-           nativeWebView.fullscreenState != .notInFullscreen { return }
+        if #available(iOS 16.0, *), webView.fullscreenState != .notInFullscreen { return }
         webView.frame = CGRect(x: 0, y: safeAreaInsets.top, width: bounds.width,
                                height: max(0, bounds.height - safeAreaInsets.top - safeAreaInsets.bottom))
     }
@@ -106,6 +109,32 @@ final class WKEngineView: UIView, EngineView {
             DispatchQueue.main.async { [weak self] in
                 self?.setupWebViewLayout()
             }
+        }
+    }
+
+    @available(iOS 16.0, *)
+    private func retainFullscreenSessionUntilExit(_ session: WKEngineSession) {
+        let identifier = ObjectIdentifier(session)
+        retiringFullscreenSessions[identifier] = session
+        guard let webView = session.webView as? WKWebView else { return }
+        retiringFullscreenObservations[identifier] = webView.observe(\.fullscreenState) { [weak self] _, _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.releaseCompletedFullscreenSessions()
+            }
+        }
+    }
+
+    private func releaseCompletedFullscreenSessions() {
+        guard #available(iOS 16.0, *) else { return }
+        let completed = retiringFullscreenSessions.filter { $0.value.webView.fullscreenState == .notInFullscreen }
+        for (identifier, previousSession) in completed {
+            if previousSession !== session {
+                guard previousSession.webView.superview === self else { continue }
+                previousSession.webView.removeFromSuperview()
+                sessionlifeCycleManager.deactivate(previousSession)
+            }
+            retiringFullscreenSessions.removeValue(forKey: identifier)
+            retiringFullscreenObservations.removeValue(forKey: identifier)
         }
     }
 }

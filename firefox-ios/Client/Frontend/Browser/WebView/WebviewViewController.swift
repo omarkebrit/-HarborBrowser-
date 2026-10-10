@@ -13,6 +13,8 @@ class WebviewViewController: UIViewController,
                              ScreenshotableView {
     private var webView: WKWebView?
     private var fullscreenObservation: NSKeyValueObservation?
+    private var retiringFullscreenWebViews: [ObjectIdentifier: WKWebView] = [:]
+    private var retiringFullscreenObservations: [ObjectIdentifier: NSKeyValueObservation] = [:]
     var contentType: ContentType = .webview
 
     init(webView: WKWebView) {
@@ -32,6 +34,7 @@ class WebviewViewController: UIViewController,
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        releaseCompletedFullscreenWebViews()
         layoutHostedWebView()
     }
 
@@ -65,13 +68,45 @@ class WebviewViewController: UIViewController,
 
     func update(webView: WKWebView?) {
         let didChangeWebView = self.webView !== webView
-        if didChangeWebView, self.webView?.superview === viewIfLoaded {
-            self.webView?.removeFromSuperview()
+        if didChangeWebView, let previousWebView = self.webView {
+            if #available(iOS 16.0, *), previousWebView.fullscreenState != .notInFullscreen {
+                retainFullscreenWebViewUntilExit(previousWebView)
+            } else if previousWebView.superview === viewIfLoaded {
+                previousWebView.removeFromSuperview()
+            }
         }
         self.webView = webView
         if isViewLoaded {
             if didChangeWebView { observeFullscreenChanges() }
             setupWebView()
+        }
+    }
+
+    @available(iOS 16.0, *)
+    private func retainFullscreenWebViewUntilExit(_ webView: WKWebView) {
+        let identifier = ObjectIdentifier(webView)
+        retiringFullscreenWebViews[identifier] = webView
+        retiringFullscreenObservations[identifier] = webView.observe(\.fullscreenState) { [weak self] _, _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.releaseCompletedFullscreenWebViews()
+            }
+        }
+    }
+
+    private func releaseCompletedFullscreenWebViews() {
+        guard #available(iOS 16.0, *) else { return }
+        let completed = retiringFullscreenWebViews.filter { $0.value.fullscreenState == .notInFullscreen }
+        for (identifier, previousWebView) in completed {
+            if previousWebView !== webView {
+                guard previousWebView.superview === viewIfLoaded else { continue }
+                previousWebView.removeFromSuperview()
+                previousWebView.endEditing(true)
+                previousWebView.accessibilityLabel = nil
+                previousWebView.accessibilityElementsHidden = true
+                previousWebView.accessibilityIdentifier = nil
+            }
+            retiringFullscreenWebViews.removeValue(forKey: identifier)
+            retiringFullscreenObservations.removeValue(forKey: identifier)
         }
     }
 

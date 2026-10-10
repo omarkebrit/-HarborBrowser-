@@ -16,6 +16,7 @@ class MockWKEngineWebView: UIView, WKEngineWebView {
     weak var navigationDelegate: WKNavigationDelegate?
 
     var engineConfiguration: WKEngineConfiguration
+    var fullscreenState: WKWebView.FullscreenState = .notInFullscreen
     var interactionState: Any?
     var engineScrollView: WKScrollView? = MockEngineScrollView()
     var url: URL?
@@ -122,6 +123,7 @@ class MockWKEngineWebView: UIView, WKEngineWebView {
 
     override func removeFromSuperview() {
         removeFromSuperviewCalled += 1
+        super.removeFromSuperview()
     }
 
     func close() {
