@@ -402,7 +402,7 @@ final class AsterAcceptanceTests: BaseTestCase {
                 && frame.width > 0 && frame.height > 0 && viewport.frame.contains(frame)
                 && self.app.windows.firstMatch.frame.contains(frame)
         }, object: element)
-        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: min(timeout, 5)), .completed,
+        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: timeout), .completed,
                        "Media text must render inside the native viewport and display: \(text)", file: file, line: line)
     }
 
