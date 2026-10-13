@@ -1,0 +1,20 @@
+/* Open New Tab button label */
+"TodayWidget.NewSearchButtonLabelV1" = "ⵔⵣⵓ ⴳ Aster";
+
+/* Open New Tab button label */
+"TodayWidget.NewTabButtonLabelV1" = "ⴰⵔⵣⵣⵓ ⴰⵎⴰⵢⵏⵓ";
+
+/* Open Firefox when there are no tabs opened in tab tray i.e. Empty State */
+"TodayWidget.OpenFirefoxLabel" = "ⵕⵥⵎ Aster";
+
+/* Open New Private Tab button label */
+"TodayWidget.PrivateTabButtonLabelV1" = "ⴰⵔⵣⵣⵓ ⵓⵙⵍⵓⴳ";
+
+/* Title for small size widget which allows users to search in Firefox. Do not translate the word Firefox. */
+"TodayWidget.SearchInFirefoxTitle" = "ⵔⵣⵓ ⴳ Aster";
+
+/* Search in Firefox. Do not translate the word Firefox */
+"TodayWidget.SearchInFirefoxV2" = "ⵔⵣⵓ ⴳ Aster";
+
+/* Search in private tab */
+"TodayWidget.SearchInPrivateTabLabelV2" = "ⵔⵣⵓ ⴳ ⵓⵙⴽⵙⵍ ⵓⵙⵍⵉⴳ";

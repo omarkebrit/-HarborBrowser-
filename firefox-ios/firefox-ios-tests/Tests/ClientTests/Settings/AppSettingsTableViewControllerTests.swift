@@ -1,0 +1,195 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/
+
+import XCTest
+import Common
+import Shared
+@testable import Client
+
+@MainActor
+class AppSettingsTableViewControllerTests: XCTestCase {
+    private var profile: Profile!
+    private var tabManager: MockTabManager!
+    private var appAuthenticator: MockAppAuthenticator!
+    private var delegate: MockSettingsFlowDelegate!
+    private var applicationHelper: MockApplicationHelper!
+    private var mockSettingsDelegate: MockSettingsDelegate!
+    private var mockParentCoordinator: MockSettingsFlowDelegate!
+    private var mockGleanUsageReportingMetricsService: MockGleanUsageReportingMetricsService!
+
+    override func setUp() async throws {
+        try await super.setUp()
+        DependencyHelperMock().bootstrapDependencies()
+        self.profile = MockProfile()
+        self.tabManager = MockTabManager()
+        self.appAuthenticator = MockAppAuthenticator()
+        self.delegate = MockSettingsFlowDelegate()
+        self.applicationHelper = MockApplicationHelper()
+        self.mockSettingsDelegate = MockSettingsDelegate()
+        self.mockParentCoordinator = MockSettingsFlowDelegate()
+        self.mockGleanUsageReportingMetricsService = MockGleanUsageReportingMetricsService(profile: MockProfile())
+    }
+
+    override func tearDown() async throws {
+        DependencyHelperMock().reset()
+        self.profile = nil
+        self.tabManager = nil
+        self.appAuthenticator = nil
+        self.delegate = nil
+        self.applicationHelper = nil
+        try await super.tearDown()
+    }
+
+    func testTechnicalConsentDoesNotOptIntoStudies() {
+        let studies = createStudiesSetting()
+
+        studies.updateSetting(for: true)
+
+        XCTAssertNil(profile.prefs.boolForKey(AppConstants.prefStudiesToggle))
+        XCTAssertFalse(studies.control.switchView.isOn)
+    }
+
+    func testTechnicalConsentPreservesExistingStudyChoice() {
+        profile.prefs.setBool(true, forKey: AppConstants.prefStudiesToggle)
+        let studies = createStudiesSetting()
+
+        studies.updateSetting(for: false)
+        XCTAssertEqual(profile.prefs.boolForKey(AppConstants.prefStudiesToggle), true)
+        XCTAssertFalse(studies.control.switchView.isOn)
+
+        studies.updateSetting(for: true)
+        XCTAssertEqual(profile.prefs.boolForKey(AppConstants.prefStudiesToggle), true)
+        XCTAssertTrue(studies.control.switchView.isOn)
+    }
+
+    private func createStudiesSetting() -> SendDataSetting {
+        return SendDataSetting(
+            prefs: profile.prefs,
+            prefKey: AppConstants.prefStudiesToggle,
+            defaultValue: false,
+            titleText: "Studies",
+            subtitleText: "Remote studies",
+            learnMoreText: "Learn more",
+            learnMoreURL: nil,
+            a11yId: nil,
+            learnMoreA11yId: nil,
+            settingsDelegate: nil,
+            isStudiesCase: true
+        )
+    }
+
+    func testRouteNotHandled_delegatesArentCalled() {
+        let subject = createSubject()
+        subject.handle(route: .clearPrivateData)
+
+        XCTAssertEqual(delegate.showCreditCardSettingsCalled, 0)
+        XCTAssertEqual(delegate.showDevicePassCodeCalled, 0)
+    }
+
+    func testCreditCard_whenDeviceOwnerAuthenticated_showCreditCardSettings() {
+        appAuthenticator.authenticationState = .deviceOwnerAuthenticated
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.handle(route: .creditCard)
+
+        XCTAssertEqual(delegate.showCreditCardSettingsCalled, 1)
+    }
+
+    func testCreditCard_whenPassCodeRequired_showDevicePasscode() {
+        appAuthenticator.authenticationState = .passCodeRequired
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.handle(route: .creditCard)
+
+        XCTAssertEqual(delegate.showDevicePassCodeCalled, 1)
+    }
+
+    func testCreditCard_whenDeviceOwnerFailed_showNothing() {
+        appAuthenticator.authenticationState = .deviceOwnerFailed
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.handle(route: .creditCard)
+
+        XCTAssertEqual(delegate.showDevicePassCodeCalled, 0)
+        XCTAssertEqual(delegate.showCreditCardSettingsCalled, 0)
+    }
+
+    func testPassword_whenNeedShowingLoginOnboarding_showOnboarding() {
+        UserDefaults.standard.set(false, forKey: LoginOnboarding.HasSeenLoginOnboardingKey)
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.handle(route: .password)
+
+        XCTAssertEqual(delegate.showPasswordManagerCalled, 1)
+        XCTAssertTrue(delegate.savedShouldShowOnboarding)
+    }
+
+    func testPassword_whenHasAlreadyShownLoginOnboarding_authenticateAndShowPassword() {
+        appAuthenticator.authenticationState = .deviceOwnerAuthenticated
+        UserDefaults.standard.set(true, forKey: LoginOnboarding.HasSeenLoginOnboardingKey)
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.handle(route: .password)
+
+        XCTAssertEqual(delegate.showPasswordManagerCalled, 1)
+        XCTAssertFalse(delegate.savedShouldShowOnboarding)
+    }
+
+    func testPressedShowTour_openOnboardingDeeplinkURL() {
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.pressedShowTour()
+
+        XCTAssertEqual(delegate.didFinishShowingSettingsCalled, 1)
+        XCTAssertEqual(applicationHelper.lastOpenURL,
+                       URL(string: "\(URL.mozInternalScheme)://deep-link?url=/action/show-intro-onboarding")!)
+    }
+
+    func testShowExperiments_openExperiments() {
+        let subject = createSubject()
+        subject.parentCoordinator = delegate
+
+        subject.pressedExperiments()
+
+        XCTAssertEqual(delegate.showExperimentsCalled, 1)
+    }
+
+    func testDelegatesAreSet() {
+        let subject = createSubject()
+
+        // NOTE: The subject holds a weak reference to these delegates, so we have to store them for the length of the test
+        // duration, or else they will deallocate before the following assertion checks.
+        XCTAssertNotNil(subject.settingsDelegate)
+        XCTAssertNotNil(subject.parentCoordinator)
+    }
+
+    func testGenerateSettings_whenRetainedBySubject_subjectDeallocates() {
+        let subject = createSubject()
+
+        subject.settings = subject.generateSettings()
+
+        XCTAssertFalse(subject.settings.isEmpty)
+    }
+
+    // MARK: - Helper
+    private func createSubject() -> AppSettingsTableViewController {
+        let subject = AppSettingsTableViewController(
+            with: profile,
+            and: tabManager,
+            settingsDelegate: mockSettingsDelegate,
+            parentCoordinator: mockParentCoordinator,
+            gleanUsageReportingMetricsService: mockGleanUsageReportingMetricsService,
+            appAuthenticator: appAuthenticator,
+            applicationHelper: applicationHelper
+        )
+        trackForMemoryLeaks(subject)
+        return subject
+    }
+}

@@ -1,0 +1,64 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/
+
+import Common
+import Foundation
+import Shared
+import XCTest
+
+class SupportUtilsTests: XCTestCase {
+    func testLocalProductPages_canBeAuthorizedWithoutNetworkOrCampaignParameters() throws {
+        let urls = [SupportUtils.URLForGetHelp,
+                    SupportUtils.URLForPrivacyNotice,
+                    SupportUtils.URLForUpdatedPrivacyNotice,
+                    SupportUtils.URLForUpdatedPrivacyNoticeDiff]
+
+        for optionalURL in urls {
+            let url = try XCTUnwrap(optionalURL)
+            XCTAssertEqual(url.scheme, "internal")
+            XCTAssertEqual(url.host, "local")
+            XCTAssertNil(url.query)
+            XCTAssertTrue(try XCTUnwrap(InternalURL(url)).isAboutURL)
+
+            let authorizedURL = try XCTUnwrap(InternalURL.authorize(url: url))
+            let internalURL = try XCTUnwrap(InternalURL(authorizedURL))
+            XCTAssertTrue(internalURL.isAuthorized)
+            XCTAssertEqual(internalURL.stripAuthorization, url.absoluteString)
+        }
+    }
+
+    func testURLForTopic() {
+        let appVersion = AppInfo.appVersion
+        let languageIdentifier = Locale.preferredLanguages.first!
+        XCTAssertEqual(SupportUtils.URLForTopic("Bacon")?.absoluteString, "https://support.mozilla.org/1/mobile/\(appVersion)/iOS/\(languageIdentifier)/Bacon")
+        XCTAssertEqual(SupportUtils.URLForTopic("Cheese & Crackers")?.absoluteString, "https://support.mozilla.org/1/mobile/\(appVersion)/iOS/\(languageIdentifier)/Cheese%20&%20Crackers")
+        XCTAssertEqual(SupportUtils.URLForTopic("Möbelträgerfüße")?.absoluteString, "https://support.mozilla.org/1/mobile/\(appVersion)/iOS/\(languageIdentifier)/M%C3%B6beltr%C3%A4gerf%C3%BC%C3%9Fe")
+    }
+
+    func testURLForPrivacyNotice_withoutContentParam() {
+        let urlString = SupportUtils.URLForPrivacyNotice(
+            source: "modal",
+            campaign: "microsurvey",
+            content: nil
+        )?.absoluteString
+
+        XCTAssertEqual(
+            urlString,
+            "internal://local/about/aster-privacy"
+        )
+    }
+
+    func testURLForPrivacyNotice_withContentParam() {
+        let urlString = SupportUtils.URLForPrivacyNotice(
+            source: "modal",
+            campaign: "microsurvey",
+            content: "homepage"
+        )?.absoluteString
+
+        XCTAssertEqual(
+            urlString,
+            "internal://local/about/aster-privacy"
+        )
+    }
+}
