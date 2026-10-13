@@ -413,18 +413,24 @@ final class AsterAcceptanceTests: BaseTestCase {
         add(screenshot)
     }
 
-    private func expectPopupText(_ text: String, timeout: TimeInterval) {
+    private func expectPopupText(_ text: String, timeout: TimeInterval,
+                                 file: StaticString = #filePath, line: UInt = #line) {
         let element = app.webViews.staticTexts[text].firstMatch
         guard element.waitForExistence(timeout: timeout) else {
-            XCTFail("Missing rendered popup text: \(text)")
+            XCTFail("Missing rendered popup text: \(text)", file: file, line: line)
             return
         }
         let viewport = app.webViews["contentView"].firstMatch
         let onscreen = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
-            element.frame.width > 0 && element.frame.height > 0 && viewport.frame.contains(element.frame)
+            // Each frame read requests a native snapshot; avoid repeating it within one evaluation.
+            let frame = element.frame
+            let viewportFrame = viewport.frame
+            let windowFrame = self.app.windows.firstMatch.frame
+            return frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
+                && frame.width > 0 && frame.height > 0 && viewportFrame.contains(frame) && windowFrame.contains(frame)
         }, object: element)
-        XCTAssertEqual(XCTWaiter().wait(for: [onscreen], timeout: 5), .completed,
-                       "Popup text must appear inside the visible native browser viewport: \(text)")
+        XCTAssertEqual(XCTWaiter().wait(for: [onscreen], timeout: timeout), .completed,
+                       "Popup text must appear inside the native viewport and display: \(text)", file: file, line: line)
     }
 
     private func waitForPredicate(_ predicate: String, element: XCUIElement) {
