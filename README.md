@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549) is in progress for source `394e481cb5527591a54969859c1c353dd440082b`. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), run number 14, attempt 1, is in progress for source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`. **No production IPA has been produced yet.**
 
-The previous run passed three of four preflight cases; the popup visibility assertion exceeded its five-second wait despite visible decoded playback and an onscreen status label. The current change only updates that test helper: it reads each frame once per evaluation, requires finite positive label bounds inside both the viewport and window, and uses the caller's bounded timeout. Browser/media behavior is unchanged. Full unit, main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The last completed preflight passed popup playback, restrictive autoplay and fullscreen/menu/Settings interaction. Tab creation stopped at tab 13's five-second text-hittability wait despite a visible ready label and native tab count 13; restoration was not reached. The current test-only changes honor caller-supplied bounded text waits and 15-second media waits, preserving all assertion conditions. Browser/media behavior is unchanged. Full unit, main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 

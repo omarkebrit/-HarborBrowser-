@@ -1,14 +1,16 @@
 # Aster validation report
 
-Validation is in progress as of 13 October 2026. The repository is public. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549), run number 12, attempt 1, is running for source `394e481cb5527591a54969859c1c353dd440082b`, native job `115249930684`. No completed full-validation result or production iPhone IPA is available yet.
+Validation is in progress as of 13 October 2026. The repository is public. [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), run number 14, attempt 1, is running for source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`. No completed full-validation result or production iPhone IPA is available yet.
 
-The candidate changes only the popup-test visibility helper. It reads the label, viewport and window frames once each per predicate evaluation, requires finite positive label bounds contained in both the viewport and window, and uses the caller's 15/20-second timeout instead of a fixed five seconds. Production browser/media behavior is unchanged. The 180-minute workflow budget, early passing-regression checkpoint, attempt-specific artifacts and full test/IPA-publication gates remain intact.
+The candidate honors the declared visibility deadlines: generic text callers retain exact-label existence and native hittability within their supplied bounded waits; all three media callers retain finite positive bounds and viewport/window containment within 15 seconds. Production browser/media behavior and every assertion condition are unchanged. The 180-minute workflow budget, early passing-regression checkpoint and strict four-preflight/15-main/one-download gates, plus the full unit plan, remain required before IPA publication.
+
+Run 38386485555, source `ef3bc44`, was superseded during dependency preparation by the consistency follow-up; it adds no completed native test evidence.
 
 ## Completed evidence and current requirements
 
 | Area | Latest completed evidence | Current full run |
 | --- | --- | --- |
-| Four media/session preflight cases | [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`: 3 passed, 1 failed at the popup visibility wait | Must pass all four with zero failures or skips; early evidence checkpoint follows |
+| Four media/session preflight cases | [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549), source `394e481cb5527591a54969859c1c353dd440082b`: 3 passed, 1 failed during tab-13 creation, before restoration | Must pass all four with zero failures or skips; early evidence checkpoint follows |
 | Full upstream `UnitTest` plan | [Run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`: passed | Pending; the later attempt 3 was canceled during unit compilation and added no unit-test result |
 | Main local acceptance and selected upstream UI tests | Run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`: 14 passed, 1 failed at the fullscreen post-rotation toolbar assertion | All 15 selected cases must pass; the strengthened fullscreen case passed the later preflight, but this full selection has not completed on that candidate |
 | Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
@@ -17,11 +19,11 @@ The candidate changes only the popup-test visibility helper. It reads the label,
 
 The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
 
-## Popup assertion and current follow-up
+## Latest preflight and bounded-wait follow-up
 
-Run 38377770464 passed restrictive autoplay followed by manual playback, fullscreen rotation/exit with actual menu → Settings → browser interaction, and 25-tab process restoration. The popup case found “Audio and video playing,” then its fixed five-second geometry wait timed out. No later unit, main UI, download or release stage completed in this run.
+Run 38383638549 verified the earlier popup-helper change: the popup case passed in 48.288 seconds, restrictive autoplay in 38.007 seconds, and fullscreen rotation/exit with actual menu → Settings → browser interaction in 43.646 seconds. The 25-tab case failed during creation at “Local tab 13 ready” after its fixed five-second hittability wait. It did not reach process relaunch or restoration, and no later unit, main UI, download or release stage completed.
 
-The failure screenshot shows decoded video and visible status, with 59 frames at 3.71 seconds. The final native hierarchy records 65 frames at 4.21 seconds, `paused: false`, `readyState: 4` and no media error. Its status bounds `(16, 381, 191, 24)` fit fully inside the native viewport `(0, 59, 430, 731)` and main window `(0, 0, 430, 932)`. Repeated native frame queries occurred during the short wait; the failing intermediate frame values were not recorded. The test-only polling change remains unverified until the active run completes.
+The failure screenshot visibly shows tab 13, its ready label and native tab count 13; session diagnostics also contain 13 saved regular tabs. The label's native bounds `(16, 124, 147, 24)` fit fully inside viewport `(0, 59, 430, 731)` and main window `(0, 0, 430, 932)`. A single hittability evaluation occupied most of the five-second wait. The new bounded-wait changes preserve the assertions, but remain unverified until the active run completes.
 
 Earlier run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78`, passed all four cases. Initial native build/launch took 18 minutes 6 seconds and the cases took 669.133 seconds. That attempt was manually canceled during subsequent unit compilation, leaving no full-suite or IPA result.
 

@@ -1,18 +1,18 @@
 # Feature coverage
 
-Completed evidence includes run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78` (four passing preflight cases, followed by manual cancellation during unit compilation). Run 38377770464, source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`, passed three preflight cases and failed a five-second popup visibility assertion despite visible playback and valid final bounds. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549), source `394e481cb5527591a54969859c1c353dd440082b`, is verifying the test-only polling change; full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
+Historical evidence includes run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3 (four passing preflight cases, then cancellation during unit compilation). The latest completed run 38383638549, source `394e481cb5527591a54969859c1c353dd440082b`, passed popup, autoplay and fullscreen/menu/Settings cases but failed tab-13 creation at a five-second hittability wait; restoration was not reached. [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`, is verifying bounded text/media deadlines with unchanged assertions; full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
 | Browsing and navigation | Native WebKit, back/forward, reload, search, find in page | Upstream unit plan; local native navigation and URL-bar tests |
-| Tabs | Upstream tab management and persistence | 25 loaded tabs, process relaunch and first/last tab access |
+| Tabs | Upstream tab management and persistence | Earlier 25-tab restoration passed; latest creation stopped at tab 13's hittability wait despite visible status and 13 saved tabs. Current full rerun remains required |
 | Private browsing | Separate nonpersistent web data and private history handling | Native cookie/localStorage isolation and exclusion from regular history |
 | Advertising protection | AdGuard Base + Mobile Ads converted to native WebKit rules during CI | Real WebKit rule compilation; controlled blocked resource and site exception |
 | Tracking protection | Upstream standard/strict native lists | Upstream content-blocker unit coverage; local acceptance |
 | Fingerprinting defenses | Inherited blocking of known fingerprinter URLs; Brave-style canvas/audio fingerprint randomization is not integrated | Upstream list coverage; no fingerprint-randomization acceptance validation |
 | Cookie-consent banners | No dedicated cookie-banner filter or automatic consent-rejection feature | Not implemented or acceptance-tested |
 | HTTPS upgrades and HTTPS-only | Feature-gated WebKit upgrades on iOS 18.2+, with HTTP fallback; release-channel default off, developer/beta on. No user-facing strict HTTPS-only mode | Configuration unit assertions; actual upgrade/fallback network behavior unverified |
-| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded transport/playback evidence; fullscreen exit → menu → Settings → browser and restrictive autoplay passed in the latest completed preflight. Popup visibly played but its geometry wait failed; stricter bounded polling awaits verification. Full main selection remains pending |
+| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded transport/playback evidence; popup, restrictive autoplay and fullscreen exit → menu → Settings → browser passed in the latest completed preflight. Full main selection remains pending |
 | PiP and AirPlay | Native WebKit configuration enabled | Configuration unit assertions; actual hardware/receiver remains unverified |
 | Downloads | Upstream native download manager | Dedicated native file/download-byte check remains unexecuted; required in the active full run |
 | Reader/bookmarks/reading list | Upstream implementations | Native article save, reader rendering and reading-list presence |

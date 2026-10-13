@@ -2,7 +2,7 @@
 
 ## GitHub build
 
-The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549) is in progress for source `394e481cb5527591a54969859c1c353dd440082b`. The candidate changes only popup-test visibility polling; the required test and IPA gates remain intact. No production IPA is available yet.
+The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), run number 14, attempt 1, is in progress for source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`. The candidate honors bounded text/media visibility deadlines without changing their assertions or production behavior. The full unit plan and strict 4-preflight/15-main/1-download gates remain required. No production IPA is available yet.
 
 1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In an earlier attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
 2. Wait for all required checks and the device build to pass. The workflow saves **Aster-regression-validation-evidence-attempt-1** after all four preflight cases pass, before unit tests. That checkpoint proves the selected regressions; it is not an installable app or a complete validation result.
