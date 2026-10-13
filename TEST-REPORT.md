@@ -1,34 +1,33 @@
 # Aster validation report
 
-Validation is in progress as of 13 October 2026. The repository is now public, and [GitHub run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) is in progress for native-code candidate `ae128811a91010fa972eba2849635d289e9b8e78`. Native job `115207813795` has started actual execution. No completed native-validation result is claimed for this attempt, and no production iPhone IPA has been built or published.
+Validation is in progress as of 13 October 2026. The repository is public. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), run number 11, attempt 1, is running for source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`, native job `115230349155`. No completed full-validation result or production iPhone IPA is available yet.
 
-The original attempt and attempt 2 were blocked before job steps by GitHub billing/spending-limit annotations. Attempt 2 on 13 October, job `115199420290`, produced zero steps and zero artifacts. After the owner made the repository public, attempt 3 started. Those blocked attempts add no native test or packaging result.
+The browser and acceptance-test code are unchanged from candidate `ae128811a91010fa972eba2849635d289e9b8e78`. The current workflow adds a 180-minute job budget, explicit step timeouts, an early passing-regression evidence checkpoint and attempt-specific artifact names. These CI changes retain the full test and IPA-publication gates.
 
-Publication is complete. The existing repository's branches and history, including the earlier Harbor browser project, are public. The publication review covered the 34 commits then available; no actual credential or unrelated private project was detected. Publication and its review are separate from native execution. See [BUILD-INSTALL.md](BUILD-INSTALL.md) for the current public build and installation path.
+## Completed evidence and current requirements
 
-The last completed native test evidence is [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`. That run passed the full upstream `UnitTest` plan and all four preflight regression cases. Its main UI selection passed 14 of 15 tests; the fullscreen test failed at the toolbar hit-target assertion after exiting fullscreen and rotating back to portrait. The required download test, download byte verification and device release build were not reached.
-
-The executed environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator. The runner was standard `macos-26`.
-
-## Recorded native results
-
-| Check | Run 38083870485 result | Evidence and limit |
+| Area | Latest completed evidence | Current full run |
 | --- | --- | --- |
-| Dependency and filter preparation | Passed | Pinned dependencies prepared; real WebKit compiled 40,723 converted AdGuard Base + Mobile Ads rules. Filter metadata records the source hashes and converter revision. |
-| Four media/session preflight regressions | 4 passed, 0 failed | Automatic popup blocking/user-opened player, blocked autoplay followed by manual playback, fullscreen rotation/exit, and 25-tab process restoration all passed in this preflight invocation. |
-| Full upstream `UnitTest` plan | Passed | `unit-tests.log` ends with `TEST SUCCEEDED`; includes registered Aster changes and the profile-reset filesystem regression. |
-| Main local acceptance and selected upstream UI tests | 14 passed, 1 failed | Twelve Aster acceptance cases and three upstream URL-bar/night-mode cases executed. Fullscreen failed at the post-rotation toolbar assertion; the selection ended with `TEST FAILED`. |
-| Dedicated native download acceptance | Not executed | Configured as a separate invocation after the main selection; the preceding failure prevented it from starting. |
-| Exact downloaded-file byte verification | Not executed | No passing native download or payload-integrity result is available from this run. |
-| Unsigned iPhone release build and packaging | Not executed | The workflow requires all native checks to pass before the device build. No IPA artifact was produced. |
+| Four media/session preflight cases | [Run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3), source `ae128811a91010fa972eba2849635d289e9b8e78`: 4 passed, 0 failed; `TEST SUCCEEDED` at 09:23:57 UTC on 13 October | Must pass all four again with zero failures or skips; early evidence checkpoint follows |
+| Full upstream `UnitTest` plan | [Run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`: passed | Pending; the later attempt 3 was canceled during unit compilation and added no unit-test result |
+| Main local acceptance and selected upstream UI tests | Run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`: 14 passed, 1 failed at the fullscreen post-rotation toolbar assertion | All 15 selected cases must pass; the strengthened fullscreen case passed the later preflight, but this full selection has not completed on that candidate |
+| Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
+| Unsigned iPhone release build and packaging | Not completed; no IPA produced | Pending after all required native checks pass |
+| Signed installation and physical-device validation | Not performed | Requires Apple signing and physical iPhone testing |
 
-Passing main-selection cases exercised local navigation/history/find in page; cookie/localStorage separation and private-history exclusion; advertising blocking with site exception and re-enable controls; reader/bookmark/reading-list behavior; offline Help/Privacy navigation through Settings; Arabic/RTL controls; large text and appearance; real MP4/HLS/iframe/blob playback; popup and autoplay behavior; 25 loaded tabs across process relaunch; and the selected upstream URL-bar and night-mode checks. These are bounded simulator results for the recorded source, rather than certification of every implementation path or website.
+The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
 
-## Fullscreen failure and unverified follow-up
+## Latest preflight result
 
-The main-selection recording reached real portrait and landscape fullscreen playback, tapped the fullscreen exit control, and observed the page's “Fullscreen exited” status. Immediately after the return to portrait, `ToolbarScreen.swift:47` reported that the settings/menu button was not hittable. The same test had passed in the earlier preflight invocation of this run. This records an intermittent post-rotation hit-target failure; it does not establish that every fullscreen exit restores usable browser controls.
+Attempt 3 passed automatic popup blocking/user-opened player behavior; restrictive autoplay followed by manual playback; real fullscreen video across rotation and exit; and 25-tab process restoration. The fullscreen case then tapped the actual native menu, opened Settings, tapped Done and checked the returned page, including its “Fullscreen exited” status. This strengthened case passed in 49.610 seconds.
 
-Commit `ae128811a91010fa972eba2849635d289e9b8e78` changes only the acceptance test: it waits for both native toolbar buttons to exist and become hittable, retains the toolbar assertion, and adds actual menu → Settings → browser interaction after fullscreen exit. That follow-up is being verified in attempt 3 of run 38086721963. Its completed native result is not yet available, so its effect remains unverified and the earlier failing result remains outstanding.
+Initial native compilation and launch took 18 minutes 6 seconds before the first test case started. The four cases then completed in 669.133 seconds, about 11 minutes. The job was manually canceled during the following unit-test compilation, so it produced no completed unit, main UI, download, release-build or IPA result. The recorded timings include native compilation and test execution.
+
+## Evidence checkpoint
+
+The current workflow checks the preflight summary for exactly four passes, zero failures and zero skips, exports attachments and uploads `Aster-regression-validation-evidence-attempt-1` before starting unit tests. This preserves completed regression proof if a later stage stops. The checkpoint is configured for the active run; no current-run checkpoint result is claimed yet.
+
+Artifacts use an `attempt-N` suffix. The full native evidence is `Aster-native-validation-evidence-attempt-N`; filter evidence is `aster-ad-filters-attempt-N`. The future IPA artifact is `Aster-iPhone-UNSIGNED-needs-signing-attempt-N`, containing `Aster-UNSIGNED-needs-signing.ipa`. A checkpoint or filter artifact is not an installable app. An IPA is published only after all required native tests, download-integrity verification and the device build/package succeed. Artifact retention is seven days.
 
 ## Retained advertising snapshot
 
@@ -42,16 +41,12 @@ These checks complement native execution. They do not replace the unexecuted dow
 
 ## Checks still required
 
-- Complete the active native workflow for the exact candidate commit and record its results.
-- Pass the four preflight regressions, full upstream unit plan and all 15 main-selection UI cases, including the strengthened fullscreen recovery interaction.
-- Execute and pass the separate native download case and exact payload-byte verification.
-- Complete the unsigned iPhone release build and packaging, then verify the artifact against its recorded source commit.
-- Supply valid Apple signing and matching provisioning for the app and all six extensions before installation; TestFlight also requires the Apple Developer/App Store Connect setup. No signing credentials are configured.
-- Test the signed app on a physical iPhone 15 Pro Max. No physical-device execution or installation result is available.
+- Complete the active workflow for its recorded source: four preflight cases, full upstream unit plan, all 15 main UI cases, dedicated download and exact file-byte verification.
+- Complete the iPhone release build and packaging; verify any IPA against its recorded source commit.
+- Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
+- Test the signed application on a physical iPhone 15 Pro Max.
 
-Selected unmodified screenshots and their source manifest are retained in [the native gallery](docs/aster-screenshots/README.md).
-
-Run 38083870485 retained native evidence and generated filter artifacts in GitHub; the downloaded evidence includes logs and test attachments. The first two attempts of run 38086721963 produced no executed steps or artifacts; attempt 3 has started and is still in progress. No `Aster-iPhone-UNSIGNED-needs-signing` artifact is available yet. The artifact will be published only after all required checks and device packaging pass.
+The existing [native gallery](docs/aster-screenshots/README.md) retains unmodified screenshots from run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. Its provenance remains unchanged; the newer passing menu/Settings interaction is evidenced by attempt 3's job log.
 
 ## Feature and validation limits
 

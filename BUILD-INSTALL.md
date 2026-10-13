@@ -2,14 +2,16 @@
 
 ## GitHub build
 
-The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. Native validation is running for candidate `ae128811a91010fa972eba2849635d289e9b8e78`. No production IPA is available yet.
+The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), run number 11, attempt 1, is in progress for source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`. No production IPA is available yet.
 
-1. Open [run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) and monitor its native job. This attempt has started actual job execution after publication.
-2. Wait for the required native checks and device build to complete. Review the validation summary and evidence artifact. An IPA is published only if every required check passes.
-3. After success, sign in to GitHub and download **Aster-iPhone-UNSIGNED-needs-signing** from **Artifacts**.
+1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In the previous attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
+2. Wait for all required checks and the device build to pass. The workflow saves **Aster-regression-validation-evidence-attempt-1** after all four preflight cases pass, before unit tests. That checkpoint proves the selected regressions; it is not an installable app or a complete validation result.
+3. After the full run succeeds, sign in to GitHub and download **Aster-iPhone-UNSIGNED-needs-signing-attempt-1** from **Artifacts**.
 4. Extract `Aster-UNSIGNED-needs-signing.ipa` from the ZIP in the iPhone Files app.
 
-The workflow uses the standard `macos-26` runner and Xcode 26.5, pinned Swift package revisions, a verified Nimbus generator and a verified advertising converter. Native logs and test attachments are retained for seven days; download evidence if you need longer retention. [GitHub documents standard hosted-runner usage as free for public repositories](https://docs.github.com/en/billing/concepts/product-billing/github-actions). Public compilation does not provide Apple signing or signed installation.
+Artifact names end in `attempt-N`, matching the GitHub run attempt. A retry changes the suffix; select the artifact belonging to the successful attempt. Full native evidence is named `Aster-native-validation-evidence-attempt-N`, and generated filter evidence is `aster-ad-filters-attempt-N`. Logs, attachments and artifacts are retained for seven days.
+
+The workflow uses the standard `macos-26` runner and Xcode 26.5, pinned Swift package revisions, a verified Nimbus generator and a verified advertising converter. [GitHub documents standard hosted-runner usage as free for public repositories](https://docs.github.com/en/billing/concepts/product-billing/github-actions). Public compilation does not provide Apple signing or signed installation.
 
 The workflow currently exists only on `feat/aster-browser`, while the repository's default branch remains `main`. GitHub requires a `workflow_dispatch` file on the default branch before offering manual **Run workflow** execution, so that button may be unavailable. Branch pushes without a skip-CI marker also trigger this workflow. If a completed attempt needs another retry, **Re-run jobs → Re-run all jobs** is available within 30 days with repository write access and reuses the original run's source commit. No default-branch merge is required to rerun the existing run or trigger a branch push. See [GitHub's manual-workflow requirements](https://docs.github.com/en/actions/how-tos/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow) and [rerun instructions](https://docs.github.com/en/actions/how-tos/managing-workflow-runs-and-deployments/managing-workflow-runs/re-running-workflows-and-jobs).
 

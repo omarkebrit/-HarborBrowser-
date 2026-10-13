@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source and test harness are on `feat/aster-browser`. [Run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) is in progress and has started actual native-job execution for candidate `ae128811a91010fa972eba2849635d289e9b8e78`. The earlier billing block no longer prevents this attempt from starting. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), run number 11, attempt 1, is in progress for source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`. **No production IPA has been produced yet.**
 
-The last completed native test run passed the full unit plan and four preflight regressions; its main UI selection passed 14 of 15 tests. The fullscreen-control follow-up is now awaiting the current attempt's results. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The previous [attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) passed all four media/session preflight cases, including fullscreen exit followed by actual menu → Settings → browser interaction. It was then manually canceled during unit-test compilation, leaving the full required checks incomplete. The new workflow has a 180-minute job budget and saves passing preflight evidence before the remaining tests. Full unit, main UI, download and device-release results for the current run remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 

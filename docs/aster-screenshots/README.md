@@ -2,7 +2,7 @@
 
 These unmodified screenshots come from [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, on an iPhone 15 Pro Max simulator running iOS 26.5. These are actual test fixtures and UI, not design mockups.
 
-The preflight passed all four cases; the main selection passed 14/15. Its fullscreen playback and exit were observed, but the immediate post-rotation toolbar assertion failed. The strengthened follow-up is being verified in run 38086721963, attempt 3; its completed result is pending. These images do not certify signed installation, every website, complete Arabic translation or physical-device audio. See [the validation report](../../TEST-REPORT.md).
+In the depicted run, the preflight passed all four cases and the main selection passed 14/15; its immediate post-rotation toolbar assertion failed. The strengthened fullscreen case later passed in [run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3), including actual menu → Settings → browser interaction. That later attempt was manually canceled during unit compilation. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464) is now validating the full suite. These images retain their original source provenance and do not certify signed installation, every website, complete Arabic translation or physical-device audio. See [the validation report](../../TEST-REPORT.md).
 
 <img src="accessibility-home.png" width="280" alt="Actual Aster homepage at maximum Dynamic Type, with StageServer test tiles">
 

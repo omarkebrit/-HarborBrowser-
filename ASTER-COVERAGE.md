@@ -1,6 +1,6 @@
 # Feature coverage
 
-Results below refer to the last completed native test run, source `51fe284ead04c0d17b55c51725aa590dd951d031`. The newer test-only fullscreen fix is being verified in [run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3), which is in progress after the repository became public. No completed result is claimed for this attempt. See [TEST-REPORT.md](TEST-REPORT.md).
+Completed evidence comes from run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78` (all four preflight cases, including actual menu/Settings interaction after fullscreen exit). Attempt 3 was manually canceled during unit compilation. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464) is in progress; its full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
@@ -12,9 +12,9 @@ Results below refer to the last completed native test run, source `51fe284ead04c
 | Fingerprinting defenses | Inherited blocking of known fingerprinter URLs; Brave-style canvas/audio fingerprint randomization is not integrated | Upstream list coverage; no fingerprint-randomization acceptance validation |
 | Cookie-consent banners | No dedicated cookie-banner filter or automatic consent-rejection feature | Not implemented or acceptance-tested |
 | HTTPS upgrades and HTTPS-only | Feature-gated WebKit upgrades on iOS 18.2+, with HTTP fallback; release-channel default off, developer/beta on. No user-facing strict HTTPS-only mode | Configuration unit assertions; actual upgrade/fallback network behavior unverified |
-| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded H.264/AAC across transports, popup and autoplay passed; fullscreen passed preflight but failed the main post-rotation toolbar assertion; follow-up awaits execution |
+| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded H.264/AAC across transports, popup and autoplay evidence; strengthened fullscreen exit → menu → Settings → browser case passed in attempt 3 preflight. Full main selection remains pending |
 | PiP and AirPlay | Native WebKit configuration enabled | Configuration unit assertions; actual hardware/receiver remains unverified |
-| Downloads | Upstream native download manager | Isolated native file/download-byte check is configured; it did not execute in the latest completed run |
+| Downloads | Upstream native download manager | Dedicated native file/download-byte check remains unexecuted; required in the active full run |
 | Reader/bookmarks/reading list | Upstream implementations | Native article save, reader rendering and reading-list presence |
 | Passwords and autofill | Inherited password management and credential-provider extension | Upstream unit coverage; physical Face ID and signed extension need device testing |
 | Appearance and accessibility | Aster light/dark palette, original icon, scalable text | Native large-text navigation and theme switching; source palette contrast checks |
@@ -25,7 +25,7 @@ Results below refer to the last completed native test run, source `51fe284ead04c
 | Account synchronization | Inherited Firefox Account provider code | Independent identifier/redirect and end-to-end service use unverified; onboarding promotion disabled |
 | Brave Playlist and saved-media background playback | Not implemented | Needs a dedicated media library/player and device validation |
 | Brave Sync, Rewards, Wallet, Leo, News and paid VPN | Not implemented | Requires separate implementations and/or service agreements |
-| Installation | Unsigned device IPA from GitHub | Device build and IPA audit remain pending; installation needs Apple signing |
+| Installation | Planned unsigned device IPA from GitHub | Device build and IPA audit remain pending; no IPA produced; installation needs Apple signing |
 
 The app still makes ordinary browser requests, including requested pages, search and provider resources. Disabling usage collection does not promise zero network activity. Ad blocking depends on the current rules and site behavior; video advertising and all tracking cannot be guaranteed absent.
 
