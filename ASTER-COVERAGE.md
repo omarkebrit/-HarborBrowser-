@@ -1,6 +1,6 @@
 # Feature coverage
 
-[Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`, is in progress; its required results remain unverified. Run 15, source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, preserved all four native preflight passes, then failed a local search-suggestion unit test's 10-second wait, gating main UI/download/device build. The current async fixture fix preserves its assertions and deadlines. Historical full-unit and 14/15 main-UI evidence remains tied to run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. See [TEST-REPORT.md](TEST-REPORT.md).
+[Run 38410673448](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`, is launched; its required results remain unverified. Run 16 recorded three preflight passes and one tab-7 document-existence failure before visibility checks, gating units/main UI/download/device build. The current candidate gives only the 25-tab stress case a 30-second document-existence budget while retaining visibility and restoration checks. Run 15's four-pass checkpoint remains tied to `aab3dc3ac23bf2e58c1334920fe70528e9dad527`; its later search-unit failure led to an async fixture fix still awaiting runtime proof. Historical full-unit and 14/15 main-UI evidence remains tied to run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |

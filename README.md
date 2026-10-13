@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), run number 16, attempt 1, is in progress for source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38410673448](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), run number 17, attempt 1, is launched for source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`; its required results remain unverified. **No production IPA has been produced yet.**
 
-The preceding run 15 passed all four native preflight cases with zero failures or skips, including playback, fullscreen/menu/Settings interaction and 25 loaded tabs across process relaunch and first-tab selection. Its saved checkpoint remains valid for its recorded source. The full unit plan then failed at a local search-suggestion test's 10-second wait, gating main UI, download and device release. Run 16 changes that fixture to async waits with the same assertions and deadlines; the fix and all required current-run results remain unverified. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+Run 16 passed popup playback, restrictive autoplay and fullscreen/menu/Settings interaction, but the 25-tab case failed waiting for tab 7's document to exist; it did not reach the visibility check. Run 17 gives only that stress case a 30-second document-existence budget, preserving visibility checks and all counts/restoration checks. Run 15's saved four-pass checkpoint remains valid for its source; its later search-suggestion unit timeout led to an async fixture fix whose runtime result is still unverified. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 
