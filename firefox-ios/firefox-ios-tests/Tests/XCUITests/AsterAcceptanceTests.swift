@@ -112,6 +112,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         for number in 2...25 {
             newTab()
             open("/tab.html?number=\(number)", expecting: "Local tab \(number) ready")
+            toolbar.assertTabsButtonValue(expectedCount: "\(number)")
         }
         toolbar.assertTabsButtonValue(expectedCount: "25")
         captureDisplay("Twenty five loaded tabs")
@@ -371,7 +372,33 @@ final class AsterAcceptanceTests: BaseTestCase {
     }
 
     private func newTab() {
-        toolbar.openNewTabFromTabTray()
+        let tabs = app.buttons[AccessibilityIdentifiers.Toolbar.tabsButton]
+        waitForPredicate("exists == true && hittable == true", element: tabs)
+        guard let value = tabs.value as? String, let count = Int(value) else {
+            XCTFail("The native tab counter must report its current count before creation")
+            return
+        }
+        tabs.tap()
+        let trayButton = app.buttons[AccessibilityIdentifiers.TabTray.newTabButton]
+        let commandImage = userState.isPrivate ? StandardImageIdentifiers.Large.privateMode
+            : StandardImageIdentifiers.Large.plus
+        let menuButton = app.tables["Context Menu"].buttons[commandImage]
+        let creationChoice = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            trayButton.exists || menuButton.exists
+        }, object: app)
+        XCTAssertEqual(XCTWaiter().wait(for: [creationChoice], timeout: 15), .completed,
+                       "A visible native new-tab command must appear")
+        if trayButton.exists {
+            let collection = app.collectionViews[AccessibilityIdentifiers.TabTray.collectionView]
+            waitForPredicate("exists == true", element: collection)
+            waitForPredicate("exists == true && hittable == true", element: trayButton)
+            trayButton.tap()
+        } else {
+            waitForPredicate("exists == true && hittable == true", element: menuButton)
+            captureDisplay("Native tab actions menu supplies the new-tab command")
+            menuButton.tap()
+        }
+        toolbar.assertTabsButtonValue(expectedCount: "\(count + 1)")
         navigator.nowAt(NewTabScreen)
     }
 
