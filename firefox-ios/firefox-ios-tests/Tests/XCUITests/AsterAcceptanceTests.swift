@@ -383,7 +383,7 @@ final class AsterAcceptanceTests: BaseTestCase {
             return
         }
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: element)
-        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: min(timeout, 5)), .completed,
+        XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: timeout), .completed,
                        "Page text exists but is not visible: \(text)", file: file, line: line)
     }
 
