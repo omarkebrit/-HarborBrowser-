@@ -6,7 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The source and test harness are available on `feat/aster-browser`. The latest rerun [38086721963](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963) could not start because GitHub reported a billing/spending-limit block. The previous executed run passed the full unit plan and 14 of 15 main UI tests. The remaining fullscreen-control timing assertion has a test-only fix awaiting native verification. **No production IPA has been produced yet.** See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source and test harness are on `feat/aster-browser`. [Run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) is in progress and has started actual native-job execution for candidate `ae128811a91010fa972eba2849635d289e9b8e78`. The earlier billing block no longer prevents this attempt from starting. **No production IPA has been produced yet.**
+
+The last completed native test run passed the full unit plan and four preflight regressions; its main UI selection passed 14 of 15 tests. The fullscreen-control follow-up is now awaiting the current attempt's results. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 

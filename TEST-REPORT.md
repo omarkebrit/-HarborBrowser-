@@ -1,12 +1,12 @@
 # Aster validation report
 
-Validation is incomplete as of 13 October 2026. No production iPhone IPA has been built or published. The native-code candidate, `ae128811a91010fa972eba2849635d289e9b8e78`, remains unverified: [GitHub run 38086721963](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963) was blocked by GitHub billing/spending-limit annotations before any job steps executed, and produced no artifacts.
+Validation is in progress as of 13 October 2026. The repository is now public, and [GitHub run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) is in progress for native-code candidate `ae128811a91010fa972eba2849635d289e9b8e78`. Native job `115207813795` has started actual execution. No completed native-validation result is claimed for this attempt, and no production iPhone IPA has been built or published.
 
-The run was retried on 13 October 2026 (attempt 2, native job `115199420290`). GitHub accepted the rerun, then rejected execution with the same failed-payment/spending-limit annotation: zero steps and zero artifacts. The integration can rerun repository jobs, but GitHub returned HTTP 403 (`Resource not accessible by integration`) when queried for the account billing usage report. Account billing must be resolved through the owner's GitHub settings; this attempt adds no native test or packaging result.
+The original attempt and attempt 2 were blocked before job steps by GitHub billing/spending-limit annotations. Attempt 2 on 13 October, job `115199420290`, produced zero steps and zero artifacts. After the owner made the repository public, attempt 3 started. Those blocked attempts add no native test or packaging result.
 
-Public publication has been authorized, but has not completed. Creating a separate public repository and accessing the existing repository's administration API both returned HTTP 403 (`Resource not accessible by integration`). The repository remains private pending the owner's direct visibility change in GitHub Settings. All 34 commits were available for the publication review: the older history belongs to the same Harbor browser project, and no actual credential or unrelated private project was detected. This review is not a new native execution result. The standard public build path is documented in [BUILD-INSTALL.md](BUILD-INSTALL.md).
+Publication is complete. The existing repository's branches and history, including the earlier Harbor browser project, are public. The publication review covered the 34 commits then available; no actual credential or unrelated private project was detected. Publication and its review are separate from native execution. See [BUILD-INSTALL.md](BUILD-INSTALL.md) for the current public build and installation path.
 
-The latest executed native evidence is [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`. That run passed the full upstream `UnitTest` plan and all four preflight regression cases. Its main UI selection passed 14 of 15 tests; the fullscreen test failed at the toolbar hit-target assertion after exiting fullscreen and rotating back to portrait. The required download test, download byte verification and device release build were not reached.
+The last completed native test evidence is [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`. That run passed the full upstream `UnitTest` plan and all four preflight regression cases. Its main UI selection passed 14 of 15 tests; the fullscreen test failed at the toolbar hit-target assertion after exiting fullscreen and rotating back to portrait. The required download test, download byte verification and device release build were not reached.
 
 The executed environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator. The runner was standard `macos-26`.
 
@@ -28,7 +28,7 @@ Passing main-selection cases exercised local navigation/history/find in page; co
 
 The main-selection recording reached real portrait and landscape fullscreen playback, tapped the fullscreen exit control, and observed the page's “Fullscreen exited” status. Immediately after the return to portrait, `ToolbarScreen.swift:47` reported that the settings/menu button was not hittable. The same test had passed in the earlier preflight invocation of this run. This records an intermittent post-rotation hit-target failure; it does not establish that every fullscreen exit restores usable browser controls.
 
-Commit `ae128811a91010fa972eba2849635d289e9b8e78` changes only the acceptance test: it waits for both native toolbar buttons to exist and become hittable, retains the toolbar assertion, and adds actual menu → Settings → browser interaction after fullscreen exit. That follow-up has not compiled or executed in CI because run 38086721963 did not start. Its effect is unverified, and the failing result remains outstanding.
+Commit `ae128811a91010fa972eba2849635d289e9b8e78` changes only the acceptance test: it waits for both native toolbar buttons to exist and become hittable, retains the toolbar assertion, and adds actual menu → Settings → browser interaction after fullscreen exit. That follow-up is being verified in attempt 3 of run 38086721963. Its completed native result is not yet available, so its effect remains unverified and the earlier failing result remains outstanding.
 
 ## Retained advertising snapshot
 
@@ -42,7 +42,7 @@ These checks complement native execution. They do not replace the unexecuted dow
 
 ## Checks still required
 
-- Resolve the GitHub billing/spending-limit block and rerun the workflow for the exact candidate commit.
+- Complete the active native workflow for the exact candidate commit and record its results.
 - Pass the four preflight regressions, full upstream unit plan and all 15 main-selection UI cases, including the strengthened fullscreen recovery interaction.
 - Execute and pass the separate native download case and exact payload-byte verification.
 - Complete the unsigned iPhone release build and packaging, then verify the artifact against its recorded source commit.
@@ -51,7 +51,7 @@ These checks complement native execution. They do not replace the unexecuted dow
 
 Selected unmodified screenshots and their source manifest are retained in [the native gallery](docs/aster-screenshots/README.md).
 
-Run 38083870485 retained native evidence and generated filter artifacts in GitHub; the downloaded evidence includes logs and test attachments. Run 38086721963 has no executed steps or artifacts. An artifact named `Aster-iPhone-UNSIGNED-needs-signing` is a future workflow output, not an available download from either of these runs.
+Run 38083870485 retained native evidence and generated filter artifacts in GitHub; the downloaded evidence includes logs and test attachments. The first two attempts of run 38086721963 produced no executed steps or artifacts; attempt 3 has started and is still in progress. No `Aster-iPhone-UNSIGNED-needs-signing` artifact is available yet. The artifact will be published only after all required checks and device packaging pass.
 
 ## Feature and validation limits
 

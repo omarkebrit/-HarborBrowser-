@@ -1,6 +1,6 @@
 # Feature coverage
 
-Results below refer to the last executed native run, source `51fe284ead04c0d17b55c51725aa590dd951d031`. The newer test-only fullscreen fix has not executed because GitHub blocked the rerun for billing/spending limits. See [TEST-REPORT.md](TEST-REPORT.md).
+Results below refer to the last completed native test run, source `51fe284ead04c0d17b55c51725aa590dd951d031`. The newer test-only fullscreen fix is being verified in [run 38086721963, attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3), which is in progress after the repository became public. No completed result is claimed for this attempt. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
