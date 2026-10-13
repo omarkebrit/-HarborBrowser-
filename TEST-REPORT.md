@@ -1,16 +1,14 @@
 # Aster validation report
 
-Validation is in progress as of 13 October 2026. The repository is public. [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), run number 14, attempt 1, is running for source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`. No completed full-validation result or production iPhone IPA is available yet.
+Validation is in progress as of 13 October 2026. The repository is public. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), run number 15, attempt 1, is running for source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. No completed full-validation result or production iPhone IPA is available yet.
 
-The candidate honors the declared visibility deadlines: generic text callers retain exact-label existence and native hittability within their supplied bounded waits; all three media callers retain finite positive bounds and viewport/window containment within 15 seconds. Production browser/media behavior and every assertion condition are unchanged. The 180-minute workflow budget, early passing-regression checkpoint and strict four-preflight/15-main/one-download gates, plus the full unit plan, remain required before IPA publication.
-
-Run 38386485555, source `ef3bc44`, was superseded during dependency preparation by the consistency follow-up; it adds no completed native test evidence.
+The candidate changes only the acceptance-test new-tab helper. It uses the original native tabs opener, then requires either the actual tray's creation button or the visible context menu's correct regular/private command. Controls must be hittable and receive ordinary unforced taps; an observed menu route is captured. The native count must increment by exactly one, with an absolute count after each loaded page. All 25 loads, process relaunch and actual first-tab tray selection remain required. Production browser/media and gesture thresholds are unchanged. The 180-minute workflow budget and strict four-preflight/15-main/one-download gates, plus the full unit plan, remain required before IPA publication.
 
 ## Completed evidence and current requirements
 
 | Area | Latest completed evidence | Current full run |
 | --- | --- | --- |
-| Four media/session preflight cases | [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549), source `394e481cb5527591a54969859c1c353dd440082b`: 3 passed, 1 failed during tab-13 creation, before restoration | Must pass all four with zero failures or skips; early evidence checkpoint follows |
+| Four media/session preflight cases | [Run 38386794212](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38386794212), source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`: 3 passed, 1 failed while requesting tab 4 after loading tab 3; restoration was not reached | Must pass all four with zero failures or skips; early evidence checkpoint follows |
 | Full upstream `UnitTest` plan | [Run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`: passed | Pending; the later attempt 3 was canceled during unit compilation and added no unit-test result |
 | Main local acceptance and selected upstream UI tests | Run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`: 14 passed, 1 failed at the fullscreen post-rotation toolbar assertion | All 15 selected cases must pass; the strengthened fullscreen case passed the later preflight, but this full selection has not completed on that candidate |
 | Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
@@ -19,11 +17,11 @@ Run 38386485555, source `ef3bc44`, was superseded during dependency preparation 
 
 The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
 
-## Latest preflight and bounded-wait follow-up
+## Latest preflight and native-command follow-up
 
-Run 38383638549 verified the earlier popup-helper change: the popup case passed in 48.288 seconds, restrictive autoplay in 38.007 seconds, and fullscreen rotation/exit with actual menu → Settings → browser interaction in 43.646 seconds. The 25-tab case failed during creation at “Local tab 13 ready” after its fixed five-second hittability wait. It did not reach process relaunch or restoration, and no later unit, main UI, download or release stage completed.
+Run 38386794212 passed popup playback in 113.056 seconds, restrictive autoplay in 53.774 seconds, and fullscreen rotation/exit with actual menu → Settings → browser interaction in 73.034 seconds. The 25-tab case loaded three pages, then timed out waiting for the tray's new-tab button while requesting tab 4. This was a creation-operation failure, before process relaunch/restoration; no later unit, main UI, download or release stage completed.
 
-The failure screenshot visibly shows tab 13, its ready label and native tab count 13; session diagnostics also contain 13 saved regular tabs. The label's native bounds `(16, 124, 147, 24)` fit fully inside viewport `(0, 59, 430, 731)` and main window `(0, 0, 430, 932)`. A single hittability evaluation occupied most of the five-second wait. The new bounded-wait changes preserve the assertions, but remain unverified until the active run completes.
+The native screenshot and hierarchy show tab 3 behind the tabs context menu, with New Tab, New Private Tab and Close This Tab commands. The scheduled input event already had a 0.05-second touch; the production default long-press threshold remains 0.5 seconds. The exact gesture-recognition cause is unknown. The current helper uses the supported command that actually appears and verifies the resulting native count; it does not change touch duration, retry taps, force coordinates or activate DOM controls. This change remains unverified until the active run completes.
 
 Earlier run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78`, passed all four cases. Initial native build/launch took 18 minutes 6 seconds and the cases took 669.133 seconds. That attempt was manually canceled during subsequent unit compilation, leaving no full-suite or IPA result.
 
