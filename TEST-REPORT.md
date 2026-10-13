@@ -1,15 +1,15 @@
 # Aster validation report
 
-Validation is in progress as of 13 October 2026. The repository is public. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), run number 15, attempt 1, has passed all four native preflight cases for source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. Its strict summary and early evidence artifact are preserved. The full unit plan is running; main UI, download and device-release results remain pending. No completed full-validation result or production iPhone IPA is available yet.
+Validation is in progress as of 13 October 2026. The repository is public. [Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), run number 16, attempt 1, is active for source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`; its required results remain unverified. The preceding run 15 preserved four passing native preflight cases, then failed the full unit plan at a local search-suggestion fixture's 10-second wait. Main UI, download and device-release stages were gated. No completed full-validation result or production iPhone IPA is available yet.
 
-The checkpoint verifies the acceptance-test new-tab helper's tray route: 24 genuine tray creation taps, exact per-page counts, 25 unique numbered pages, process relaunch and actual first-tab tray selection. Both saved window archives retain all 25 unique fixture URLs; pages 25 and 1 were reopened after relaunch, rather than every restored page. The alternative context-menu command route was not invoked; it remains code-reviewed without runtime verification from this preflight. Production browser/media and gesture thresholds are unchanged. The 180-minute workflow budget and strict four-preflight/15-main/one-download gates, plus the full unit plan, remain required before IPA publication.
+Run 15's checkpoint verifies the acceptance-test new-tab helper's tray route: 24 genuine tray creation taps, exact per-page counts, 25 unique numbered pages, process relaunch and actual first-tab tray selection. Both saved window archives retain all 25 unique fixture URLs; pages 25 and 1 were reopened after relaunch, rather than every restored page. The alternative context-menu command route was not invoked; it remains code-reviewed without runtime verification from this preflight. Production browser/media and gesture thresholds are unchanged. The 180-minute workflow budget and strict four-preflight/15-main/one-download gates, plus the full unit plan, remain required before IPA publication.
 
 ## Completed evidence and current requirements
 
 | Area | Latest completed evidence | Current full run |
 | --- | --- | --- |
-| Four media/session preflight cases | Run 38393771825, source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`: official summary records 4 passed, 0 failed, 0 skipped | Passed; strict summary and early evidence artifact saved |
-| Full upstream `UnitTest` plan | [Run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`: passed | Running for the current source; its completed result remains pending |
+| Four media/session preflight cases | [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`: official summary records 4 passed, 0 failed, 0 skipped; strict checkpoint saved | Pending for run 16 |
+| Full upstream `UnitTest` plan | Run 15 failed `SearchTests.testSuggestClient` at its first 10-second expectation; no aggregate official count is claimed. Earlier [run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, passed | Async fixture fix unverified; full plan still required for run 16 |
 | Main local acceptance and selected upstream UI tests | Run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`: 14 passed, 1 failed at the fullscreen post-rotation toolbar assertion | Pending; all 15 selected cases must pass for the current source |
 | Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
 | Unsigned iPhone release build and packaging | Not completed; no IPA produced | Pending after all required native checks pass |
@@ -19,15 +19,21 @@ The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (
 
 ## Verified preflight checkpoint
 
-The official `AsterRegressionTests-summary.json` records `result: Passed`, four passes, zero failures and zero skips. Its recorded source matches `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. The environment is Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator. The checkpoint includes popup playback, restrictive autoplay, fullscreen exit with real menu/Settings interaction, and completed 25-tab creation/restoration.
+Run 15's official `AsterRegressionTests-summary.json` records `result: Passed`, four passes, zero failures and zero skips. Its recorded source matches `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. The environment is Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator. The checkpoint includes popup playback, restrictive autoplay, fullscreen exit with real menu/Settings interaction, and completed 25-tab creation/restoration.
 
-The preceding run 38386794212 failed while requesting tab 4 because a tabs context menu appeared where the test expected the tray. The gesture-recognition cause remains unknown. The current passing creation case used the regular tray throughout, so it does not establish why that earlier menu appeared or verify the alternative command branch or the current helper's private-mode creation route.
+The preceding run 38386794212 failed while requesting tab 4 because a tabs context menu appeared where the test expected the tray. The gesture-recognition cause remains unknown. Run 15's passing creation case used the regular tray throughout, so it does not establish why that earlier menu appeared or verify the alternative command branch or the helper's private-mode creation route.
 
 Earlier run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78`, passed all four cases. Initial native build/launch took 18 minutes 6 seconds and the cases took 669.133 seconds. That attempt was manually canceled during subsequent unit compilation, leaving no full-suite or IPA result.
 
+## Current unit-fixture fix
+
+Run 15's job log records `SearchTests.testSuggestClient` timing out while waiting for its first local suggestion response. The server served successful responses after that deadline; server deallocation is not established as the cause. Run 16 makes this main-actor test async so it yields while the production URL session delivers callbacks on the main queue. It retains the server through both queries and stops it afterward. Both 10-second deadlines, real localhost requests, six exact suggestion assertions and error checks are unchanged. No production browser code changed. Compilation and runtime verification of this fix remain pending.
+
+The final evidence step now exports official summaries for every result bundle present, even after a test failure. This improves diagnostics without changing the required pass gates or success-only IPA publication.
+
 ## Evidence checkpoint
 
-The strict four-pass/zero-failure/zero-skip summary check and upload completed successfully. `Aster-regression-validation-evidence-attempt-1` preserves the result bundle, summary, attachments, logs and recorded source before the remaining tests. This completed checkpoint remains available if a later stage stops; it is a partial validation result.
+Run 15's strict four-pass/zero-failure/zero-skip summary check and upload completed successfully. Its `Aster-regression-validation-evidence-attempt-1` preserves the result bundle, summary, attachments, logs and recorded source before the remaining tests. This completed checkpoint remains available despite the later unit failure; it is a partial validation result for the recorded source.
 
 Artifacts use an `attempt-N` suffix. The full native evidence is `Aster-native-validation-evidence-attempt-N`; filter evidence is `aster-ad-filters-attempt-N`. The future IPA artifact is `Aster-iPhone-UNSIGNED-needs-signing-attempt-N`, containing `Aster-UNSIGNED-needs-signing.ipa`. A checkpoint or filter artifact is not an installable app. An IPA is published only after all required native tests, download-integrity verification and the device build/package succeed. Artifact retention is seven days.
 
@@ -43,7 +49,7 @@ These checks complement native execution. They do not replace the unexecuted dow
 
 ## Checks still required
 
-- Complete the remaining checks for the recorded source: full upstream unit plan, all 15 main UI cases, dedicated download and exact file-byte verification. The four preflight cases have passed.
+- Complete all required checks for run 16's recorded source: four preflight cases, full upstream unit plan, all 15 main UI cases, dedicated download and exact file-byte verification. Run 15's four preflight passes remain evidence for its earlier source.
 - Complete the iPhone release build and packaging; verify any IPA against its recorded source commit.
 - Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
 - Test the signed application on a physical iPhone 15 Pro Max.

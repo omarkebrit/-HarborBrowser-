@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), run number 15, attempt 1, is in progress for source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), run number 16, attempt 1, is in progress for source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`. **No production IPA has been produced yet.**
 
-The current run passed all four native preflight cases with zero failures or skips: popup playback, restrictive autoplay, fullscreen/menu/Settings interaction, and 25 loaded tabs across process relaunch and first-tab selection. The strict summary and evidence checkpoint are saved. The full unit plan is running; main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The preceding run 15 passed all four native preflight cases with zero failures or skips, including playback, fullscreen/menu/Settings interaction and 25 loaded tabs across process relaunch and first-tab selection. Its saved checkpoint remains valid for its recorded source. The full unit plan then failed at a local search-suggestion test's 10-second wait, gating main UI, download and device release. Run 16 changes that fixture to async waits with the same assertions and deadlines; the fix and all required current-run results remain unverified. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 

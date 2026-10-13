@@ -2,10 +2,10 @@
 
 ## GitHub build
 
-The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), run number 15, attempt 1, is in progress for source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. All four preflight cases passed without failures or skips, and the evidence checkpoint is saved. The full unit plan is running; all 15 main UI cases, the dedicated download/integrity check and device build remain pending. No production IPA is available yet.
+The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), run number 16, attempt 1, is in progress for source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`. Run 15 preserved four passing preflight cases, then failed a local search-suggestion unit test's 10-second wait. The current run uses async fixture waits with unchanged assertions and deadlines; its preflight, full unit plan, 15 main UI cases, download/integrity check and device build remain unverified. No production IPA is available yet.
 
 1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In an earlier attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
-2. Wait for the remaining checks and device build to pass. **Aster-regression-validation-evidence-attempt-1** is already saved after the strict four-pass preflight check. It contains the selected regression proof; full validation and IPA packaging are still required.
+2. Wait for all required checks and the device build to pass in the current run. Run 15's **Aster-regression-validation-evidence-attempt-1** is saved after its strict four-pass preflight check; it is partial proof for that older source. Select the current successful run's artifacts for delivery.
 3. After the full run succeeds, sign in to GitHub and download **Aster-iPhone-UNSIGNED-needs-signing-attempt-1** from **Artifacts**.
 4. Extract `Aster-UNSIGNED-needs-signing.ipa` from the ZIP in the iPhone Files app.
 

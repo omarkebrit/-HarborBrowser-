@@ -1,11 +1,11 @@
 # Feature coverage
 
-[Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, passed all four native preflight cases with zero failures or skips, including complete 25-tab creation and restoration. The strict evidence checkpoint is preserved; the full unit plan is running, with main UI/download/device-build results pending. Historical full-unit and 14/15 main-UI evidence remains tied to run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. See [TEST-REPORT.md](TEST-REPORT.md).
+[Run 38404031311](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38404031311), source `7ffb506829f9be38381dad8e4ae220cf9a875fd1`, is in progress; its required results remain unverified. Run 15, source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, preserved all four native preflight passes, then failed a local search-suggestion unit test's 10-second wait, gating main UI/download/device build. The current async fixture fix preserves its assertions and deadlines. Historical full-unit and 14/15 main-UI evidence remains tied to run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
 | Browsing and navigation | Native WebKit, back/forward, reload, search, find in page | Upstream unit plan; local native navigation and URL-bar tests |
-| Tabs | Upstream tab management and persistence | Current preflight passed 25 loaded pages with exact counts, process relaunch and first-tab tray selection. All creation used the native tray; alternative context-menu route remains code-reviewed only |
+| Tabs | Upstream tab management and persistence | Run 15 preflight passed 25 loaded pages with exact counts, process relaunch and first-tab tray selection. All creation used the native tray; alternative context-menu route remains code-reviewed only |
 | Private browsing | Separate nonpersistent web data and private history handling | Native cookie/localStorage isolation and exclusion from regular history |
 | Advertising protection | AdGuard Base + Mobile Ads converted to native WebKit rules during CI | Real WebKit rule compilation; controlled blocked resource and site exception |
 | Tracking protection | Upstream standard/strict native lists | Upstream content-blocker unit coverage; local acceptance |
