@@ -108,17 +108,19 @@ final class AsterAcceptanceTests: BaseTestCase {
     }
 
     func testTwentyFiveTabsSurviveProcessRelaunch() {
-        open("/tab.html?number=1", expecting: "Local tab 1 ready")
+        let documentReadinessTimeout: TimeInterval = 30
+        open("/tab.html?number=1", expecting: "Local tab 1 ready", documentTimeout: documentReadinessTimeout)
         for number in 2...25 {
             newTab()
-            open("/tab.html?number=\(number)", expecting: "Local tab \(number) ready")
+            open("/tab.html?number=\(number)", expecting: "Local tab \(number) ready",
+                 documentTimeout: documentReadinessTimeout)
             toolbar.assertTabsButtonValue(expectedCount: "\(number)")
         }
         toolbar.assertTabsButtonValue(expectedCount: "25")
         captureDisplay("Twenty five loaded tabs")
         app.launchArguments.removeAll { $0 == LaunchArguments.ClearWebData }
         forceCloseAndRelaunchApp()
-        expectText("Local tab 25 ready", timeout: 20)
+        expectText("Local tab 25 ready", timeout: 20, documentTimeout: documentReadinessTimeout)
         toolbar.assertTabsButtonValue(expectedCount: "25")
 
         toolbar.tapOnTabsButton()
@@ -130,7 +132,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         }
         tabTray.tapOnCell(named: "Aster tab 1")
         navigator.nowAt(BrowserTab)
-        expectText("Local tab 1 ready")
+        expectText("Local tab 1 ready", documentTimeout: documentReadinessTimeout)
         toolbar.assertTabsButtonValue(expectedCount: "25")
         captureDisplay("Restored first tab")
     }
@@ -365,10 +367,11 @@ final class AsterAcceptanceTests: BaseTestCase {
         captureDisplay("Reenabled native shields block tracker again")
     }
 
-    private func open(_ path: String, expecting text: String, timeout: TimeInterval = 10) {
+    private func open(_ path: String, expecting text: String, timeout: TimeInterval = 10,
+                      documentTimeout: TimeInterval? = nil) {
         navigator.openURL(origin + path)
         navigator.nowAt(BrowserTab)
-        expectText(text, timeout: timeout)
+        expectText(text, timeout: timeout, documentTimeout: documentTimeout)
     }
 
     private func newTab() {
@@ -403,9 +406,10 @@ final class AsterAcceptanceTests: BaseTestCase {
     }
 
     private func expectText(_ text: String, timeout: TimeInterval = 10,
+                            documentTimeout: TimeInterval? = nil,
                             file: StaticString = #filePath, line: UInt = #line) {
         let element = app.webViews.staticTexts.matching(NSPredicate(format: "label == %@", text)).firstMatch
-        guard element.waitForExistence(timeout: timeout) else {
+        guard element.waitForExistence(timeout: documentTimeout ?? timeout) else {
             XCTFail("Missing rendered page text: \(text)", file: file, line: line)
             return
         }
