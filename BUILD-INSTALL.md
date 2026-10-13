@@ -2,9 +2,9 @@
 
 ## GitHub build
 
-The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), run number 11, attempt 1, is in progress for source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`. No production IPA is available yet.
+The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549) is in progress for source `394e481cb5527591a54969859c1c353dd440082b`. The candidate changes only popup-test visibility polling; the required test and IPA gates remain intact. No production IPA is available yet.
 
-1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In the previous attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
+1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In an earlier attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
 2. Wait for all required checks and the device build to pass. The workflow saves **Aster-regression-validation-evidence-attempt-1** after all four preflight cases pass, before unit tests. That checkpoint proves the selected regressions; it is not an installable app or a complete validation result.
 3. After the full run succeeds, sign in to GitHub and download **Aster-iPhone-UNSIGNED-needs-signing-attempt-1** from **Artifacts**.
 4. Extract `Aster-UNSIGNED-needs-signing.ipa` from the ZIP in the iPhone Files app.

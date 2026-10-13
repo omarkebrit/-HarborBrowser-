@@ -1,6 +1,6 @@
 # Feature coverage
 
-Completed evidence comes from run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78` (all four preflight cases, including actual menu/Settings interaction after fullscreen exit). Attempt 3 was manually canceled during unit compilation. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464) is in progress; its full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
+Completed evidence includes run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78` (four passing preflight cases, followed by manual cancellation during unit compilation). Run 38377770464, source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`, passed three preflight cases and failed a five-second popup visibility assertion despite visible playback and valid final bounds. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549), source `394e481cb5527591a54969859c1c353dd440082b`, is verifying the test-only polling change; full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ Completed evidence comes from run 38083870485, source `51fe284ead04c0d17b55c5172
 | Fingerprinting defenses | Inherited blocking of known fingerprinter URLs; Brave-style canvas/audio fingerprint randomization is not integrated | Upstream list coverage; no fingerprint-randomization acceptance validation |
 | Cookie-consent banners | No dedicated cookie-banner filter or automatic consent-rejection feature | Not implemented or acceptance-tested |
 | HTTPS upgrades and HTTPS-only | Feature-gated WebKit upgrades on iOS 18.2+, with HTTP fallback; release-channel default off, developer/beta on. No user-facing strict HTTPS-only mode | Configuration unit assertions; actual upgrade/fallback network behavior unverified |
-| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded H.264/AAC across transports, popup and autoplay evidence; strengthened fullscreen exit → menu → Settings → browser case passed in attempt 3 preflight. Full main selection remains pending |
+| Video and audio | Inline playback, gesture-based sound, MP4/HLS/blob/iframe, fullscreen | Decoded transport/playback evidence; fullscreen exit → menu → Settings → browser and restrictive autoplay passed in the latest completed preflight. Popup visibly played but its geometry wait failed; stricter bounded polling awaits verification. Full main selection remains pending |
 | PiP and AirPlay | Native WebKit configuration enabled | Configuration unit assertions; actual hardware/receiver remains unverified |
 | Downloads | Upstream native download manager | Dedicated native file/download-byte check remains unexecuted; required in the active full run |
 | Reader/bookmarks/reading list | Upstream implementations | Native article save, reader rendering and reading-list presence |

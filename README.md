@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38377770464](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38377770464), run number 11, attempt 1, is in progress for source `d0a980ec3313bccb40bd31e4863bd9d5b92ac418`. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38383638549](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38383638549) is in progress for source `394e481cb5527591a54969859c1c353dd440082b`. **No production IPA has been produced yet.**
 
-The previous [attempt 3](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963/attempts/3) passed all four media/session preflight cases, including fullscreen exit followed by actual menu → Settings → browser interaction. It was then manually canceled during unit-test compilation, leaving the full required checks incomplete. The new workflow has a 180-minute job budget and saves passing preflight evidence before the remaining tests. Full unit, main UI, download and device-release results for the current run remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The previous run passed three of four preflight cases; the popup visibility assertion exceeded its five-second wait despite visible decoded playback and an onscreen status label. The current change only updates that test helper: it reads each frame once per evaluation, requires finite positive label bounds inside both the viewport and window, and uses the caller's bounded timeout. Browser/media behavior is unchanged. Full unit, main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 
