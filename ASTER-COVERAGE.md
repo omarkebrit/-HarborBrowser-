@@ -1,11 +1,11 @@
 # Feature coverage
 
-Historical evidence includes run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031` (full unit plan and 14/15 main UI), and run 38086721963 attempt 3 (four passing preflight cases, then cancellation during unit compilation). The latest completed run 38386794212, source `6daa192c4f1ca3b8f3ef3a9a42a196a447430405`, passed popup, autoplay and fullscreen/menu/Settings cases but failed creation of tab 4 when a native context menu appeared instead of the expected tray; restoration was not reached. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, is verifying supported native creation commands and exact count increments; full native/download/release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md).
+[Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, passed all four native preflight cases with zero failures or skips, including complete 25-tab creation and restoration. The strict evidence checkpoint is preserved; the full unit plan is running, with main UI/download/device-build results pending. Historical full-unit and 14/15 main-UI evidence remains tied to run 38083870485, source `51fe284ead04c0d17b55c51725aa590dd951d031`. See [TEST-REPORT.md](TEST-REPORT.md).
 
 | Area | Aster implementation | Validation scope |
 | --- | --- | --- |
 | Browsing and navigation | Native WebKit, back/forward, reload, search, find in page | Upstream unit plan; local native navigation and URL-bar tests |
-| Tabs | Upstream tab management and persistence | Earlier 25-tab restoration passed; latest creation stopped after tab 3 at an unexpected native context-menu route. Current helper checks real creation commands and every count; full rerun remains required |
+| Tabs | Upstream tab management and persistence | Current preflight passed 25 loaded pages with exact counts, process relaunch and first-tab tray selection. All creation used the native tray; alternative context-menu route remains code-reviewed only |
 | Private browsing | Separate nonpersistent web data and private history handling | Native cookie/localStorage isolation and exclusion from regular history |
 | Advertising protection | AdGuard Base + Mobile Ads converted to native WebKit rules during CI | Real WebKit rule compilation; controlled blocked resource and site exception |
 | Tracking protection | Upstream standard/strict native lists | Upstream content-blocker unit coverage; local acceptance |

@@ -8,7 +8,7 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. [Run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), run number 15, attempt 1, is in progress for source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. **No production IPA has been produced yet.**
 
-The last completed preflight passed popup playback, restrictive autoplay and fullscreen/menu/Settings interaction. Creation stopped after tab 3 when the native tabs context menu appeared while the test awaited the tray's button. The current test-only helper uses the actual tray or the supported tabs context-menu creation command, requires hittable controls and exact count increments, and retains all 25 loads and real tray restoration checks. The gesture-recognition cause remains unknown; production behavior is unchanged. Full unit, main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The current run passed all four native preflight cases with zero failures or skips: popup playback, restrictive autoplay, fullscreen/menu/Settings interaction, and 25 loaded tabs across process relaunch and first-tab selection. The strict summary and evidence checkpoint are saved. The full unit plan is running; main UI, download and device-release results remain pending. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 
