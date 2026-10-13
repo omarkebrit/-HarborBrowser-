@@ -354,12 +354,15 @@ jobs:
           ditto "$app_path" "$RUNNER_TEMP/aster-package/Payload/Aster.app"
           cd "$RUNNER_TEMP/aster-package"
           zip -qry "$ASTER_RESULTS/Aster-UNSIGNED-needs-signing.ipa" Payload
-      - name: Export native test screenshots and attachments
+      - name: Export native test summaries, screenshots and attachments
         if: ${{ always() && !cancelled() }}
         shell: bash
         run: |
+          set -euo pipefail
           for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
             if [ -d "$ASTER_RESULTS/$suite.xcresult" ]; then
+              xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
+                > "$ASTER_RESULTS/$suite-summary.json"
               xcrun xcresulttool export attachments --path "$ASTER_RESULTS/$suite.xcresult" \
                 --output-path "$ASTER_RESULTS/$suite-attachments" || true
             fi

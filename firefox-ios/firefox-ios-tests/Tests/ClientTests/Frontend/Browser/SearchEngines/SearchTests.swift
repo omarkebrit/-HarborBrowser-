@@ -42,8 +42,10 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func testSuggestClient() {
-        let webServerBase = startMockSuggestServer()
+    func testSuggestClient() async {
+        let webServer = startMockSuggestServer()
+        defer { webServer.stop() }
+        let webServerBase = "http://localhost:\(webServer.port)"
         let engine = OpenSearchEngine(
             engineID: "mock",
             shortName: "Mock engine",
@@ -70,7 +72,7 @@ class SearchTests: XCTestCase {
                 query1.fulfill()
             }
         })
-        waitForExpectations(timeout: 10, handler: nil)
+        await fulfillment(of: [query1], timeout: 10)
 
         let query2 = self.expectation(description: "foo bar query")
         client.query("foo bar", callback: { response, error in
@@ -88,13 +90,13 @@ class SearchTests: XCTestCase {
                 query2.fulfill()
             }
         })
-        waitForExpectations(timeout: 10, handler: nil)
+        await fulfillment(of: [query2], timeout: 10)
     }
 }
 
 // MARK: - Helper
 private extension SearchTests {
-    func startMockSuggestServer() -> String {
+    func startMockSuggestServer() -> GCDWebServer {
         let webServer = GCDWebServer()
 
         webServer.addHandler(forMethod: "GET",
@@ -117,7 +119,7 @@ private extension SearchTests {
             XCTFail("Can't start the GCDWebServer")
         }
 
-        return "http://localhost:\(webServer.port)"
+        return webServer
     }
 
     func checkValidURL(_ beforeFixup: String, afterFixup: String) {
