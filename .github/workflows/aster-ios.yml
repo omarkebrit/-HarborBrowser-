@@ -15,7 +15,7 @@ concurrency:
 jobs:
   native:
     runs-on: macos-26
-    timeout-minutes: 120
+    timeout-minutes: 180
     env:
       ASTER_PROJECT: firefox-ios/Client.xcodeproj
       ASTER_PACKAGES: ${{ github.workspace }}/.aster-spm
@@ -60,7 +60,7 @@ jobs:
         if: ${{ success() && steps.prepare.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
-          name: aster-ad-filters
+          name: aster-ad-filters-attempt-${{ github.run_attempt }}
           path: firefox-ios/Client/Assets/AsterFilters/
           if-no-files-found: error
           retention-days: 7
@@ -84,6 +84,7 @@ jobs:
             -skipPackagePluginValidation -skipMacroValidation \
             2>&1 | tee "$ASTER_RESULTS/package-resolution.log"
       - name: Boot an iPhone 15 Pro Max simulator
+        timeout-minutes: 20
         shell: bash
         run: |
           set -euo pipefail
@@ -105,6 +106,7 @@ jobs:
           xcrun simctl bootstatus "$device_id" -b
           xcrun simctl list devices -j > "$ASTER_RESULTS/simulator-devices.json"
       - name: Check media and session regression cases with native diagnostics
+        timeout-minutes: 60
         shell: bash
         run: |
           set -euo pipefail
@@ -136,7 +138,39 @@ jobs:
             CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/regression-tests.log"
+      - name: Save completed media and session regression proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            > "$ASTER_RESULTS/AsterRegressionTests-summary.json"
+          python3 - "$ASTER_RESULTS/AsterRegressionTests-summary.json" <<'PY'
+          import json, sys
+          result = json.load(open(sys.argv[1]))
+          if (int(result.get('passedTests', 0)) != 4 or int(result.get('failedTests', 0)) != 0
+                  or int(result.get('skippedTests', 0)) != 0):
+              sys.exit('::error::All four media/session regression tests must pass without failures or skips.')
+          PY
+          xcrun xcresulttool export attachments --path "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            --output-path "$ASTER_RESULTS/AsterRegressionTests-attachments" || true
+      - name: Preserve completed regression evidence before remaining tests
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-regression-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/AsterRegressionTests.xcresult
+            build-output/AsterRegressionTests-summary.json
+            build-output/AsterRegressionTests-attachments/
+            build-output/regression-tests.log
+            build-output/session-diagnostics/
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+            build-output/simulator-runtimes.json
+            build-output/simulator-devices.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Run the full upstream unit test plan
+        timeout-minutes: 60
         shell: bash
         run: |
           set -euo pipefail
@@ -190,6 +224,7 @@ jobs:
           print('Verified local ad-hoc signature, bundle identifier, and Xcode-generated simulator keychain/app groups.')
           PY
       - name: Run local browser acceptance and upstream UI tests
+        timeout-minutes: 60
         shell: bash
         run: |
           set -euo pipefail
@@ -295,6 +330,7 @@ jobs:
             ${{ runner.temp }}/aster-simulator
           key: ${{ steps.native-cache.outputs.cache-primary-key }}
       - name: Build the unsigned iPhone release app
+        timeout-minutes: 60
         shell: bash
         run: |
           set -euo pipefail
@@ -332,7 +368,7 @@ jobs:
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Aster-native-validation-evidence
+          name: Aster-native-validation-evidence-attempt-${{ github.run_attempt }}
           path: |
             build-output/*.log
             build-output/*.txt
@@ -347,7 +383,7 @@ jobs:
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
-          name: Aster-iPhone-UNSIGNED-needs-signing
+          name: Aster-iPhone-UNSIGNED-needs-signing-attempt-${{ github.run_attempt }}
           path: build-output/Aster-UNSIGNED-needs-signing.ipa
           if-no-files-found: error
           retention-days: 7
