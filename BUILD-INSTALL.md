@@ -2,12 +2,14 @@
 
 ## GitHub build
 
-1. Resolve the billing/spending-limit block reported by [run 38086721963](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963). That run did not execute any build or test steps; no IPA is available yet.
+1. For standard public-repository builds, open [repository settings](https://github.com/omarkebrit/-HarborBrowser-/settings) as the owner, then **Danger Zone → Change visibility → Make public** and complete GitHub's confirmation. GitHub denied the integration's repository-creation and administration requests with HTTP 403, so this setting currently needs the owner's direct action. The repository is still private until the change is verified. The alternative private build path requires resolving the account billing/spending-limit block.
 2. Open that run and select **Re-run jobs → Re-run all jobs**. GitHub supports rerunning within 30 days with repository write access. This reuses the exact tested branch reference and source commit containing the latest fullscreen test fix.
 3. Review the native validation summary and evidence artifact. Required native checks must pass before an IPA is published.
 4. Download **Aster-iPhone-UNSIGNED-needs-signing**. Extract `Aster-UNSIGNED-needs-signing.ipa`.
 
 The workflow uses the standard `macos-26` runner and Xcode 26.5, pinned Swift package revisions, a verified Nimbus generator and a verified advertising converter. Native logs and test attachments are retained for seven days; download evidence if you need longer retention.
+
+[GitHub documents standard hosted-runner usage as free for public repositories](https://docs.github.com/en/billing/concepts/product-billing/github-actions). This workflow uses a standard runner. Changing the visibility publishes all repository branches/history, including the earlier Harbor browser source. Aster's current source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser). No production IPA exists yet: the latest native attempt was blocked before any steps executed, and the full required checks must still pass.
 
 The workflow currently exists only on `feat/aster-browser`, while the repository's default branch remains `main`. GitHub requires a `workflow_dispatch` file on the default branch before offering manual **Run workflow** execution, so that button may be unavailable. Branch pushes without a skip-CI marker also trigger this workflow. No default-branch merge is required to rerun the existing run or trigger a branch push. See [GitHub's manual-workflow requirements](https://docs.github.com/en/actions/how-tos/managing-workflow-runs-and-deployments/managing-workflow-runs/manually-running-a-workflow) and [rerun instructions](https://docs.github.com/en/actions/how-tos/managing-workflow-runs-and-deployments/managing-workflow-runs/re-running-workflows-and-jobs).
 
