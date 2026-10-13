@@ -2,6 +2,8 @@
 
 These unmodified screenshots come from [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, on an iPhone 15 Pro Max simulator running iOS 26.5. These are actual test fixtures and UI, not design mockups.
 
+[Run 15 preflight gallery](regression-run15/README.md) contains five newer verified fullscreen and tab-restoration captures with separate provenance.
+
 In the depicted run, the preflight passed all four cases and the main selection passed 14/15; its immediate post-rotation toolbar assertion failed. The newer [run 38393771825](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825) has now passed all four preflight cases, including 25-tab creation/restoration, and preserved its evidence checkpoint. Its full unit plan is running; main UI, download and device build remain pending. These images retain their original source provenance and do not certify signed installation, every website, complete Arabic translation or physical-device audio. See [the validation report](../../TEST-REPORT.md).
 
 <img src="accessibility-home.png" width="280" alt="Actual Aster homepage at maximum Dynamic Type, with StageServer test tiles">

@@ -1,0 +1,63 @@
+{
+  "runID": 38393771825,
+  "sourceCommit": "aab3dc3ac23bf2e58c1334920fe70528e9dad527",
+  "artifactID": 11813987465,
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "imagesUnmodified": true,
+  "preflight": "4 passed, 0 failed, 0 skipped",
+  "validationStatusAtPublication": {
+    "fullUnitPlan": "running",
+    "mainUI": "pending",
+    "isolatedDownload": "pending",
+    "unsignedDeviceBuild": "pending"
+  },
+  "images": [
+    {
+      "file": "fullscreen-portrait.png",
+      "label": "Real portrait fullscreen playback",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "79584203-3926-4B12-B210-CF0A7A0C7319.png",
+      "attachmentName": "Actual portrait fullscreen video_0_D1AFB96B-8676-4E41-B0AD-7184DEFB8DA2.png",
+      "sha256": "cd347663503d58ceda5688b2ce9f982b37e2927d61dbce335a388b1a6541fe37",
+      "suite": "AsterRegressionTests"
+    },
+    {
+      "file": "fullscreen-landscape.png",
+      "label": "Real landscape fullscreen playback",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "FB3B999B-96DF-4A71-A441-1AC3E67D3FA7.png",
+      "attachmentName": "Actual landscape fullscreen video_0_03D196D7-4D61-42C1-8AF3-2FFE6C22CFB8.png",
+      "sha256": "3ca4c0077a78522b9ad2b701e453a8709b1166924782145d5748d7f08161256c",
+      "suite": "AsterRegressionTests"
+    },
+    {
+      "file": "fullscreen-preflight-exit.png",
+      "label": "Native browser controls restored after fullscreen exit",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "F3E40B5F-EED9-43A8-A0AB-B99ACB01BB00.png",
+      "attachmentName": "Fullscreen exit restores browser controls_0_EE9130F5-F15C-4925-8478-3B98CAF5CD20.png",
+      "sha256": "097d25f729ee4a9582f7b1225a22f3b8e5a6511815f4a239f850a3893a407741",
+      "suite": "AsterRegressionTests"
+    },
+    {
+      "file": "fullscreen-return-menu.png",
+      "label": "Native browser menu opened after fullscreen exit",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "exportedFileName": "17873B83-8AA1-4E17-9D8A-5EA4322A571E.png",
+      "attachmentName": "Recovered native browser menu accepts interaction_0_35AAE3D8-5AA9-4187-9D6E-38095BED46D6.png",
+      "sha256": "4febd0b396ae20010033f47a8f769ebea045f49c807e90d5cc25eb54440f8c0c",
+      "suite": "AsterRegressionTests"
+    },
+    {
+      "file": "restored-25-tabs.png",
+      "label": "First tab after process relaunch; 25 tabs retained",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "exportedFileName": "01E3374F-9F98-44B8-8533-EEF2B916B5FF.png",
+      "attachmentName": "Restored first tab_0_BE9ABE96-24BA-47C5-AD55-6C717A03669B.png",
+      "sha256": "b0968e3e72eed38cee1ff84d12760e66914a0fef27a922daae1a30d6a60fbd04",
+      "suite": "AsterRegressionTests"
+    }
+  ]
+}
