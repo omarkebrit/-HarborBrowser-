@@ -1,6 +1,8 @@
 # Aster validation report
 
-Validation is incomplete as of 10 October 2026. No production iPhone IPA has been built or published. The native-code candidate, `ae128811a91010fa972eba2849635d289e9b8e78`, remains unverified: [GitHub run 38086721963](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963) was blocked by GitHub billing/spending-limit annotations before any job steps executed, and produced no artifacts.
+Validation is incomplete as of 13 October 2026. No production iPhone IPA has been built or published. The native-code candidate, `ae128811a91010fa972eba2849635d289e9b8e78`, remains unverified: [GitHub run 38086721963](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38086721963) was blocked by GitHub billing/spending-limit annotations before any job steps executed, and produced no artifacts.
+
+The run was retried on 13 October 2026 (attempt 2, native job `115199420290`). GitHub accepted the rerun, then rejected execution with the same failed-payment/spending-limit annotation: zero steps and zero artifacts. The integration can rerun repository jobs, but GitHub returned HTTP 403 (`Resource not accessible by integration`) when queried for the account billing usage report. Account billing must be resolved through the owner's GitHub settings; this attempt adds no native test or packaging result.
 
 The latest executed native evidence is [GitHub run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`. That run passed the full upstream `UnitTest` plan and all four preflight regression cases. Its main UI selection passed 14 of 15 tests; the fullscreen test failed at the toolbar hit-target assertion after exiting fullscreen and rotating back to portrait. The required download test, download byte verification and device release build were not reached.
 
