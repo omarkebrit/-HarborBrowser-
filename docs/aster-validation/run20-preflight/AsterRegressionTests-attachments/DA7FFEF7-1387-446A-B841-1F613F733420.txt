@@ -1,0 +1,1 @@
+failed - SETUP: First-loop clock must be fresh, playing in portrait, and before its first wrap; age=0.0288999080657959, Aster media clock {"t":0,"duration":6,"rate":1,"playing":false,"epochMs":1792488863983,"playRequestedEpochMs":1792488857442,"totalNaturalWraps":1,"orientation":"portrait"}

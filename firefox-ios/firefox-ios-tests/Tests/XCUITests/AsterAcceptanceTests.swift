@@ -29,6 +29,13 @@ final class AsterAcceptanceTests: BaseTestCase {
         let totalNaturalWraps: Int
     }
 
+    private struct FullscreenPortraitSample {
+        let snapshot: XCUIElementSnapshot
+        let rawClock: String
+        let clock: FullscreenMediaClock
+        let receivedAt: TimeInterval
+    }
+
     override func setUp() async throws {
         XCUIDevice.shared.orientation = .portrait
         launchArguments += [LaunchArguments.ClearWebData,
@@ -127,18 +134,17 @@ final class AsterAcceptanceTests: BaseTestCase {
 
     func testTwentyFiveTabsSurviveProcessRelaunch() {
         let documentReadinessTimeout: TimeInterval = 30
-        open("/tab.html?number=1", expecting: "Local tab 1 ready", documentTimeout: documentReadinessTimeout)
+        openTabDocument(1, documentTimeout: documentReadinessTimeout)
         for number in 2...25 {
             newTab()
-            open("/tab.html?number=\(number)", expecting: "Local tab \(number) ready",
-                 documentTimeout: documentReadinessTimeout)
+            openTabDocument(number, documentTimeout: documentReadinessTimeout)
             toolbar.assertTabsButtonValue(expectedCount: "\(number)")
         }
         toolbar.assertTabsButtonValue(expectedCount: "25")
         captureDisplay("Twenty five loaded tabs")
         app.launchArguments.removeAll { $0 == LaunchArguments.ClearWebData }
         forceCloseAndRelaunchApp()
-        expectText("Local tab 25 ready", timeout: 20, documentTimeout: documentReadinessTimeout)
+        expectRenderedText("Local tab 25 ready", timeout: 20, documentTimeout: documentReadinessTimeout)
         toolbar.assertTabsButtonValue(expectedCount: "25")
 
         toolbar.tapOnTabsButton()
@@ -150,7 +156,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         }
         tabTray.tapOnCell(named: "Aster tab 1")
         navigator.nowAt(BrowserTab)
-        expectText("Local tab 1 ready", documentTimeout: documentReadinessTimeout)
+        expectRenderedText("Local tab 1 ready", timeout: 10, documentTimeout: documentReadinessTimeout)
         toolbar.assertTabsButtonValue(expectedCount: "25")
         captureDisplay("Restored first tab")
     }
@@ -209,7 +215,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         for transport in ["mp4", "hls", "iframe", "blob"] {
             open("/media/\(transport).html", expecting: "Ready for playback", timeout: 20)
             app.webViews.buttons["Play test media"].firstMatch.waitAndTap()
-            expectMediaText("Audio and video playing", timeout: 15)
+            expectRenderedText("Audio and video playing", timeout: 15)
             captureDisplay("Decoded \(transport) video with audio")
         }
     }
@@ -218,12 +224,12 @@ final class AsterAcceptanceTests: BaseTestCase {
         defer { exitFullscreenIfNeeded(); XCUIDevice.shared.orientation = .portrait }
         open("/media/fullscreen.html", expecting: "Waiting for fullscreen")
         app.webViews.buttons["Enter fullscreen"].waitAndTap()
-        expectMediaText("Fullscreen video playing in portrait", timeout: 15)
+        expectRenderedText("Fullscreen video playing in portrait", timeout: 15)
         captureDisplay("Actual portrait fullscreen video")
         XCUIDevice.shared.orientation = .landscapeLeft
-        expectMediaText("Fullscreen video playing in landscape", timeout: 15)
+        expectRenderedText("Fullscreen video playing in landscape", timeout: 15)
         captureDisplay("Actual landscape fullscreen video")
-        expectMediaText("Fullscreen loop playback verified in landscape", timeout: 20)
+        expectRenderedText("Fullscreen loop playback verified in landscape", timeout: 20)
         captureDisplay("Decoded fullscreen frames continue after two landscape loops")
         let exit = app.webViews.buttons["Exit fullscreen"].firstMatch
         mozWaitForElementToExist(exit)
@@ -252,9 +258,8 @@ final class AsterAcceptanceTests: BaseTestCase {
         defer { exitFullscreenIfNeeded(); XCUIDevice.shared.orientation = .portrait }
         open("/media/fullscreen.html", expecting: "Waiting for fullscreen")
         app.webViews.buttons["Enter fullscreen"].waitAndTap()
-        expectMediaText("Fullscreen video playing in portrait", timeout: 15)
         guard let firstBoundary = rotateAtFirstFullscreenLoopBoundary() else { return }
-        expectMediaText("Fullscreen first-loop boundary rotation observed", timeout: 15)
+        expectRenderedText("Fullscreen first-loop boundary rotation observed", timeout: 15)
         let prefix = "Aster rotation observation "
         let observation = app.webViews.staticTexts.matching(
             NSPredicate(format: "label BEGINSWITH %@", prefix)
@@ -281,9 +286,9 @@ final class AsterAcceptanceTests: BaseTestCase {
                       "Actual landscape resize missed the first boundary: offset=\(resizeOffset), \(observation)")
         XCTAssertTrue((0...1).contains(resize.totalNaturalWraps),
                       "Actual landscape resize happened after the first loop: \(observation)")
-        expectMediaText("Fullscreen video playing in landscape", timeout: 15)
+        expectRenderedText("Fullscreen video playing in landscape", timeout: 15)
         captureDisplay("Actual first-loop boundary landscape fullscreen video")
-        expectMediaText("Fullscreen loop playback verified in landscape", timeout: 20)
+        expectRenderedText("Fullscreen loop playback verified in landscape", timeout: 20)
         captureDisplay("Decoded fullscreen frames continue after two boundary-targeted landscape loops")
         let exit = app.webViews.buttons["Exit fullscreen"].firstMatch
         mozWaitForElementToExist(exit)
@@ -345,7 +350,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         XCTAssertFalse(app.webViews.staticTexts["Audio and video playing"].exists)
         captureDisplay("Real automatic playback attempt remains paused")
         app.webViews.buttons["Play test media"].waitAndTap()
-        expectMediaText("Audio and video playing", timeout: 15)
+        expectRenderedText("Audio and video playing", timeout: 15)
         captureDisplay("User gesture plays sound under restrictive autoplay")
     }
 
@@ -454,6 +459,12 @@ final class AsterAcceptanceTests: BaseTestCase {
         expectText(text, timeout: timeout, documentTimeout: documentTimeout)
     }
 
+    private func openTabDocument(_ number: Int, documentTimeout: TimeInterval) {
+        navigator.openURL(origin + "/tab.html?number=\(number)")
+        navigator.nowAt(BrowserTab)
+        expectRenderedText("Local tab \(number) ready", timeout: 10, documentTimeout: documentTimeout)
+    }
+
     private func newTab() {
         let tabs = app.buttons[AccessibilityIdentifiers.Toolbar.tabsButton]
         waitForPredicate("exists == true && hittable == true", element: tabs)
@@ -498,50 +509,34 @@ final class AsterAcceptanceTests: BaseTestCase {
                        "Page text exists but is not visible: \(text)", file: file, line: line)
     }
 
-    // Native screenshots prove these media labels render despite XCTest activation-point errors.
-    private func expectMediaText(_ text: String, timeout: TimeInterval,
-                                 file: StaticString = #filePath, line: UInt = #line) {
+    // Read-only labels must render inside the viewport; interaction is checked on their controls.
+    private func expectRenderedText(_ text: String, timeout: TimeInterval,
+                                    documentTimeout: TimeInterval? = nil,
+                                    file: StaticString = #filePath, line: UInt = #line) {
         let element = app.webViews.staticTexts.matching(NSPredicate(format: "label == %@", text)).firstMatch
-        guard element.waitForExistence(timeout: timeout) else {
-            XCTFail("Missing rendered media text: \(text)", file: file, line: line)
+        guard element.waitForExistence(timeout: documentTimeout ?? timeout) else {
+            XCTFail("Missing rendered page text: \(text)", file: file, line: line)
             return
         }
         let viewport = app.webViews["contentView"].firstMatch
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
             let frame = element.frame
+            let viewportFrame = viewport.frame
+            let windowFrame = self.app.windows.firstMatch.frame
             return frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
-                && frame.width > 0 && frame.height > 0 && viewport.frame.contains(frame)
-                && self.app.windows.firstMatch.frame.contains(frame)
+                && frame.width > 0 && frame.height > 0 && viewportFrame.contains(frame) && windowFrame.contains(frame)
         }, object: element)
         XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: timeout), .completed,
-                       "Media text must render inside the native viewport and display: \(text)", file: file, line: line)
+                       "Page text must render inside the native viewport and display: \(text)", file: file, line: line)
     }
 
     private func rotateAtFirstFullscreenLoopBoundary(file: StaticString = #filePath, line: UInt = #line) -> TimeInterval? {
-        let prefix = "Aster media clock "
-        let raw = app.webViews.staticTexts.matching(
-            NSPredicate(format: "label BEGINSWITH %@", prefix)
-        ).firstMatch.label
-        let receivedAt = Date().timeIntervalSince1970
-        guard raw.hasPrefix(prefix),
-              let data = String(raw.dropFirst(prefix.count)).data(using: .utf8),
-              let clock = try? JSONDecoder().decode(FullscreenMediaClock.self, from: data) else {
-            XCTFail("SETUP: Missing or invalid first-loop media clock: \(raw)", file: file, line: line)
-            return nil
-        }
+        guard let sample = firstLoopPortraitSample(timeout: 15, file: file, line: line) else { return nil }
+        let raw = sample.rawClock
+        let clock = sample.clock
+        let receivedAt = sample.receivedAt
         let sampleAt = clock.epochMs / 1000
-        let playRequestedAt = clock.playRequestedEpochMs / 1000
         let age = receivedAt - sampleAt
-        guard clock.t.isFinite, clock.duration.isFinite, clock.rate.isFinite, clock.epochMs.isFinite,
-              clock.playRequestedEpochMs.isFinite,
-              clock.t >= 0, clock.t < clock.duration, (5.9...6.1).contains(clock.duration), clock.rate > 0,
-              clock.playing, clock.orientation == "portrait", clock.totalNaturalWraps == 0,
-              sampleAt >= playRequestedAt, sampleAt - playRequestedAt < clock.duration / clock.rate,
-              age >= 0, age <= 1.5 else {
-            XCTFail("SETUP: First-loop clock must be fresh, playing in portrait, and before its first wrap; age=\(age), \(raw)",
-                    file: file, line: line)
-            return nil
-        }
         let firstBoundary = sampleAt + (clock.duration - clock.t) / clock.rate
         let target = firstBoundary - 0.4
         let waitDuration = target - Date().timeIntervalSince1970
@@ -560,6 +555,10 @@ final class AsterAcceptanceTests: BaseTestCase {
         }
         let requestedAt = Date().timeIntervalSince1970
         XCUIDevice.shared.orientation = .landscapeLeft
+        let portrait = XCTAttachment(string: String(describing: sample.snapshot))
+        portrait.name = "Portrait fullscreen and media clock from one native snapshot"
+        portrait.lifetime = .keepAlways
+        add(portrait)
         let schedule = XCTAttachment(string: "\(raw)\nreceivedEpochMs=\(receivedAt * 1000)\n"
             + "sampleAge=\(age)\nfirstBoundaryEpochMs=\(firstBoundary * 1000)\n"
             + "targetEpochMs=\(target * 1000)\nrotationRequestedEpochMs=\(requestedAt * 1000)")
@@ -567,6 +566,81 @@ final class AsterAcceptanceTests: BaseTestCase {
         schedule.lifetime = .keepAlways
         add(schedule)
         return firstBoundary
+    }
+
+    private func firstLoopPortraitSample(timeout: TimeInterval,
+                                         file: StaticString, line: UInt) -> FullscreenPortraitSample? {
+        let prefix = "Aster media clock "
+        var accepted: FullscreenPortraitSample?
+        var setupFailure: String?
+        var lastClock = "No media clock snapshot received"
+        let readiness = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            if accepted != nil || setupFailure != nil { return true }
+            guard let root = try? self.app.snapshot() else { return false }
+            let receivedAt = Date().timeIntervalSince1970
+            guard let window = self.snapshot(in: root, matching: { $0.elementType == .window }),
+                  let viewport = self.snapshot(in: root, matching: {
+                      $0.elementType == .webView && $0.identifier == "contentView"
+                  }),
+                  let clockText = self.snapshot(in: viewport, matching: {
+                      $0.elementType == .staticText && $0.label.hasPrefix(prefix)
+                  }) else { return false }
+            let raw = clockText.label
+            lastClock = raw
+            guard let data = String(raw.dropFirst(prefix.count)).data(using: .utf8),
+                  let clock = try? JSONDecoder().decode(FullscreenMediaClock.self, from: data) else { return false }
+            if clock.totalNaturalWraps > 0 {
+                setupFailure = "SETUP: First portrait snapshot was already after its first wrap; \(raw)"
+                return true
+            }
+            guard self.validFirstLoopClock(clock, receivedAt: receivedAt),
+                  let status = self.snapshot(in: viewport, matching: {
+                      $0.elementType == .staticText && $0.label == "Fullscreen video playing in portrait"
+                  }),
+                  self.visibleSnapshot(status, in: viewport, window: window),
+                  self.visibleSnapshot(clockText, in: viewport, window: window) else { return false }
+            accepted = FullscreenPortraitSample(snapshot: root, rawClock: raw, clock: clock, receivedAt: receivedAt)
+            return true
+        }, object: app)
+        guard XCTWaiter().wait(for: [readiness], timeout: timeout) == .completed else {
+            XCTFail("SETUP: Portrait text and fresh first-loop clock must share a visible snapshot; \(lastClock)",
+                    file: file, line: line)
+            return nil
+        }
+        if let setupFailure {
+            XCTFail(setupFailure, file: file, line: line)
+            return nil
+        }
+        return accepted
+    }
+
+    private func validFirstLoopClock(_ clock: FullscreenMediaClock, receivedAt: TimeInterval) -> Bool {
+        let sampleAt = clock.epochMs / 1000
+        let playRequestedAt = clock.playRequestedEpochMs / 1000
+        let age = receivedAt - sampleAt
+        return clock.t.isFinite && clock.duration.isFinite && clock.rate.isFinite && clock.epochMs.isFinite
+            && clock.playRequestedEpochMs.isFinite
+            && clock.t >= 0 && clock.t < clock.duration && (5.9...6.1).contains(clock.duration) && clock.rate > 0
+            && clock.playing && clock.orientation == "portrait" && clock.totalNaturalWraps == 0
+            && sampleAt >= playRequestedAt && sampleAt - playRequestedAt < clock.duration / clock.rate
+            && age >= 0 && age <= 1.5
+    }
+
+    private func snapshot(in root: XCUIElementSnapshot,
+                          matching predicate: (XCUIElementSnapshot) -> Bool) -> XCUIElementSnapshot? {
+        if predicate(root) { return root }
+        for child in root.children {
+            if let match = snapshot(in: child, matching: predicate) { return match }
+        }
+        return nil
+    }
+
+    private func visibleSnapshot(_ element: XCUIElementSnapshot,
+                                 in viewport: XCUIElementSnapshot, window: XCUIElementSnapshot) -> Bool {
+        let frames = [element.frame, viewport.frame, window.frame]
+        guard frames.allSatisfy({ $0.minX.isFinite && $0.minY.isFinite && $0.width.isFinite && $0.height.isFinite
+            && $0.width > 0 && $0.height > 0 }) else { return false }
+        return viewport.frame.contains(element.frame) && window.frame.contains(element.frame)
     }
 
     private func captureDisplay(_ title: String) {
