@@ -1,0 +1,78 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "E4CDB494-AFDC-41A9-BEBC-205E2B62878E",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 5756,
+      "skippedTests" : 2,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Configuration 1"
+      }
+    }
+  ],
+  "environmentDescription" : "UnitTest · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1792494688.874,
+  "passedTests" : 5745,
+  "result" : "Failed",
+  "skippedTests" : 2,
+  "startTime" : 1792491322.996,
+  "statistics" : [
+    {
+      "subtitle" : "14 test runs",
+      "title" : "3 tests ran with dynamic parameters"
+    },
+    {
+      "subtitle" : "3 test runs",
+      "title" : "3 tests collected performance metrics"
+    }
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "XCTAssertNil failed: \"<Client.TabWebView: 0x37642f200; frame = (0 0; 100 100); layer = <CALayer: 0x3993330f0>>\" - Memory leak detected in /Users/runner/work/-HarborBrowser-/-HarborBrowser-/firefox-ios/firefox-ios-tests/Tests/ClientTests/TabWebViewTests.swift:115",
+      "targetName" : "ClientTests",
+      "testIdentifier" : 4449,
+      "testIdentifierString" : "TabWebViewTests/testBasicTabWebView_doesntLeak()",
+      "testIdentifierURL" : "test://com.apple.xcode/Client/ClientTests/TabWebViewTests/testBasicTabWebView_doesntLeak",
+      "testName" : "testBasicTabWebView_doesntLeak()"
+    },
+    {
+      "failureText" : "Asynchronous wait failed: Exceeded timeout of 30 seconds, with unfulfilled expectations: \"Expect change to '\\WKWebView.estimatedProgress' of <WebEngine.DefaultWKEngineWebView: 0x1070f8000; frame = (0 0; 320 640); layer = <CALayer: 0x10722a7c0>>\", \"Expect change to '\\UIScrollView.contentSize' of <WKScrollView: 0x1070f8a00; baseClass = UIScrollView; frame = (0 0; 320 640); clipsToBounds = YES; gestureRecognizers = <NSArray: 0x107229980>; backgroundColor = kCGColorSpaceModelRGB 1 1 1 1; layer = <CALayer: 0x107228ed0>; contentOffset: {0, 0}; contentSize: {0, 0}; adjustedContentInset: {0, 0, 0, 0}>\".",
+      "targetName" : "WebEngineTests",
+      "testIdentifier" : 931,
+      "testIdentifierString" : "WKEngineWebViewTests/testLoad_callsObservers()",
+      "testIdentifierURL" : "test://com.apple.xcode/BrowserKit/WebEngineTests/WKEngineWebViewTests/testLoad_callsObservers",
+      "testName" : "testLoad_callsObservers()"
+    }
+  ],
+  "title" : "Test - Fennec",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "30% of duration",
+      "text" : "6 longest test runs with outlier durations exceeding 7.80s (three standard deviations)"
+    },
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "82% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 6.39s (three standard deviations)"
+    },
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "63% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 1.31s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 5749
+}

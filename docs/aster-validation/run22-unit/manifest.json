@@ -1,0 +1,40 @@
+{
+  "runID": 39405042843,
+  "runNumber": 22,
+  "runAttempt": 1,
+  "jobID": 118568814602,
+  "sourceCommit": "5174b9a6775c0a0ada40bebf7c309ee300cf1bc5",
+  "artifactID": 12260347642,
+  "artifactBytes": 372163039,
+  "suite": "AsterUnitTests",
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Failed",
+    "passedTests": 5745,
+    "failedTests": 2,
+    "skippedTests": 2,
+    "expectedFailures": 0,
+    "totalTestCount": 5749
+  },
+  "scope": "Failed full unit-plan checkpoint for run 22 only. No passing full-native, media or IPA claim.",
+  "files": [
+    {
+      "file": "AsterUnitTests-summary.json",
+      "artifactPath": "AsterUnitTests-summary.json",
+      "bytes": 3358,
+      "sha256": "a5e792970d631d2bc4fdcb398da8dcd675c963b9c4d31ce4af70c7d4f08a7928"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "8bbd4dd2e4c7381cf4d0c6404ad2f9638983e8d20594d9cbb5e72d3aa19ec2a4"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    }
+  ]
+}
