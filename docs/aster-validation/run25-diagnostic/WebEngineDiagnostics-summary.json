@@ -1,0 +1,46 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "4467BADF-5457-4E1B-AD97-AEC50C3E4A91",
+        "deviceName" : "Aster WebEngine diagnostic iPhone",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 230,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "WebEngine · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1792496412.713,
+  "passedTests" : 230,
+  "result" : "Passed",
+  "skippedTests" : 0,
+  "startTime" : 1792496188.25,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - WebEngine",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "33% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 1.06s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 230
+}

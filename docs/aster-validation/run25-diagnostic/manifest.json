@@ -1,0 +1,99 @@
+{
+  "runID": 39414543028,
+  "runNumber": 25,
+  "runAttempt": 1,
+  "jobID": 118600244217,
+  "sourceCommit": "1617b9a76839208c5f2ac533a646226929491787",
+  "artifactID": 12261872697,
+  "artifactName": "Aster-WebEngine-DIAGNOSTIC-attempt-1",
+  "artifactBytes": 530137,
+  "artifactSHA256": "41b61465f5aad40f661c2ed25610b560bbbbd623344a21ceeb1000c8514f66dc",
+  "archiveVerification": {
+    "githubDigestMatched": true,
+    "zipCRC": "Passed",
+    "zipEntryCount": 508
+  },
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "architecture": "arm64",
+  "xcode": "26.5 (17F42)",
+  "scope": "Isolated WebEngine package validation only. Full native-validation job skipped; no IPA built or published. No full unit-plan, browser-wide, installation or physical-device claim.",
+  "filesUnmodified": true,
+  "filesUnmodifiedScope": "files contains four complete unmodified original artifact files; derivedFiles separately describes an exact-line excerpt.",
+  "officialSummary": {
+    "result": "Passed",
+    "passedTests": 230,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 230
+  },
+  "observerCase": {
+    "identifier": "WebEngineTests.WKEngineWebViewTests.testLoad_callsObservers",
+    "result": "Passed",
+    "durationSeconds": 4.793
+  },
+  "leakCase": {
+    "identifier": "WebEngineTests.WKEngineWebViewTests.testNoLeaks",
+    "result": "Passed",
+    "durationSeconds": 0.139
+  },
+  "files": [
+    {
+      "file": "WebEngineDiagnostics-summary.json",
+      "artifactPath": "WebEngineDiagnostics-summary.json",
+      "bytes": 1189,
+      "sha256": "d8ff2454a654d26724de106e8dbb020db8ddf4c0e97f8ac59df4a41f2cfc2874"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "a077c6c7f93a85302918db67da03a601651ffe9e0dcc687f566e7faf490891e9"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 31,
+      "sha256": "5f6350250c6f298d06e1435819ddd1539d6c84785aaa8d824c2ac74f57914d03"
+    },
+    {
+      "file": "diagnostic-scope.txt",
+      "artifactPath": "diagnostic-scope.txt",
+      "bytes": 105,
+      "sha256": "fbda383f75a2c08a4bdac2f48c9045d3d18905edad9d11185b874e157fc612bf"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "wk-observer-and-leak-excerpt.txt",
+      "bytes": 509,
+      "sha256": "966da24ea27e014ba78ccc5e3d5416965d0754a71c63ee390ef4ddd9a6fbea3d",
+      "matchedLineCount": 7,
+      "sourceLineNumbers": [
+        2863,
+        2870,
+        2871,
+        2872,
+        2883,
+        2884,
+        2993
+      ],
+      "origin": {
+        "artifactPath": "webengine-tests.log",
+        "bytes": 575116,
+        "sha256": "62df34c4e1265a12fc0d83a4cd7eb2f051b6294771afb0e00b439b8e3a194eb4"
+      },
+      "matchingRules": {
+        "observerAndLeakCases": "Complete lines starting with either exact case prefix below and containing started. or passed (.",
+        "casePrefixes": [
+          "Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' ",
+          "Test Case '-[WebEngineTests.WKEngineWebViewTests testNoLeaks]' "
+        ],
+        "classPass": "Complete line starting with Test Suite 'WKEngineWebViewTests' passed at and the immediately following Executed 11 tests line.",
+        "overallSuccess": "Complete line whose stripped bytes equal ** TEST SUCCEEDED **."
+      },
+      "derivation": "Read webengine-tests.log as bytes, select the seven complete original byte-lines described above and concatenate in original order with their original line endings. No headers, trimming, normalization or redaction. This is an exact-line subset, not the complete source log."
+    }
+  ]
+}

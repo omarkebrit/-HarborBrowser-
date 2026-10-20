@@ -1,0 +1,44 @@
+{
+  "runID": 39406335775,
+  "runNumber": 23,
+  "jobID": 118573067624,
+  "runAttempt": 1,
+  "sourceCommit": "4557246b64453abb464844aa8ff4358e90107c5b",
+  "artifactID": 12261567596,
+  "artifactBytes": 491164,
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Failed",
+    "passedTests": 15,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 16
+  },
+  "sourceLogNotCopied": {
+    "artifactPath": "acceptance-tests.log",
+    "bytes": 936202,
+    "sha256": "d12352caa27af36a9fec2d8baede25c70351f208926b9c06e911cb803b5c8f62"
+  },
+  "scope": "Main UI checkpoint only. Missing boundary text is the sole reported failure; actual main boundary frames/timing await final attachments. Unit/preflight history remains separate. No full pass or IPA claim.",
+  "files": [
+    {
+      "file": "AsterAcceptanceTests-summary.json",
+      "artifactPath": "AsterAcceptanceTests-summary.json",
+      "bytes": 1746,
+      "sha256": "3fa4cbed6f2bd9d37802440eba9a1d5930852cf581d5d2c4f7bb0e955c0cab20"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "80e7f99d7710801b5793fd14fdb4eb94f7e22eb32aafca75a4f320e13bfaee9f"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    }
+  ]
+}

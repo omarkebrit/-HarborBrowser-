@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-**No downloadable release or completed full-validation pass is available.** Full [run 23](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39406335775) passed units 5,747/0 failed/2 upstream skips but failed preflight 3/2, blocking its IPA; its main UI is running. Parallel [run 22](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39405042843) recorded units 5,745/2 failed/2 skipped.
+**No downloadable release or completed full-validation pass is available.** Full [run 23](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39406335775) passed units 5,747/0 failed/2 upstream skips but failed preflight 3/2, blocking its IPA; its main UI finished 15 passed/one failed, and download/byte-verification steps passed. Parallel [run 22](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39405042843) recorded units 5,745/2 failed/2 skipped.
 
-Media-only [diagnostic 24](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39414241881), source `e0f89e5f8ce34e6faa230dac404b5a1434712486`, and WebEngine-only [diagnostic 25](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39414543028), source `1617b9a76839208c5f2ac533a646226929491787`, are running. They test fixture corrections and produce no IPA; the next full candidate has not started. See [TEST-REPORT.md](TEST-REPORT.md) for source-bound results, diagnostics and permanent evidence.
+Media-only [diagnostic 24](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39414241881), source `e0f89e5f8ce34e6faa230dac404b5a1434712486`, remains in progress. Isolated-WebEngine [diagnostic 25](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39414543028), source `1617b9a76839208c5f2ac533a646226929491787`, passed 230/0 failed/0 skipped/0 expected failures; the original window observer passed in 4.793s and all eleven WK cases passed. Neither publishes an IPA or replaces full native validation; the next full candidate has not started. See [TEST-REPORT.md](TEST-REPORT.md) for source-bound evidence.
 
 ## What is included
 
