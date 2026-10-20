@@ -209,7 +209,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         for transport in ["mp4", "hls", "iframe", "blob"] {
             open("/media/\(transport).html", expecting: "Ready for playback", timeout: 20)
             app.webViews.buttons["Play test media"].firstMatch.waitAndTap()
-            expectText("Audio and video playing", timeout: 15)
+            expectMediaText("Audio and video playing", timeout: 15)
             captureDisplay("Decoded \(transport) video with audio")
         }
     }
@@ -498,7 +498,7 @@ final class AsterAcceptanceTests: BaseTestCase {
                        "Page text exists but is not visible: \(text)", file: file, line: line)
     }
 
-    // Native screenshots prove these autoplay/fullscreen labels render despite XCTest activation-point errors.
+    // Native screenshots prove these media labels render despite XCTest activation-point errors.
     private func expectMediaText(_ text: String, timeout: TimeInterval,
                                  file: StaticString = #filePath, line: UInt = #line) {
         let element = app.webViews.staticTexts.matching(NSPredicate(format: "label == %@", text)).firstMatch

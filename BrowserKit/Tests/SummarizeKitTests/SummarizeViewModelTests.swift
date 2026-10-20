@@ -50,7 +50,7 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
         try await super.tearDown()
     }
 
-    func test_summarize_whenTosNotAccepted_whenTriggerIsShake_showsToSScreen() {
+    func test_summarize_whenTosNotAccepted_whenTriggerIsShake_showsToSScreen() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let subject = createSubject(isTosAccepted: false, trigger: .shakeGesture)
 
@@ -65,10 +65,10 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
             }
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
-    func test_summarizer_whenTosNotAcceppted_whenTriggerIsNotShake_startsSummarizer() {
+    func test_summarizer_whenTosNotAcceppted_whenTriggerIsNotShake_startsSummarizer() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let chunk = "This is the max words to proceed"
         let footnote = "Footnote"
@@ -82,22 +82,26 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
 
         subject.unblockSummarization()
 
-        subject.summarize(webView: webView, footNoteLabel: footnote, dateProvider: dateProvider) { result in
+        subject.summarize(
+            webView: webView,
+            footNoteLabel: footnote,
+            dateProvider: dateProvider
+        ) { [summarizerService] result in
             let response = try? XCTUnwrap(result.get())
 
             // The first time is called the closure it responds just with summary
             // then it fires again with the note appended.
             if response == chunk {
-                XCTAssertEqual(self.summarizerService.summarizeStreamedCalled, 1)
+                XCTAssertEqual(summarizerService?.summarizeStreamedCalled, 1)
                 return
             }
             XCTAssertEqual(response, responseWithNote)
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
-    func test_summarize_withNotEnoughStartingWords() {
+    func test_summarize_withNotEnoughStartingWords() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let chunk = "This is the max words to proceed"
         let footnote = "Footnote"
@@ -111,22 +115,26 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
 
         subject.unblockSummarization()
 
-        subject.summarize(webView: webView, footNoteLabel: footnote, dateProvider: dateProvider) { result in
+        subject.summarize(
+            webView: webView,
+            footNoteLabel: footnote,
+            dateProvider: dateProvider
+        ) { [summarizerService] result in
             let response = try? XCTUnwrap(result.get())
 
             // The first time is called the closure it responds just with summary
             // then it fires again with the note appended.
             if response == chunk {
-                XCTAssertEqual(self.summarizerService.summarizeStreamedCalled, 1)
+                XCTAssertEqual(summarizerService?.summarizeStreamedCalled, 1)
                 return
             }
             XCTAssertEqual(response, responseWithNote)
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
-    func test_summarize_withEnoughStartingWords() {
+    func test_summarize_withEnoughStartingWords() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let chunk = "This is the max words to proceed"
         let footnote = "Footnote"
@@ -140,22 +148,26 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
 
         subject.unblockSummarization()
 
-        subject.summarize(webView: webView, footNoteLabel: footnote, dateProvider: dateProvider) { result in
+        subject.summarize(
+            webView: webView,
+            footNoteLabel: footnote,
+            dateProvider: dateProvider
+        ) { [summarizerService] result in
             let response = try? XCTUnwrap(result.get())
 
             // The first time is called the closure it responds just with summary
             // then it fires again with the note appended.
             if response == chunk {
-                XCTAssertEqual(self.summarizerService.summarizeStreamedCalled, 1)
+                XCTAssertEqual(summarizerService?.summarizeStreamedCalled, 1)
                 return
             }
             XCTAssertEqual(response, responseWithNote)
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
-    func test_summarize_whenPassRandomError_throwsUnknownSummarizerError() {
+    func test_summarize_whenPassRandomError_throwsUnknownSummarizerError() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let error = NSError(domain: "", code: 0)
         summarizerService.mockError = error
@@ -173,10 +185,10 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
             XCTAssertEqual(error.localizedDescription, "The operation couldn’t be completed. ( error 0.)")
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
-    func test_summarize_throwsSummarizeError() {
+    func test_summarize_throwsSummarizeError() async {
         let newDataExpectation = expectation(description: "summarize closure should be called")
         let error = SummarizerError.cancelled
         summarizerService.mockError = error
@@ -194,7 +206,7 @@ final class SummarizeViewModelTests: XCTestCase, @unchecked Sendable {
 
             newDataExpectation.fulfill()
         }
-        wait(for: [newDataExpectation], timeout: 0.5)
+        await fulfillment(of: [newDataExpectation], timeout: 0.5)
     }
 
     func test_setTosConsentAccepted_callsTosAcceptorAllowConsent() {

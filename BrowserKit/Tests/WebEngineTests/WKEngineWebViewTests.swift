@@ -35,6 +35,15 @@ final class WKEngineWebViewTests: XCTestCase, @unchecked Sendable {
 
     func testLoad_callsObservers() {
         let subject = createSubject()
+        let viewportSize = CGSize(width: 320, height: 640)
+        subject.frame = CGRect(origin: .zero, size: viewportSize)
+        subject.setNeedsLayout()
+        subject.layoutIfNeeded()
+        let pageHTML = """
+        <html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Test Page</title></head><body style="min-height:2000px">
+        <h1>Test Page</h1><p>Content</p></body></html>
+        """
         let loadingExpectation = expectation(that: \WKWebView.isLoading, on: subject) { _, change in
             guard change.newValue != nil else { return false }
             return true
@@ -55,11 +64,11 @@ final class WKEngineWebViewTests: XCTestCase, @unchecked Sendable {
         let canGoForwardExpectation = expectation(that: \WKWebView.canGoForward, on: subject)
         let contentSizeExpectation = expectation(that: \UIScrollView.contentSize, on: subject.scrollView) { _, change in
             guard let size = change.newValue else { return false }
-            return size != .zero
+            return size.width > 0 && size.height > viewportSize.height
         }
         let hasOnlySecureContentExpectation = expectation(that: \WKWebView.hasOnlySecureContent, on: subject)
 
-        _ = subject.loadSimulatedRequest(URLRequest(url: testURL), responseHTML: Self.testPageHTML)
+        _ = subject.loadSimulatedRequest(URLRequest(url: testURL), responseHTML: pageHTML)
 
         wait(
             for: [
