@@ -78,6 +78,7 @@ jobs:
           set -euo pipefail
           node --test scripts/tests/test-fullscreen-observation.cjs
           python3 -m unittest discover -s scripts/tests -p 'test_aster_audit_ipa.py'
+          python3 -m unittest discover -s scripts/tests -p 'test_aster_validate_results.py'
       - name: Prepare pinned native and browser dependencies
         id: prepare
         shell: bash
@@ -267,13 +268,8 @@ jobs:
             --output-path "$ASTER_RESULTS/AsterRegressionTests-attachments" || true
           xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
             > "$ASTER_RESULTS/AsterRegressionTests-summary.json"
-          python3 - "$ASTER_RESULTS/AsterRegressionTests-summary.json" <<'PY'
-          import json, sys
-          result = json.load(open(sys.argv[1]))
-          if (int(result.get('passedTests', 0)) != 5 or int(result.get('failedTests', 0)) != 0
-                  or int(result.get('skippedTests', 0)) != 0):
-              sys.exit('::error::All five media/session regression tests must pass without failures or skips.')
-          PY
+          python3 scripts/aster-validate-results.py "$ASTER_RESULTS" --scope preflight \
+            --expected-source "$GITHUB_SHA" | tee "$ASTER_RESULTS/preflight-results-validation.json"
       - name: Preserve completed regression evidence before main UI tests
         if: ${{ !cancelled() && (steps.regression_tests.outcome == 'success' || steps.regression_tests.outcome == 'failure') }}
         uses: actions/upload-artifact@v4
@@ -282,6 +278,7 @@ jobs:
           path: |
             build-output/AsterRegressionTests.xcresult
             build-output/AsterRegressionTests-summary.json
+            build-output/preflight-results-validation.json
             build-output/AsterRegressionTests-attachments/
             build-output/regression-tests.log
             build-output/session-diagnostics/
@@ -452,23 +449,9 @@ jobs:
             xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
               > "$ASTER_RESULTS/$suite-summary.json"
           done
-          python3 - "$ASTER_RESULTS" <<'PY'
-          import json, os, pathlib, sys
-          root = pathlib.Path(sys.argv[1])
-          lines = ['Aster native validation', '']
-          for suite in ('AsterUnitTests', 'AsterRegressionTests', 'AsterAcceptanceTests', 'AsterDownloadTests'):
-              result = json.loads((root / (suite + '-summary.json')).read_text())
-              passed, failed = int(result.get('passedTests', 0)), int(result.get('failedTests', 0))
-              if passed < 1 or failed != 0:
-                  sys.exit(f'::error::{suite} must execute passing tests with zero failures before an IPA is published.')
-              expected = {'AsterRegressionTests': 5, 'AsterAcceptanceTests': 16, 'AsterDownloadTests': 1}.get(suite)
-              if expected is not None and (passed != expected or int(result.get('skippedTests', 0)) != 0):
-                  sys.exit(f'::error::{suite} must execute all {expected} selected tests without skips.')
-              lines.append(f'- {suite}: {passed} passed; {int(result.get("skippedTests", 0))} skipped.')
-          lines.append('Simulator checks do not certify physical-device battery use, all websites, DRM, or Brave paid services.')
-          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
-              summary.write('\n'.join(lines) + '\n')
-          PY
+          python3 scripts/aster-validate-results.py "$ASTER_RESULTS" --scope full \
+            --expected-source "$GITHUB_SHA" --step-summary "$GITHUB_STEP_SUMMARY" \
+            | tee "$ASTER_RESULTS/native-results-validation.json"
       - name: Save compilation intermediates for subsequent fixes
         if: ${{ always() && !cancelled() }}
         uses: actions/cache/save@v4
