@@ -57,6 +57,8 @@ Run 20 requires five preflight/16 main/one download selections; its corrections 
 
 Prepared unit-fixture corrections make all six main-actor Summarize tests async with the same 0.5-second deadlines and capture their mock by value to avoid a late callback dereferencing torn-down test state. The WK observer case gets a finite 320×640 viewport and local tall HTML, with a stronger content-size predicate requiring width greater than zero and height greater than the 640-point viewport. All eight observers, progress==1, the 30-second deadline and delegate/leak assertions remain. These are test-fixture corrections, not a proven production playback fix.
 
+A later signing-declaration correction restores the main app's AutoFill-provider entitlement to match upstream and its extension. It is not included in run 20's source and does not certify signed AutoFill. The actual unsigned IPA must still be inspected for embedded entitlements before promising compatibility with a signing tool. [Signing requirements](SIGNING-REQUIREMENTS.md) record this remaining installation work and conditional phone-only routes.
+
 The current run 20 strict selection requires five preflight cases, 16 main UI cases and one isolated download case, all without skips or failures, plus the full unit plan, download-byte verification and device-package audit. That is 22 UI test executions covering 17 unique cases. These future requirements do not change run 18's recorded four-case preflight or 15-case main selection.
 
 ## Verified document-readiness change
