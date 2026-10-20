@@ -2,7 +2,7 @@
 
 ## GitHub build
 
-The current delivery candidate is full native [run 23](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39406335775), source `4557246b64453abb464844aa8ff4358e90107c5b`. Its 45 contract checks passed; unit, five-preflight, 16-main, isolated-download and device-package outcomes remain pending. It includes the core fixture/UI corrections and hides the unsupported crash-upload control using existing backend eligibility. Collection defaults remain off.
+The current delivery candidate is full native [run 23](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39406335775), source `4557246b64453abb464844aa8ff4358e90107c5b`. Its 45 contract checks and full unit plan passed: 5,747 passed, zero failed and two unchanged upstream runtime skips (5,749 total). The cleaned WK observer case passed in 2.525s; all six corrected Summarize cases passed. Simulator host entitlements passed. Five-case media/session preflight is running; main UI, download and device-package results remain pending. It includes the core fixture/UI corrections and hides the unsupported crash-upload control using existing backend eligibility. Collection defaults remain off.
 
 Full [run 22](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39405042843), source `5174b9a6775c0a0ada40bebf7c309ee300cf1bc5`, continues independently to verify the earlier core corrections; its native results remain pending. Run 20 also continues independently.
 

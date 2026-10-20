@@ -1,0 +1,84 @@
+{
+  "runID": 39406335775,
+  "runNumber": 23,
+  "runAttempt": 1,
+  "jobID": 118573067624,
+  "sourceCommit": "4557246b64453abb464844aa8ff4358e90107c5b",
+  "artifactID": 12258389074,
+  "artifactBytes": 210097625,
+  "suite": "AsterUnitTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "scope": "Passing full unit-plan checkpoint only; media/UI/download/device-package results pending. No full-validation, IPA-delivery or physical-device claim.",
+  "filesUnmodified": true,
+  "filesUnmodifiedScope": "files contains three complete unmodified originals; derivedFiles separately describes the exact-line excerpt.",
+  "officialSummary": {
+    "result": "Passed",
+    "passedTests": 5747,
+    "failedTests": 0,
+    "skippedTests": 2,
+    "expectedFailures": 0,
+    "totalTestCount": 5749
+  },
+  "files": [
+    {
+      "file": "AsterUnitTests-summary.json",
+      "artifactPath": "AsterUnitTests-summary.json",
+      "bytes": 1765,
+      "sha256": "08853cd510de14f41e825d3b2f462eae8a2fa48c4357cf9f545f53f71e41b239"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "80e7f99d7710801b5793fd14fdb4eb94f7e22eb32aafca75a4f320e13bfaee9f"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "unit-corrections-and-skips-excerpt.txt",
+      "bytes": 2531,
+      "sha256": "154c0d91af4da51862aeff3394b4dee9eb1c1473f4a6a861f0539314da4c54f3",
+      "matchedLineCount": 13,
+      "matchCounts": {
+        "wkCaseStart": 1,
+        "wkCasePass": 1,
+        "correctedSummarizeCasePasses": 6,
+        "summarizeSuitePass": 1,
+        "runtimeSkipReasons": 2,
+        "runtimeSkipResults": 2
+      },
+      "origin": {
+        "artifactPath": "unit-tests.log",
+        "bytes": 24854184,
+        "sha256": "38a251a9eb0f8c25fef5a34e00b39f065cc5c2979598b6342bb362519c8e4eb3"
+      },
+      "matchingRules": {
+        "wkCase": "Complete lines starting with literal Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' and containing started. or passed (",
+        "summarizeCases": "Complete passed-case lines for the six exact SummarizeViewModelTests case names listed below.",
+        "summarizeCaseNames": [
+          "test_summarize_whenTosNotAccepted_whenTriggerIsShake_showsToSScreen",
+          "test_summarizer_whenTosNotAcceppted_whenTriggerIsNotShake_startsSummarizer",
+          "test_summarize_withNotEnoughStartingWords",
+          "test_summarize_withEnoughStartingWords",
+          "test_summarize_whenPassRandomError_throwsUnknownSummarizerError",
+          "test_summarize_throwsSummarizeError"
+        ],
+        "suitePass": "Complete lines starting with literal Test Suite 'SummarizeViewModelTests' passed",
+        "runtimeSkips": "Complete lines containing one of the exact ClientTests case names listed below, followed by ], and containing : Test skipped - or ]' skipped (",
+        "runtimeSkipCaseNames": [
+          "ClientTests.TabEventHandlerTests testBlankPopupURL",
+          "ClientTests.TestHistory testRandomThreading"
+        ]
+      },
+      "derivation": "Read unit-tests.log as bytes; select complete original byte-lines matching the stated rules and concatenate in original order with existing line endings. No headers, trimming, normalization or redaction. This is an exact-line subset, not the complete original log."
+    }
+  ]
+}

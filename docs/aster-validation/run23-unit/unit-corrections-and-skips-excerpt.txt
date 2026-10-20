@@ -1,0 +1,13 @@
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarize_throwsSummarizeError]' passed (0.182 seconds).
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarize_whenPassRandomError_throwsUnknownSummarizerError]' passed (0.184 seconds).
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarize_whenTosNotAccepted_whenTriggerIsShake_showsToSScreen]' passed (0.153 seconds).
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarize_withEnoughStartingWords]' passed (0.199 seconds).
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarize_withNotEnoughStartingWords]' passed (0.153 seconds).
+Test Case '-[SummarizeKitTests.SummarizeViewModelTests test_summarizer_whenTosNotAcceppted_whenTriggerIsNotShake_startsSummarizer]' passed (0.173 seconds).
+Test Suite 'SummarizeViewModelTests' passed at 2026-10-20 10:33:11.452.
+Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' started.
+Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' passed (2.525 seconds).
+2026-10-20 10:41:37.570 💙 INFO [sync] RustErrors - FxaStateMachine.process_event starting: CheckAuthorizationStatus - target: app-services-error-reporter::bre/Users/runner/work/-HarborBrowser-/-HarborBrowser-/firefox-ios/firefox-ios-tests/Tests/ClientTests/TabManagement/TabEventHandlerTests.swift:41: -[ClientTests.TabEventHandlerTests testBlankPopupURL] : Test skipped - Test doesn't complete anymore, was probably relying on behavior from setup in App delegate
+2026-10-20 10:41:37.682 💙 INFO [sync] RustErrors - FxaStateMachine.process_event starting: CheckAuthorizationStatus - target: app-services-error-reporter::breadcrumbTest Case '-[ClientTests.TabEventHandlerTests testBlankPopupURL]' skipped (0.113 seconds).
+2026-10-20 10:45:39.637 💛 WARNING [sync] RustErrors - Unable to reset history, be sure to call register_with_sync_manager before disconnect if this is surprising - target: sync_manager::manager/Users/runner/work/-HarborBrowser-/-HarborBrowser-/firefox-ios/firefox-ios-tests/Tests/ClientTests/TestHistory.swift:226: -[ClientTests.TestHistory testRandomThreading] : Test skipped - Skipping this test since https://mozilla-hub.atlassian.net/browse/FXIOS-12339
+2026-10-20 10:45:39.761 💛 WARNING [sync] RustErrors - Unable to reset history, be sure to call register_with_sync_manager before disconnect if this is surprising - target: sync_manager::managerTest Case '-[ClientTests.TestHistory testRandomThreading]' skipped (0.129 seconds).
