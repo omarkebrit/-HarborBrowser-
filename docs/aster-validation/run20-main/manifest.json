@@ -1,0 +1,49 @@
+{
+  "runID": 39394936415,
+  "runNumber": 20,
+  "runAttempt": 1,
+  "jobID": 118535214881,
+  "sourceCommit": "273578ee85af23845bf517e76572f02a04a3f678",
+  "artifactID": 12258185452,
+  "artifactBytes": 509396,
+  "suite": "AsterAcceptanceTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Passed",
+    "passedTests": 16,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 16
+  },
+  "scope": "Passing 16-case main UI checkpoint only. Earlier unit/preflight failures remain; no full-validation pass or IPA publication.",
+  "reviewedLogNotCopied": {
+    "artifactPath": "acceptance-tests.log",
+    "bytes": 929783,
+    "sha256": "5fccfb4ec1e4205ab82d33783fa591726bb47db5057d372e16f82796952c0269",
+    "observations": "All four decoded mp4/hls/iframe/blob attachment names and case pass durations were verified in this log. Attachment payloads were not exported by this checkpoint."
+  },
+  "files": [
+    {
+      "file": "AsterAcceptanceTests-summary.json",
+      "artifactPath": "AsterAcceptanceTests-summary.json",
+      "bytes": 1186,
+      "sha256": "513fd466fd691efcf97309ace878bf412ffa5b7847dddec4eb787c760a5149dc"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "cf8f315df3ce25c6ebcf116003156c82d44d4453f304823dbbc1cf1f91b4d152"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    }
+  ]
+}

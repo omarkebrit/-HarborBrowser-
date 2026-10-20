@@ -1,0 +1,88 @@
+{
+  "runID": 39402334591,
+  "runNumber": 21,
+  "runAttempt": 1,
+  "sourceCommit": "92473b44727bb14183775748a0d057ff35a0aae3",
+  "jobID": 118559853701,
+  "artifactID": 12255849410,
+  "artifactBytes": 60302698,
+  "scope": "Targeted WebEngine diagnostic only. Native full-validation job skipped; no IPA built or published.",
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Failed",
+    "passedTests": 232,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 233
+  },
+  "controlFailure": "Original synchronous unhosted observer case reproduced the failure; it was not marked as an XCTest expected failure.",
+  "files": [
+    {
+      "file": "WebEngineDiagnostics-summary.json",
+      "artifactPath": "WebEngineDiagnostics-summary.json",
+      "bytes": 1798,
+      "sha256": "5639d1e3831d535b8146e4fe24e47a3c700e6a8dce7077813558e48f57903ad1"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "a12b9f53dd108bb7c80d3fee2109883446de140d2ccc0e48ff34f79a067539e0"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 31,
+      "sha256": "5f6350250c6f298d06e1435819ddd1539d6c84785aaa8d824c2ac74f57914d03"
+    },
+    {
+      "file": "diagnostic-scope.txt",
+      "artifactPath": "diagnostic-scope.txt",
+      "bytes": 105,
+      "sha256": "fbda383f75a2c08a4bdac2f48c9045d3d18905edad9d11185b874e157fc612bf"
+    },
+    {
+      "file": "WebEngineDiagnostics-attachments/manifest.json",
+      "artifactPath": "WebEngineDiagnostics-attachments/manifest.json",
+      "bytes": 2936,
+      "sha256": "58f1c01c309a4dea4b0e218a5e0d292a4e74a945a93176ec795356bbacfde5fa"
+    },
+    {
+      "file": "WebEngineDiagnostics-attachments/991551F1-47A6-4485-A0FE-2D4D35961F0F.txt",
+      "artifactPath": "WebEngineDiagnostics-attachments/991551F1-47A6-4485-A0FE-2D4D35961F0F.txt",
+      "bytes": 7101,
+      "sha256": "95e91741f3990cb4b7a9e1c12bef1370c946ac3fdd5b6db1a9f4deb905409ecd",
+      "testIdentifier": "WKEngineWebViewTests/testLoad_callsObservers()",
+      "attachmentName": "TEMP load observers baseline-sync-unhosted_0_51C69749-7BE4-4680-9175-8CC653C5A181.txt",
+      "timestamp": 1792490292.514
+    },
+    {
+      "file": "WebEngineDiagnostics-attachments/50587F29-16EC-48FF-BC3B-F2DC6BBA3048.txt",
+      "artifactPath": "WebEngineDiagnostics-attachments/50587F29-16EC-48FF-BC3B-F2DC6BBA3048.txt",
+      "bytes": 13861,
+      "sha256": "e3d9b9ed9706952b7f9ef5688eba3f1f599458acac9f37cbe77c790497cdffd6",
+      "testIdentifier": "WKEngineWebViewTests/testTEMPDiagnosticLoadObservers_asyncHosted()",
+      "attachmentName": "TEMP load observers TEMP-async-window-hosted_0_57AE9481-5B6E-45A6-B464-81405A2EC541.txt",
+      "timestamp": 1792490297.455
+    },
+    {
+      "file": "WebEngineDiagnostics-attachments/A00367E8-7DF3-4BC4-8E5E-4F1AEAFE2978.txt",
+      "artifactPath": "WebEngineDiagnostics-attachments/A00367E8-7DF3-4BC4-8E5E-4F1AEAFE2978.txt",
+      "bytes": 10266,
+      "sha256": "496001f458e7b547bfcd7fca876e6f99eac7306efbb5fa010ba18c850eedddee",
+      "testIdentifier": "WKEngineWebViewTests/testTEMPDiagnosticLoadObservers_asyncUnhosted()",
+      "attachmentName": "TEMP load observers TEMP-async-unhosted_0_BD62A735-4A21-408E-B7A9-C63605BC6241.txt",
+      "timestamp": 1792490298.468
+    },
+    {
+      "file": "WebEngineDiagnostics-attachments/A5633A43-4673-4B9A-8CA7-259377FF74FB.txt",
+      "artifactPath": "WebEngineDiagnostics-attachments/A5633A43-4673-4B9A-8CA7-259377FF74FB.txt",
+      "bytes": 13828,
+      "sha256": "65edcda09baa0dea01ee708d5f2209cf9d32bb76ca26a88a880b3297af2e3072",
+      "testIdentifier": "WKEngineWebViewTests/testTEMPDiagnosticLoadObservers_syncHosted()",
+      "attachmentName": "TEMP load observers TEMP-sync-window-hosted_0_BF833DAD-2522-4D1D-8B56-C65204B27D35.txt",
+      "timestamp": 1792490298.974
+    }
+  ]
+}

@@ -1,0 +1,948 @@
+name: Build and test Aster for iPhone
+
+on:
+  workflow_dispatch:
+    inputs:
+      evidence_run_id:
+        description: 'Extract compact evidence from an existing run instead of building'
+        type: string
+        required: false
+        default: ''
+      diagnostic_webengine:
+        description: 'Run isolated WebEngine fixture diagnostics; never publishes an IPA'
+        type: boolean
+        required: false
+        default: false
+      diagnostic_media:
+        description: 'Run only two strict media/session fixture diagnostics; never publishes an IPA'
+        type: boolean
+        required: false
+        default: false
+      validation_lane:
+        description: 'Optional separate concurrency lane for a full validation'
+        type: string
+        required: false
+        default: ''
+  push:
+    branches: [main, feat/aster-browser]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aster-ios-${{ github.ref }}-${{ inputs.evidence_run_id || (inputs.diagnostic_webengine && 'webengine-diagnostic') || (inputs.diagnostic_media && 'media-diagnostic') || inputs.validation_lane || 'native' }}
+  cancel-in-progress: true
+
+jobs:
+  native:
+    if: ${{ !inputs.evidence_run_id && !inputs.diagnostic_webengine && !inputs.diagnostic_media }}
+    runs-on: macos-26
+    timeout-minutes: 180
+    env:
+      ASTER_PROJECT: firefox-ios/Client.xcodeproj
+      ASTER_PACKAGES: ${{ github.workspace }}/.aster-spm
+      ASTER_RESULTS: ${{ github.workspace }}/build-output
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Select Xcode 26.5 and record toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ASTER_RESULTS"
+          xcode_path=/Applications/Xcode_26.5.app/Contents/Developer
+          if [ ! -d "$xcode_path" ]; then
+            echo '::error::This workflow requires Xcode 26.5 on the standard macos-26 runner.'
+            exit 1
+          fi
+          sudo xcode-select -s "$xcode_path"
+          xcodebuild -version | tee "$ASTER_RESULTS/toolchain.txt"
+          xcrun --sdk iphoneos --show-sdk-version >> "$ASTER_RESULTS/toolchain.txt"
+          git rev-parse HEAD > "$ASTER_RESULTS/source-commit.txt"
+          profile_dir="${TMPDIR:-/tmp}/aster-llvm-$GITHUB_RUN_ID"
+          mkdir -p "$profile_dir"
+          echo "LLVM_PROFILE_FILE=$profile_dir/%p-%m.profraw" >> "$GITHUB_ENV"
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check fullscreen observation and IPA audit contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test scripts/tests/test-fullscreen-observation.cjs
+          python3 -m unittest discover -s scripts/tests -p 'test_aster_audit_ipa.py'
+          python3 -m unittest discover -s scripts/tests -p 'test_aster_validate_results.py'
+      - name: Prepare pinned native and browser dependencies
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/aster-ci-prepare.sh 2>&1 | tee "$ASTER_RESULTS/prepare.log"
+      - name: Preserve generated and WebKit-validated advertising filters
+        if: ${{ success() && steps.prepare.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: aster-ad-filters-attempt-${{ github.run_attempt }}
+          path: firefox-ios/Client/Assets/AsterFilters/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Restore native compilation intermediates
+        id: native-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-
+      - name: Resolve the pinned Swift packages
+        id: resolve_packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -resolvePackageDependencies -project "$ASTER_PROJECT" -scheme Fennec \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation \
+            2>&1 | tee "$ASTER_RESULTS/package-resolution.log"
+      - name: Boot an iPhone 15 Pro Max simulator
+        id: boot_simulator
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list runtimes -j > "$ASTER_RESULTS/simulator-runtimes.json"
+          runtime_id=$(python3 - "$ASTER_RESULTS/simulator-runtimes.json" <<'PY'
+          import json, sys
+          runtimes = [runtime for runtime in json.load(open(sys.argv[1]))['runtimes']
+                      if runtime.get('isAvailable') and '.iOS-' in runtime['identifier']]
+          if not runtimes:
+              sys.exit('No available iOS Simulator runtime is installed in this Xcode.')
+          selected = max(runtimes, key=lambda item: tuple(int(part) for part in item['version'].split('.')))
+          print(selected['identifier'])
+          PY
+          )
+          device_id=$(xcrun simctl create 'Aster iPhone 15 Pro Max' \
+            com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max "$runtime_id")
+          echo "ASTER_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
+          xcrun simctl boot "$device_id"
+          xcrun simctl bootstatus "$device_id" -b
+          xcrun simctl list devices -j > "$ASTER_RESULTS/simulator-devices.json"
+      - name: Run the full upstream unit test plan
+        id: unit_tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan UnitTest -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterUnitTests.xcresult" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/unit-tests.log"
+      - name: Export the completed upstream unit test summary
+        if: ${{ always() && !cancelled() && (steps.unit_tests.outcome == 'success' || steps.unit_tests.outcome == 'failure') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "$ASTER_RESULTS/AsterUnitTests.xcresult" ]; then
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterUnitTests.xcresult" \
+              > "$ASTER_RESULTS/AsterUnitTests-summary.json.tmp" \
+              2> "$ASTER_RESULTS/unit-summary-export.log"
+            mv "$ASTER_RESULTS/AsterUnitTests-summary.json.tmp" "$ASTER_RESULTS/AsterUnitTests-summary.json"
+          else
+            echo '::warning::The unit test step did not produce an XCResult bundle; its available log is preserved.'
+          fi
+      - name: Preserve completed upstream unit test evidence
+        if: ${{ always() && !cancelled() && (steps.unit_tests.outcome == 'success' || steps.unit_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-unit-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/AsterUnitTests.xcresult
+            build-output/AsterUnitTests-summary.json
+            build-output/unit-tests.log
+            build-output/unit-summary-export.log
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+            build-output/simulator-runtimes.json
+            build-output/simulator-devices.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Verify the locally signed simulator host entitlements
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          simulator_app="$RUNNER_TEMP/aster-simulator/Build/Products/Debug-iphonesimulator/Client.app"
+          if [ ! -d "$simulator_app" ]; then
+            echo 'The simulator app was not produced; its signing evidence is unavailable.'
+            exit 0
+          fi
+          codesign --verify --strict "$simulator_app"
+          codesign --display --verbose=4 --entitlements :- "$simulator_app" \
+            > "$ASTER_RESULTS/simulator-codesign-entitlements.plist" 2> "$ASTER_RESULTS/simulator-signature.txt"
+          simulated_entitlements="$RUNNER_TEMP/aster-simulator/Build/Intermediates.noindex/Client.build/Debug-iphonesimulator/Client.build/Client.app-Simulated.xcent"
+          cp "$simulated_entitlements" "$ASTER_RESULTS/simulator-entitlements.plist"
+          cp "$simulator_app/Info.plist" "$ASTER_RESULTS/simulator-app-info.plist"
+          python3 - "$ASTER_RESULTS/simulator-entitlements.plist" \
+            "$ASTER_RESULTS/simulator-app-info.plist" "$ASTER_RESULTS/simulator-signature.txt" <<'PY'
+          import pathlib, plistlib, sys
+          with open(sys.argv[1], 'rb') as source:
+              entitlements = plistlib.load(source)
+          with open(sys.argv[2], 'rb') as source:
+              app_info = plistlib.load(source)
+          signature = pathlib.Path(sys.argv[3]).read_text()
+          expected = 'com.omarkebrit.aster'
+          if app_info.get('CFBundleIdentifier') != expected:
+              sys.exit('::error::The simulator host bundle identifier does not match Aster.')
+          if f'Identifier={expected}' not in signature.splitlines() or 'Signature=adhoc' not in signature.splitlines():
+              sys.exit('::error::The simulator host must have its matching local ad-hoc signature.')
+          identifier = entitlements.get('application-identifier')
+          if identifier != 'FAKETEAMID.' + expected:
+              sys.exit(f'::error::The Xcode-generated simulator application identifier is unexpected: {identifier!r}.')
+          if identifier not in entitlements.get('keychain-access-groups', []):
+              sys.exit('::error::The simulator host lacks its matching Xcode-generated keychain access group.')
+          if 'group.' + expected not in entitlements.get('com.apple.security.application-groups', []):
+              sys.exit('::error::The simulator host lacks its Aster shared app group.')
+          print('Verified local ad-hoc signature, bundle identifier, and Xcode-generated simulator keychain/app groups.')
+          PY
+      - name: Check media and session regression cases with native diagnostics
+        id: regression_tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/aster-test-server.py > "$ASTER_RESULTS/regression-fixture-server.log" 2>&1 &
+          fixture_pid=$!
+          collect_regression_evidence() {
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics" || true
+            kill "$fixture_pid" 2>/dev/null || true
+            wait "$fixture_pid" 2>/dev/null || true
+          }
+          trap collect_regression_evidence EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests/testAutomaticPopupBlockedAndUserPlayerWindowAllowed \
+            -only-testing:XCUITests/AsterAcceptanceTests/testBlockedAutoplayStillAllowsUserPlaybackWithSound \
+            -only-testing:XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits \
+            -only-testing:XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation \
+            -only-testing:XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/regression-tests.log"
+      - name: Save completed media and session regression proof
+        id: regression_proof
+        if: ${{ !cancelled() && (steps.regression_tests.outcome == 'success' || steps.regression_tests.outcome == 'failure') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun xcresulttool export attachments --path "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            --output-path "$ASTER_RESULTS/AsterRegressionTests-attachments" || true
+          xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterRegressionTests.xcresult" \
+            > "$ASTER_RESULTS/AsterRegressionTests-summary.json"
+          python3 scripts/aster-validate-results.py "$ASTER_RESULTS" --scope preflight \
+            --expected-source "$GITHUB_SHA" | tee "$ASTER_RESULTS/preflight-results-validation.json"
+      - name: Preserve completed regression evidence before main UI tests
+        if: ${{ !cancelled() && (steps.regression_tests.outcome == 'success' || steps.regression_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-regression-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/AsterRegressionTests.xcresult
+            build-output/AsterRegressionTests-summary.json
+            build-output/preflight-results-validation.json
+            build-output/AsterRegressionTests-attachments/
+            build-output/regression-tests.log
+            build-output/session-diagnostics/
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+            build-output/simulator-runtimes.json
+            build-output/simulator-devices.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Run local browser acceptance and upstream UI tests
+        id: acceptance_tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '\n127.0.0.1 aster-acceptance.adnxs.com\n' | sudo tee -a /etc/hosts >/dev/null
+          python3 scripts/aster-test-server.py > "$ASTER_RESULTS/fixture-server.log" 2>&1 &
+          fixture_pid=$!
+          collect_acceptance_evidence() {
+            local test_status=$?
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics/main-ui" \
+              > "$ASTER_RESULTS/main-ui-session-collection.log" 2>&1 || true
+            kill "$fixture_pid" 2>/dev/null || true
+            wait "$fixture_pid" 2>/dev/null || true
+            return "$test_status"
+          }
+          trap collect_acceptance_evidence EXIT
+          fixture_ready=false
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then
+              fixture_ready=true
+              break
+            fi
+            if ! kill -0 "$fixture_pid" 2>/dev/null; then
+              cat "$ASTER_RESULTS/fixture-server.log"
+              echo '::error::The local acceptance fixture server exited before becoming ready.'
+              exit 1
+            fi
+            sleep 1
+          done
+          if [ "$fixture_ready" != true ]; then
+            echo '::error::The local acceptance fixture server did not become ready.'
+            exit 1
+          fi
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests \
+            -skip-testing:XCUITests/AsterAcceptanceTests/testNativeDownloadPreservesFixtureFile \
+            -only-testing:XCUITests/UrlBarTests/testNewTabUrlBar \
+            -only-testing:XCUITests/UrlBarTests/testClearTextInAddressBar \
+            -only-testing:XCUITests/NightModeTests/testNightModeUI \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/acceptance-tests.log"
+      - name: Export the completed main UI test summary
+        if: ${{ !cancelled() && (steps.acceptance_tests.outcome == 'success' || steps.acceptance_tests.outcome == 'failure') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" ]; then
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" \
+              > "$ASTER_RESULTS/AsterAcceptanceTests-summary.json.tmp" \
+              2> "$ASTER_RESULTS/acceptance-summary-export.log"
+            mv "$ASTER_RESULTS/AsterAcceptanceTests-summary.json.tmp" "$ASTER_RESULTS/AsterAcceptanceTests-summary.json"
+          else
+            echo '::warning::The main UI test step did not produce an XCResult bundle; its available logs are preserved.'
+          fi
+      - name: Preserve completed main UI test evidence before download tests
+        if: ${{ !cancelled() && (steps.acceptance_tests.outcome == 'success' || steps.acceptance_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-main-ui-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/acceptance-tests.log
+            build-output/fixture-server.log
+            build-output/AsterAcceptanceTests-summary.json
+            build-output/acceptance-summary-export.log
+            build-output/main-ui-session-collection.log
+            build-output/session-diagnostics/main-ui/
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+          if-no-files-found: error
+          retention-days: 7
+      - name: Run isolated native download acceptance
+        id: download_tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/aster-test-server.py > "$ASTER_RESULTS/download-fixture-server.log" 2>&1 &
+          fixture_pid=$!
+          collect_download_evidence() {
+            local test_status=$?
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics/download" \
+              > "$ASTER_RESULTS/download-session-collection.log" 2>&1 || true
+            kill "$fixture_pid" 2>/dev/null || true
+            wait "$fixture_pid" 2>/dev/null || true
+            return "$test_status"
+          }
+          trap collect_download_evidence EXIT
+          fixture_ready=false
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then
+              fixture_ready=true
+              break
+            fi
+            if ! kill -0 "$fixture_pid" 2>/dev/null; then
+              cat "$ASTER_RESULTS/download-fixture-server.log"
+              echo '::error::The local acceptance fixture server exited before becoming ready.'
+              exit 1
+            fi
+            sleep 1
+          done
+          if [ "$fixture_ready" != true ]; then
+            echo '::error::The local acceptance fixture server did not become ready.'
+            exit 1
+          fi
+          download_container=$(xcrun simctl get_app_container "$ASTER_SIMULATOR_UDID" com.omarkebrit.aster data)
+          rm -f "$download_container/Documents/Downloads/aster-payload.txt"
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterDownloadTests.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests/testNativeDownloadPreservesFixtureFile \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/download-tests.log"
+      - name: Verify the downloaded fixture bytes in the app container
+        id: download_integrity
+        if: ${{ !cancelled() && steps.download_tests.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_container=$(xcrun simctl get_app_container "$ASTER_SIMULATOR_UDID" com.omarkebrit.aster data)
+          python3 - "$app_container/Documents/Downloads/aster-payload.txt" "$ASTER_RESULTS/download-integrity.json" <<'PY'
+          import hashlib, json, pathlib, sys
+          downloaded = pathlib.Path(sys.argv[1])
+          contents = downloaded.read_bytes()
+          expected = 'fa7f6baddf7671ff0f6f7aa8c03fe987c556a4bc590406da2e8d9542bfdb3dbc'
+          actual = hashlib.sha256(contents).hexdigest()
+          result = {'filename': downloaded.name, 'bytes': len(contents), 'sha256': actual}
+          pathlib.Path(sys.argv[2]).write_text(json.dumps(result, indent=2) + '\n')
+          if len(contents) != 95 or actual != expected:
+              sys.exit('::error::The native browser download did not preserve the exact fixture bytes.')
+          print('Verified native browser download: 95 bytes and expected SHA-256.')
+          PY
+      - name: Confirm test execution and save summaries
+        id: validation
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
+              > "$ASTER_RESULTS/$suite-summary.json"
+          done
+          python3 scripts/aster-validate-results.py "$ASTER_RESULTS" --scope full \
+            --expected-source "$GITHUB_SHA" --step-summary "$GITHUB_STEP_SUMMARY" \
+            | tee "$ASTER_RESULTS/native-results-validation.json"
+      - name: Save compilation intermediates for subsequent fixes
+        if: ${{ always() && !cancelled() }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
+      - name: Build the unsigned iPhone release app
+        id: device_build
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' }}
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/aster-simulator"
+          xcodebuild build -project "$ASTER_PROJECT" -scheme Fennec -configuration Firefox \
+            -sdk iphoneos -destination 'generic/platform=iOS' \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-device" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' DEVELOPMENT_TEAM='' \
+            COMPILER_INDEX_STORE_ENABLE=NO CURRENT_PROJECT_VERSION="$GITHUB_RUN_NUMBER.$GITHUB_RUN_ATTEMPT" \
+            2>&1 | tee "$ASTER_RESULTS/device-build.log"
+      - name: Package an honestly labelled unsigned IPA
+        id: package_ipa
+        if: ${{ !cancelled() && steps.device_build.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          app_path="$RUNNER_TEMP/aster-device/Build/Products/Firefox-iphoneos/Client.app"
+          test -d "$app_path"
+          mkdir -p "$RUNNER_TEMP/aster-package/Payload"
+          ditto "$app_path" "$RUNNER_TEMP/aster-package/Payload/Aster.app"
+          cd "$RUNNER_TEMP/aster-package"
+          zip -qry "$ASTER_RESULTS/Aster-UNSIGNED-needs-signing.ipa" Payload
+      - name: Audit the actual unsigned device package
+        id: package_audit
+        if: ${{ !cancelled() && steps.package_ipa.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/aster-audit-ipa.py "$ASTER_RESULTS/Aster-UNSIGNED-needs-signing.ipa" \
+            --source . --expected-build "$GITHUB_RUN_NUMBER.$GITHUB_RUN_ATTEMPT" \
+            --output "$ASTER_RESULTS/device-ipa-audit.json" \
+            2>&1 | tee "$ASTER_RESULTS/device-ipa-audit.log"
+      - name: Export native test summaries, screenshots and attachments
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          export_failed=false
+          for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
+            if [ -d "$ASTER_RESULTS/$suite.xcresult" ]; then
+              if xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
+                > "$ASTER_RESULTS/$suite-summary.json.tmp"; then
+                mv "$ASTER_RESULTS/$suite-summary.json.tmp" "$ASTER_RESULTS/$suite-summary.json"
+              else
+                rm -f "$ASTER_RESULTS/$suite-summary.json.tmp"
+                echo "::error::Could not export $suite summary; remaining suites will still be exported."
+                export_failed=true
+              fi
+              xcrun xcresulttool export attachments --path "$ASTER_RESULTS/$suite.xcresult" \
+                --output-path "$ASTER_RESULTS/$suite-attachments" || true
+            fi
+          done
+          if [ "$export_failed" = true ]; then
+            exit 1
+          fi
+      - name: Preserve native validation evidence
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-native-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/*.log
+            build-output/*.txt
+            build-output/*.json
+            build-output/*.plist
+            build-output/*.xcresult
+            build-output/*-attachments/
+            build-output/session-diagnostics/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Prepare compact native validation evidence
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: python3 scripts/aster-compact-evidence.py build-output build-output-compact
+      - name: Preserve compact native validation evidence
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-compact-validation-evidence-attempt-${{ github.run_attempt }}
+          path: build-output-compact/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Publish unsigned IPA only after required checks pass
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-iPhone-UNSIGNED-needs-signing-attempt-${{ github.run_attempt }}
+          path: build-output/Aster-UNSIGNED-needs-signing.ipa
+          if-no-files-found: error
+          retention-days: 7
+  media_diagnostic:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_media && !inputs.diagnostic_webengine && !inputs.evidence_run_id }}
+    runs-on: macos-26
+    timeout-minutes: 120
+    env:
+      ASTER_PROJECT: firefox-ios/Client.xcodeproj
+      ASTER_PACKAGES: ${{ github.workspace }}/.aster-spm
+      ASTER_RESULTS: ${{ github.workspace }}/media-diagnostic-results
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record the limited diagnostic scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ASTER_RESULTS"
+          echo 'Isolated media/session fixture diagnostics: two selected native UI cases only. Not full unit or release validation; no IPA is built or published.' \
+            > "$ASTER_RESULTS/diagnostic-scope.txt"
+          cat "$ASTER_RESULTS/diagnostic-scope.txt" >> "$GITHUB_STEP_SUMMARY"
+      - name: Select Xcode 26.5 and record toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ASTER_RESULTS"
+          xcode_path=/Applications/Xcode_26.5.app/Contents/Developer
+          if [ ! -d "$xcode_path" ]; then
+            echo '::error::This workflow requires Xcode 26.5 on the standard macos-26 runner.'
+            exit 1
+          fi
+          sudo xcode-select -s "$xcode_path"
+          xcodebuild -version | tee "$ASTER_RESULTS/toolchain.txt"
+          xcrun --sdk iphoneos --show-sdk-version >> "$ASTER_RESULTS/toolchain.txt"
+          git rev-parse HEAD > "$ASTER_RESULTS/source-commit.txt"
+          profile_dir="${TMPDIR:-/tmp}/aster-media-diagnostic-llvm-$GITHUB_RUN_ID"
+          mkdir -p "$profile_dir"
+          echo "LLVM_PROFILE_FILE=$profile_dir/%p-%m.profraw" >> "$GITHUB_ENV"
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare pinned native and browser dependencies
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/aster-ci-prepare.sh 2>&1 | tee "$ASTER_RESULTS/prepare.log"
+      - name: Restore native compilation intermediates
+        id: native-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-
+      - name: Resolve the pinned Swift packages
+        id: resolve_packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -resolvePackageDependencies -project "$ASTER_PROJECT" -scheme Fennec \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation \
+            2>&1 | tee "$ASTER_RESULTS/package-resolution.log"
+      - name: Boot an iPhone 15 Pro Max simulator
+        id: boot_simulator
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list runtimes -j > "$ASTER_RESULTS/simulator-runtimes.json"
+          runtime_id=$(python3 - "$ASTER_RESULTS/simulator-runtimes.json" <<'PY'
+          import json, sys
+          runtimes = [runtime for runtime in json.load(open(sys.argv[1]))['runtimes']
+                      if runtime.get('isAvailable') and '.iOS-' in runtime['identifier']]
+          if not runtimes:
+              sys.exit('No available iOS Simulator runtime is installed in this Xcode.')
+          selected = max(runtimes, key=lambda item: tuple(int(part) for part in item['version'].split('.')))
+          print(selected['identifier'])
+          PY
+          )
+          device_id=$(xcrun simctl create 'Aster iPhone 15 Pro Max' \
+            com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max "$runtime_id")
+          echo "ASTER_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
+          xcrun simctl boot "$device_id"
+          xcrun simctl bootstatus "$device_id" -b
+          xcrun simctl list devices -j > "$ASTER_RESULTS/simulator-devices.json"
+      - name: Run two strict media and session diagnostic cases
+        id: media_tests
+        timeout-minutes: 60
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/aster-test-server.py > "$ASTER_RESULTS/fixture-server.log" 2>&1 &
+          fixture_pid=$!
+          collect_media_evidence() {
+            local test_status=$?
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics" \
+              > "$ASTER_RESULTS/session-collection.log" 2>&1 || true
+            kill "$fixture_pid" 2>/dev/null || true
+            wait "$fixture_pid" 2>/dev/null || true
+            return "$test_status"
+          }
+          trap collect_media_evidence EXIT
+          fixture_ready=false
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then
+              fixture_ready=true
+              break
+            fi
+            if ! kill -0 "$fixture_pid" 2>/dev/null; then
+              cat "$ASTER_RESULTS/fixture-server.log"
+              echo '::error::The local diagnostic fixture server exited before becoming ready.'
+              exit 1
+            fi
+            sleep 1
+          done
+          if [ "$fixture_ready" != true ]; then
+            echo '::error::The local diagnostic fixture server did not become ready.'
+            exit 1
+          fi
+          xcodebuild test -project "$ASTER_PROJECT" -scheme Fennec -configuration Debug \
+            -testPlan FullFunctionalTestPlan -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/AsterMediaDiagnostics.xcresult" \
+            -only-testing:XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation \
+            -only-testing:XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/media-tests.log"
+      - name: Verify the locally signed simulator host entitlements
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          simulator_app="$RUNNER_TEMP/aster-simulator/Build/Products/Debug-iphonesimulator/Client.app"
+          if [ ! -d "$simulator_app" ]; then
+            echo 'The simulator app was not produced; its signing evidence is unavailable.'
+            exit 0
+          fi
+          codesign --verify --strict "$simulator_app"
+          codesign --display --verbose=4 --entitlements :- "$simulator_app" \
+            > "$ASTER_RESULTS/simulator-codesign-entitlements.plist" 2> "$ASTER_RESULTS/simulator-signature.txt"
+          simulated_entitlements="$RUNNER_TEMP/aster-simulator/Build/Intermediates.noindex/Client.build/Debug-iphonesimulator/Client.build/Client.app-Simulated.xcent"
+          cp "$simulated_entitlements" "$ASTER_RESULTS/simulator-entitlements.plist"
+          cp "$simulator_app/Info.plist" "$ASTER_RESULTS/simulator-app-info.plist"
+          python3 - "$ASTER_RESULTS/simulator-entitlements.plist" \
+            "$ASTER_RESULTS/simulator-app-info.plist" "$ASTER_RESULTS/simulator-signature.txt" <<'PY'
+          import pathlib, plistlib, sys
+          with open(sys.argv[1], 'rb') as source:
+              entitlements = plistlib.load(source)
+          with open(sys.argv[2], 'rb') as source:
+              app_info = plistlib.load(source)
+          signature = pathlib.Path(sys.argv[3]).read_text()
+          expected = 'com.omarkebrit.aster'
+          if app_info.get('CFBundleIdentifier') != expected:
+              sys.exit('::error::The simulator host bundle identifier does not match Aster.')
+          if f'Identifier={expected}' not in signature.splitlines() or 'Signature=adhoc' not in signature.splitlines():
+              sys.exit('::error::The simulator host must have its matching local ad-hoc signature.')
+          identifier = entitlements.get('application-identifier')
+          if identifier != 'FAKETEAMID.' + expected:
+              sys.exit(f'::error::The Xcode-generated simulator application identifier is unexpected: {identifier!r}.')
+          if identifier not in entitlements.get('keychain-access-groups', []):
+              sys.exit('::error::The simulator host lacks its matching Xcode-generated keychain access group.')
+          if 'group.' + expected not in entitlements.get('com.apple.security.application-groups', []):
+              sys.exit('::error::The simulator host lacks its Aster shared app group.')
+          print('Verified local ad-hoc signature, bundle identifier, and Xcode-generated simulator keychain/app groups.')
+          PY
+      - name: Preserve native app diagnostics and export the original test results
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ASTER_RESULTS"
+          if [ -n "${ASTER_SIMULATOR_UDID:-}" ]; then
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics" \
+              >> "$ASTER_RESULTS/session-collection.log" 2>&1 || true
+          fi
+          if [ -d "$ASTER_RESULTS/AsterMediaDiagnostics.xcresult" ]; then
+            xcrun xcresulttool export attachments --path "$ASTER_RESULTS/AsterMediaDiagnostics.xcresult" \
+              --output-path "$ASTER_RESULTS/AsterMediaDiagnostics-attachments" \
+              > "$ASTER_RESULTS/attachment-export.log" 2>&1 || true
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterMediaDiagnostics.xcresult" \
+              > "$ASTER_RESULTS/AsterMediaDiagnostics-summary.json.tmp" \
+              2> "$ASTER_RESULTS/summary-export.log"
+            mv "$ASTER_RESULTS/AsterMediaDiagnostics-summary.json.tmp" "$ASTER_RESULTS/AsterMediaDiagnostics-summary.json"
+          else
+            echo '::warning::No diagnostic XCResult was produced; available build and setup logs are preserved.'
+          fi
+      - name: Require exactly two passing diagnostic cases
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - "$ASTER_RESULTS/AsterMediaDiagnostics-summary.json" <<'PYCODE'
+          import json, os, pathlib, sys
+          path = pathlib.Path(sys.argv[1])
+          if not path.is_file():
+              sys.exit('::error::The two-case diagnostic summary is missing; this diagnostic did not pass.')
+          result = json.loads(path.read_text())
+          fields = ('passedTests', 'failedTests', 'skippedTests', 'expectedFailures')
+          counts = tuple(result.get(field, -1) for field in fields)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write(f'\nMedia/session diagnostics only: passed/failed/skipped/expected failures = {counts}. '
+                            'This is not full native or release validation.\n')
+          if counts != (2, 0, 0, 0) or result.get('totalTestCount') != 2 or result.get('result') != 'Passed':
+              sys.exit('::error::Both selected diagnostic cases must pass: 2 passed, 0 failed, 0 skipped, 0 expected failures.')
+          PYCODE
+      - name: Preserve isolated media and session diagnostic evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-media-DIAGNOSTIC-attempt-${{ github.run_attempt }}
+          path: media-diagnostic-results/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Prepare compact diagnostic evidence
+        if: ${{ always() }}
+        shell: bash
+        run: python3 scripts/aster-compact-evidence.py media-diagnostic-results media-diagnostic-compact
+      - name: Preserve compact media and session diagnostic evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-media-DIAGNOSTIC-compact-attempt-${{ github.run_attempt }}
+          path: media-diagnostic-compact/
+          if-no-files-found: error
+          retention-days: 7
+  extract_evidence:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.evidence_run_id != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate source run
+        env:
+          EVIDENCE_RUN_ID: ${{ inputs.evidence_run_id }}
+        run: |
+          if [[ ! "$EVIDENCE_RUN_ID" =~ ^[1-9][0-9]*$ ]]; then
+            echo '::error::An existing numeric workflow run ID is required.'
+            exit 1
+          fi
+      - name: Retrieve original evidence without changing it
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.evidence_run_id }}
+          pattern: Aster-native-validation-evidence-attempt-*
+          path: original-evidence
+      - name: Copy summaries, logs and still attachments with their hashes
+        run: python3 scripts/aster-compact-evidence.py original-evidence compact-evidence
+      - name: Record source run
+        env:
+          EVIDENCE_RUN_ID: ${{ inputs.evidence_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          source = {'repository': os.environ['GITHUB_REPOSITORY'],
+                    'sourceRunID': os.environ['EVIDENCE_RUN_ID'],
+                    'extractionCommit': os.environ['GITHUB_SHA']}
+          pathlib.Path('compact-evidence/extraction-source.json').write_text(json.dumps(source, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aster-compact-evidence-from-${{ inputs.evidence_run_id }}
+          path: compact-evidence/
+          if-no-files-found: error
+          retention-days: 7
+  webengine_diagnostic:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.diagnostic_webengine && !inputs.evidence_run_id }}
+    runs-on: macos-26
+    timeout-minutes: 45
+    env:
+      ASTER_PACKAGES: ${{ github.workspace }}/.aster-spm
+      ASTER_RESULTS: ${{ github.workspace }}/webengine-diagnostic-results
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record isolated diagnostic scope and toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$ASTER_RESULTS"
+          xcode_path=/Applications/Xcode_26.5.app/Contents/Developer
+          test -d "$xcode_path"
+          sudo xcode-select -s "$xcode_path"
+          xcodebuild -version > "$ASTER_RESULTS/toolchain.txt"
+          git rev-parse HEAD > "$ASTER_RESULTS/source-commit.txt"
+          echo 'Isolated WebEngine package diagnostics only. Not a full native validation; no IPA is built or published.' \
+            > "$ASTER_RESULTS/diagnostic-scope.txt"
+          profile_dir="${TMPDIR:-/tmp}/aster-diagnostic-llvm-$GITHUB_RUN_ID"
+          mkdir -p "$profile_dir"
+          echo "LLVM_PROFILE_FILE=$profile_dir/%p-%m.profraw" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare pinned dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/aster-ci-prepare.sh 2>&1 | tee "$ASTER_RESULTS/prepare.log"
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            .aster-spm
+            ${{ runner.temp }}/aster-simulator
+          key: aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            aster-macos26-xcode26.5-v1-${{ hashFiles('**/Package.resolved') }}-
+      - name: Boot the diagnostic iPhone simulator
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list runtimes -j > "$ASTER_RESULTS/simulator-runtimes.json"
+          runtime_id=$(python3 - "$ASTER_RESULTS/simulator-runtimes.json" <<'PY'
+          import json, sys
+          available = [item for item in json.load(open(sys.argv[1]))['runtimes']
+                       if item.get('isAvailable') and '.iOS-' in item['identifier']]
+          if not available:
+              sys.exit('No available iOS Simulator runtime.')
+          print(max(available, key=lambda item: tuple(map(int, item['version'].split('.'))))['identifier'])
+          PY
+          )
+          device_id=$(xcrun simctl create 'Aster WebEngine diagnostic iPhone' \
+            com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max "$runtime_id")
+          echo "ASTER_SIMULATOR_UDID=$device_id" >> "$GITHUB_ENV"
+          xcrun simctl boot "$device_id"
+          xcrun simctl bootstatus "$device_id" -b
+      - name: Run isolated WebEngine tests with unchanged case deadlines
+        timeout-minutes: 30
+        working-directory: BrowserKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test -scheme WebEngine -configuration Debug \
+            -destination "platform=iOS Simulator,id=$ASTER_SIMULATOR_UDID" \
+            -clonedSourcePackagesDirPath "$ASTER_PACKAGES" \
+            -derivedDataPath "$RUNNER_TEMP/aster-simulator" \
+            -resultBundlePath "$ASTER_RESULTS/WebEngineDiagnostics.xcresult" \
+            -only-testing:WebEngineTests -enableCodeCoverage YES \
+            -onlyUsePackageVersionsFromResolvedFile \
+            -skipPackagePluginValidation -skipMacroValidation -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='-' DEVELOPMENT_TEAM='' \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            2>&1 | tee "$ASTER_RESULTS/webengine-tests.log"
+      - name: Export diagnostic results
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "$ASTER_RESULTS/WebEngineDiagnostics.xcresult" ]; then
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/WebEngineDiagnostics.xcresult" \
+              > "$ASTER_RESULTS/WebEngineDiagnostics-summary.json"
+            xcrun xcresulttool export attachments --path "$ASTER_RESULTS/WebEngineDiagnostics.xcresult" \
+              --output-path "$ASTER_RESULTS/WebEngineDiagnostics-attachments" || true
+          fi
+      - name: Preserve isolated diagnostic evidence
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-WebEngine-DIAGNOSTIC-attempt-${{ github.run_attempt }}
+          path: webengine-diagnostic-results/
+          if-no-files-found: error
+          retention-days: 7

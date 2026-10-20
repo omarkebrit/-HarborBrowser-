@@ -1,0 +1,53 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 15,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Configuration 1"
+      }
+    }
+  ],
+  "environmentDescription" : "FullFunctionalTestPlan · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1792496275.432,
+  "passedTests" : 15,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1792494625.094,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed - Missing rendered page text: Fullscreen first-loop boundary rotation observed",
+      "targetName" : "XCUITests",
+      "testIdentifier" : 6,
+      "testIdentifierString" : "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation",
+      "testName" : "testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()"
+    }
+  ],
+  "title" : "Test - Fennec",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "40% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 488.81s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 16
+}

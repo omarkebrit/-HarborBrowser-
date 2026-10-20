@@ -1,0 +1,53 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "DB8E798F-A511-4B90-8E89-54071AE7D9C8",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 14,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Configuration 1"
+      }
+    }
+  ],
+  "environmentDescription" : "FullFunctionalTestPlan · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1792482646.841,
+  "passedTests" : 14,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1792481037.318,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "Failed to determine hittability of \"Audio and video playing\" StaticText: Activation point invalid and no suggested hit points based on element frame",
+      "targetName" : "XCUITests",
+      "testIdentifier" : 8,
+      "testIdentifierString" : "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo",
+      "testName" : "testMP4HLSIframeAndBlobPlayRealAudioAndVideo()"
+    }
+  ],
+  "title" : "Test - Fennec",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "43% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 492.21s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 15
+}

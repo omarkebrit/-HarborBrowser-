@@ -1,0 +1,57 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "41783647-CABA-4716-8550-950C56E9F6C0",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 2,
+      "passedTests" : 3,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Configuration 1"
+      }
+    }
+  ],
+  "environmentDescription" : "FullFunctionalTestPlan · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 2,
+  "finishTime" : 1792489436.473,
+  "passedTests" : 3,
+  "result" : "Failed",
+  "skippedTests" : 0,
+  "startTime" : 1792488383.405,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed - SETUP: First-loop clock must be fresh, playing in portrait, and before its first wrap; age=0.0288999080657959, Aster media clock {\"t\":0,\"duration\":6,\"rate\":1,\"playing\":false,\"epochMs\":1792488863983,\"playRequestedEpochMs\":1792488857442,\"totalNaturalWraps\":1,\"orientation\":\"portrait\"}",
+      "targetName" : "XCUITests",
+      "testIdentifier" : 4,
+      "testIdentifierString" : "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation",
+      "testName" : "testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()"
+    },
+    {
+      "failureText" : "XCTAssertEqual failed: (\"XCTWaiterResult(rawValue: 2)\") is not equal to (\"XCTWaiterResult(rawValue: 1)\") - Page text exists but is not visible: Local tab 14 ready",
+      "targetName" : "XCUITests",
+      "testIdentifier" : 5,
+      "testIdentifierString" : "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch",
+      "testName" : "testTwentyFiveTabsSurviveProcessRelaunch()"
+    }
+  ],
+  "title" : "Test - Fennec",
+  "topInsights" : [
+
+  ],
+  "totalTestCount" : 5
+}

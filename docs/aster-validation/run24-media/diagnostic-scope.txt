@@ -1,0 +1,1 @@
+Isolated media/session fixture diagnostics: two selected native UI cases only. Not full unit or release validation; no IPA is built or published.

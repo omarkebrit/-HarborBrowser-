@@ -1,0 +1,140 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F5B08F02-EA78-44D1-9AE0-B9296C94D6A6.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_A363DFD7-1682-456D-AB12-63E3E8200FDB.txt",
+        "timestamp" : 1792497576.677
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "21E6E55A-9CBB-4BA3-8C28-25CEBACCD956.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_FCBD0C74-A2B0-445E-9764-17F21EF3514D.png",
+        "timestamp" : 1792497575.993
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B630B04F-64E1-47C9-BD74-7B7129C3BD6F.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Recovered native browser menu accepts interaction after boundary rotation_0_0DF41014-9AD2-4901-891F-D8FA6FED00A6.png",
+        "timestamp" : 1792497564.962
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "21AE2A43-6F1F-4E93-95D6-861A0A7E0912.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Boundary rotation exit restores browser controls_0_FC8528CB-84B4-498C-98B3-C6C82FDAD27B.png",
+        "timestamp" : 1792497560.176
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "913F7DED-E740-4A3A-AB42-9C641AB06637.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Decoded fullscreen frames continue after two boundary-targeted landscape loops_0_C9E53A3C-E8C6-4CD7-8BD0-3085C3034322.png",
+        "timestamp" : 1792497550.089
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2DF24D21-B59B-4441-ABB1-AE4C7F2466B8.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Actual first-loop boundary landscape fullscreen video_0_8D313442-9E10-48D5-A594-96973DC46763.png",
+        "timestamp" : 1792497541.321
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CE048F6D-4617-4384-8A79-6BCA29C3BAF0.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Actual landscape resize offset from the predicted first loop boundary_0_3757FEEB-C64A-4B53-AC7F-8B03B53E660A.txt",
+        "timestamp" : 1792497538.258
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "C5BE5476-354C-4BBA-BD13-4CFE924069E0.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "First actual landscape resize at the first loop boundary_0_42E3BA11-FC81-48E1-98EE-D6424099931D.txt",
+        "timestamp" : 1792497538.256
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1ED6E835-68BC-4BC9-8967-20E4C52BC327.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "First-loop media clock and native rotation schedule_0_1A5433C5-AB61-43DE-AC89-C2D5943EEFF6.txt",
+        "timestamp" : 1792497534.91
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "919FB1C4-D611-4B4B-9F11-0818E81BBAEA.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Portrait fullscreen and media clock from one native snapshot_0_98A6AA20-64AF-4552-BCA8-1FCE87EC223C.txt",
+        "timestamp" : 1792497534.708
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A4CD4243-D937-4C69-916D-0B86CB2F179D.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_B9404570-4C5A-49E0-B598-E4191951D733.txt",
+        "timestamp" : 1792498332.309
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4EF85647-773C-4727-B1D3-3CF092305543.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_76205AEB-5EDA-4BA3-BF2C-E0274932DF49.png",
+        "timestamp" : 1792498331.71
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "662B34D3-AB3D-4B51-851D-1F3A8B0E92F6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Restored first tab_0_A7DB960D-C07B-4739-BC1E-A9426CA6A007.png",
+        "timestamp" : 1792498331.408
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "87C05060-E7AE-49EF-9682-F6DB504CB6B5",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1EA7FB07-D847-463D-870E-F162E3D2828D.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Twenty five loaded tabs_0_945544F1-DD06-49D8-83E2-9851D244C080.png",
+        "timestamp" : 1792498217.482
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch"
+  }
+]

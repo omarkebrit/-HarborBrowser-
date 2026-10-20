@@ -1,0 +1,193 @@
+{
+  "result": "Passed",
+  "ipaSHA256": "2d31a076651fb1b547a114dd668e7f2e5cfe86e02092b6071f9cedcaba661536",
+  "ipaBytes": 207499582,
+  "signing": {
+    "appleSigned": false,
+    "needsSigning": true,
+    "note": "Linker ad-hoc signature bytes do not provide Apple signing or provisioning."
+  },
+  "limits": [
+    "No signed installation or physical-device test is certified.",
+    "Packaging checks do not replace unit, browser UI, media or download tests."
+  ],
+  "application": {
+    "bundleIdentifier": "com.omarkebrit.aster",
+    "version": "158.0",
+    "build": "23.1",
+    "executable": "Client",
+    "executableSHA256": "2d7e3afd75f9ea87634f35a3ea8ace6c64bae141af4b43ebc7220a4ad83c0b18",
+    "architectures": [
+      {
+        "architecture": "arm64",
+        "cpuType": 16777228,
+        "cpuSubtype": 0,
+        "platform": 2,
+        "fileType": 2
+      }
+    ],
+    "sdk": "iphoneos26.5",
+    "minimumOSVersion": "15.0"
+  },
+  "extensions": [
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.ActionExtension",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "ActionExtension",
+      "executableSHA256": "ab591194ffb30aed6bb6ddc205d5d3b12610199a6157a5a5170e0305ddb49367",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    },
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.CredentialProvider",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "CredentialProvider",
+      "executableSHA256": "e120c5d4354690bf4f76d237e9aa9c895e5bb61911a5ba890d53bd6b005f90d4",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    },
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.NotificationService",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "NotificationService",
+      "executableSHA256": "7d079a902e19b300dd3f10594261cccd96728d1118abc3a9f86c1d638624f28b",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    },
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.ShareTo",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "ShareTo",
+      "executableSHA256": "2b501fbae694a17ffda403b263fe08fde58398ae7904d882e11c4d656378137f",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    },
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.Sticker",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "Sticker",
+      "executableSHA256": "ae71bf5b243abb5b9f1575785a1faa2c3da8aa9ceaf2888f62b5a12aaf3a20f1",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    },
+    {
+      "bundleIdentifier": "com.omarkebrit.aster.WidgetKit",
+      "version": "158.0",
+      "build": "23.1",
+      "executable": "WidgetKitExtension",
+      "executableSHA256": "225f38d8007b0a209f0e5bae0d73d1ce233e6af580e47ac79597a60ac2b3413f",
+      "architectures": [
+        {
+          "architecture": "arm64",
+          "cpuType": 16777228,
+          "cpuSubtype": 0,
+          "platform": 2,
+          "fileType": 2
+        }
+      ]
+    }
+  ],
+  "privacyManifestSHA256": "a2b03d6b9adc82f566aeb200ac80eac7f34cbba59044c6fb12a6b45fb1de097b",
+  "offlineSupportSHA256": {
+    "help.html": "c3d7387240951cda1725af090312b500d15426b2803fce149abd498a371cc13c",
+    "privacy.html": "aeafb2599a161e6ebc4e0a08e518d315c6d4c685a64faacbc5906973181d2e18"
+  },
+  "advertisingFilters": {
+    "metadata": {
+      "mode": "adguard",
+      "ruleCount": 42255,
+      "generatedAt": "2026-10-20T10:14:27.078997+00:00",
+      "converter": "SafariConverterLib 4.3.0",
+      "converterCommit": "7a2e93f0afa70479cc59985f332025236c3f0c39",
+      "converterReleaseSHA256": "6687be9f1a77abd5299299086c5fbffd0d1b5baec755eb4808aa2f53e275d3c0",
+      "safariTarget": 16,
+      "sources": [
+        {
+          "id": 2,
+          "name": "AdGuard Base",
+          "url": "https://filters.adtidy.org/ios/filters/2_optimized.txt",
+          "sha256": "fee29caa2fb5dc80e1834fe28bee24ff2fab41ffe45259c2e3d2419bb83005e1"
+        },
+        {
+          "id": 11,
+          "name": "AdGuard Mobile Ads",
+          "url": "https://filters.adtidy.org/ios/filters/11_optimized.txt",
+          "sha256": "5966ecdae58181ff46fa7c3fce6082d2ad61df9110c932e7cc7b8e21ff55dbd3"
+        }
+      ],
+      "rulesSHA256": "d2d5bf12f71147fbd6628f9028cefd503e2bf733a23f6e76be79c359ce464ed6",
+      "scope": "AdGuard Base and Mobile Ads; native ETP remains a separate layer. No added blanket cookie rule or video exceptions."
+    },
+    "conversionReport": {
+      "advancedRulesCount": 0,
+      "errorsCount": 94,
+      "safariRulesCount": 42255,
+      "sourceRulesCount": 61291,
+      "discardedSafariRules": 0,
+      "sourceSafariCompatibleRulesCount": 52481
+    }
+  },
+  "checks": [
+    "Resolved main and six-extension identities/versions",
+    "arm64 iOS device Mach-O platform",
+    "No embedded Apple provisioning or main resource signing seal",
+    "Offline Help/Privacy and privacy manifest",
+    "Exact bundled advertising input/output integrity"
+  ],
+  "sourceConfigurationChecks": {
+    "checkoutCommit": "4557246b64453abb464844aa8ff4358e90107c5b",
+    "mediaConfigurationFiles": [
+      "firefox-ios/Client/TabManagement/TabConfigurationProvider.swift",
+      "BrowserKit/Sources/WebEngine/WKWebview/WKEngineConfigurationProvider.swift"
+    ],
+    "mediaFlagsChecked": [
+      "allowsInlineMediaPlayback",
+      "allowsPictureInPictureMediaPlayback",
+      "allowsAirPlayForMediaPlayback",
+      "isElementFullscreenEnabled"
+    ],
+    "appGroup": "group.$(MOZ_BUNDLE_ID)",
+    "keychainGroup": "$(AppIdentifierPrefix)$(MOZ_BUNDLE_ID)",
+    "scope": "Source declarations only; this does not prove binary provenance or runtime behavior."
+  }
+}

@@ -1,0 +1,7 @@
+Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' started.
+Test Case '-[WebEngineTests.WKEngineWebViewTests testLoad_callsObservers]' passed (4.793 seconds).
+Test Case '-[WebEngineTests.WKEngineWebViewTests testNoLeaks]' started.
+Test Case '-[WebEngineTests.WKEngineWebViewTests testNoLeaks]' passed (0.139 seconds).
+Test Suite 'WKEngineWebViewTests' passed at 2026-10-20 11:40:07.159.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 6.379 (6.388) seconds
+** TEST SUCCEEDED **

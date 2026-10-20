@@ -1,0 +1,154 @@
+{
+  "runID": 39406335775,
+  "runNumber": 23,
+  "runAttempt": 1,
+  "jobID": 118573067624,
+  "sourceCommit": "4557246b64453abb464844aa8ff4358e90107c5b",
+  "artifactID": 12260576743,
+  "artifactBytes": 242570011,
+  "suite": "AsterRegressionTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Failed",
+    "passedTests": 3,
+    "failedTests": 2,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 5
+  },
+  "scope": "Failed preflight checkpoint. Full units passed; main UI is running and download/device outcomes pending. Required failures block IPA publication. No persistent video-freeze or successful timing-assertion claim.",
+  "files": [
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "bytes": 2137,
+      "sha256": "01a366c49dc42d22482371ac51fc014d417c372da0a36afaffb44227c49bbbdd"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "80e7f99d7710801b5793fd14fdb4eb94f7e22eb32aafca75a4f320e13bfaee9f"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    },
+    {
+      "file": "AsterRegressionTests-attachments/14F9C954-4175-4D04-A0BB-BD61530B9FCD.txt",
+      "artifactPath": "AsterRegressionTests-attachments/14F9C954-4175-4D04-A0BB-BD61530B9FCD.txt",
+      "bytes": 368,
+      "sha256": "849324e9fd8f05f9d04a1165d478dbc59b3714dec5dd136b4615074edb53ce6f",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "First-loop media clock and native rotation schedule_0_AF570D78-16A6-487C-AF2D-25FCF993CBE4.txt",
+      "attachmentTimestamp": 1792493936.617
+    },
+    {
+      "file": "AsterRegressionTests-attachments/E8CC0BB6-A0C3-419C-B899-820F811D4EBD.txt",
+      "artifactPath": "AsterRegressionTests-attachments/E8CC0BB6-A0C3-419C-B899-820F811D4EBD.txt",
+      "bytes": 8221,
+      "sha256": "57954d3b6dc78a655eb688b5aebf5a1739f0118e307a95b4f404b54ba5b4a284",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Native accessibility hierarchy_0_40DB2940-22FA-4C9C-B3FF-0ED8B7B127DF.txt",
+      "attachmentTimestamp": 1792493953.527
+    },
+    {
+      "file": "AsterRegressionTests-attachments/C519D9F7-E610-431F-93BB-9BA2C9F68B20.png",
+      "artifactPath": "AsterRegressionTests-attachments/C519D9F7-E610-431F-93BB-9BA2C9F68B20.png",
+      "bytes": 610611,
+      "sha256": "718682340bf3251430e8c0db2f2b4b130eb4237dd01e8c48222f4fa2ed0c4005",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Final display_0_CAEEB6E9-9F4A-4DD5-A1C2-15E563606478.png",
+      "attachmentTimestamp": 1792493953.25
+    },
+    {
+      "file": "AsterRegressionTests-attachments/0E722235-A107-4FA2-AE69-4B659576116E.txt",
+      "artifactPath": "AsterRegressionTests-attachments/0E722235-A107-4FA2-AE69-4B659576116E.txt",
+      "bytes": 1666,
+      "sha256": "313e2b486c5b84b96491cad7efd8c48b9522b05856cea2cc2dac64622d486377",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Debug description for `\"Local tab 18 ready\" StaticText`_0_78AD74BA-824E-4AE2-9BE4-F0E9C5AE1D8E.txt",
+      "attachmentTimestamp": 1792494384.505
+    },
+    {
+      "file": "AsterRegressionTests-attachments/355865DD-D0A1-4526-B0BF-BFCC063AECED.txt",
+      "artifactPath": "AsterRegressionTests-attachments/355865DD-D0A1-4526-B0BF-BFCC063AECED.txt",
+      "bytes": 7492,
+      "sha256": "396cda515ac2d05e2269bdd58c2e62e7ec7cd2b12ed4923a8a76692d89b675b5",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Native accessibility hierarchy_0_92DEE343-17EA-473E-B3F6-A958775B0300.txt",
+      "attachmentTimestamp": 1792494391.076
+    },
+    {
+      "file": "AsterRegressionTests-attachments/11279F89-5351-4F28-9701-72C6523DE3FF.png",
+      "artifactPath": "AsterRegressionTests-attachments/11279F89-5351-4F28-9701-72C6523DE3FF.png",
+      "bytes": 189869,
+      "sha256": "070add7fa7b9fec7e3f650d02bdf29bad54614dc143c690200660c3ba00948bc",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Final display_0_C06A14E9-FB08-48F6-9768-376242F13921.png",
+      "attachmentTimestamp": 1792494385.828
+    },
+    {
+      "file": "AsterRegressionTests-attachments/manifest.json",
+      "artifactPath": "AsterRegressionTests-attachments/manifest.json",
+      "bytes": 75618,
+      "sha256": "e8fd685026f519b60e5540aa33e0d34bf35a948fe35b2df1f28ec186770c1ae4"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "derived-video-frames/27.55.png",
+      "bytes": 905729,
+      "sha256": "9a7ac9ede8dc45e0eaea885c8776f94026e393789dae46cf2c1dc1f0e4b0888d",
+      "sourceArtifactPath": "AsterRegressionTests-attachments/04DBDF43-CEE7-4E84-92CC-33D94C605DE0.mp4",
+      "sourceVideoBytes": 27537626,
+      "sourceVideoSHA256": "8002c4dbaac4162a5f807ff0e58e145d881c26b3a1810806f465547bb655c591",
+      "seekSeconds": "27.55",
+      "derivation": "Decoded still-frame selections from the original screen recording; derived PNGs, not original screenshot attachments. No overlays or edits. Seek positions may resolve to the next encoded frame.",
+      "ffmpegVersion": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+      "ffmpegArguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-ss",
+        "27.55",
+        "-i",
+        "{artifactRoot}/AsterRegressionTests-attachments/04DBDF43-CEE7-4E84-92CC-33D94C605DE0.mp4",
+        "-frames:v",
+        "1",
+        "{outputRoot}/27.55.png"
+      ]
+    },
+    {
+      "file": "derived-video-frames/27.60.png",
+      "bytes": 800044,
+      "sha256": "dcef5109d1db27d5148f8b4bcdd713a402a95df88f364400702383f48798030f",
+      "sourceArtifactPath": "AsterRegressionTests-attachments/04DBDF43-CEE7-4E84-92CC-33D94C605DE0.mp4",
+      "sourceVideoBytes": 27537626,
+      "sourceVideoSHA256": "8002c4dbaac4162a5f807ff0e58e145d881c26b3a1810806f465547bb655c591",
+      "seekSeconds": "27.60",
+      "derivation": "Decoded still-frame selections from the original screen recording; derived PNGs, not original screenshot attachments. No overlays or edits. Seek positions may resolve to the next encoded frame.",
+      "ffmpegVersion": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+      "ffmpegArguments": [
+        "-hide_banner",
+        "-loglevel",
+        "error",
+        "-n",
+        "-ss",
+        "27.60",
+        "-i",
+        "{artifactRoot}/AsterRegressionTests-attachments/04DBDF43-CEE7-4E84-92CC-33D94C605DE0.mp4",
+        "-frames:v",
+        "1",
+        "{outputRoot}/27.60.png"
+      ]
+    }
+  ],
+  "filesUnmodifiedScope": "files contains ten complete unmodified originals. derivedFiles separately identifies two decoded still-frame selections from the original screen recording; the video itself is not copied."
+}

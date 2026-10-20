@@ -1,0 +1,124 @@
+{
+  "nativeRunID": 39394936415,
+  "nativeRunNumber": 20,
+  "runAttempt": 1,
+  "jobID": 118535214881,
+  "sourceCommit": "273578ee85af23845bf517e76572f02a04a3f678",
+  "artifactID": 12256581113,
+  "artifactBytes": 181150383,
+  "suite": "AsterRegressionTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "officialSummary": {
+    "result": "Failed",
+    "passedTests": 3,
+    "failedTests": 2,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 5
+  },
+  "scope": "Five-case preflight failure evidence only; not a passing full browser validation or proof of persistent media freeze.",
+  "files": [
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "bytes": 2337,
+      "sha256": "856193b13e5145e406215dad145315706d34448799d9236387eabbc0a62416f5"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "cf8f315df3ce25c6ebcf116003156c82d44d4453f304823dbbc1cf1f91b4d152"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    },
+    {
+      "file": "AsterRegressionTests-attachments/DA7FFEF7-1387-446A-B841-1F613F733420.txt",
+      "artifactPath": "AsterRegressionTests-attachments/DA7FFEF7-1387-446A-B841-1F613F733420.txt",
+      "bytes": 291,
+      "sha256": "3b0af5f57c74af4eba76ab9a8ba5b1db1d2c9550e1945ce50d3a70d3f516dc93",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Complete Issue Description.txt"
+    },
+    {
+      "file": "AsterRegressionTests-attachments/709DF778-9598-4C04-8DB7-CA487D52E165.txt",
+      "artifactPath": "AsterRegressionTests-attachments/709DF778-9598-4C04-8DB7-CA487D52E165.txt",
+      "bytes": 8378,
+      "sha256": "e555117ca0cb5ee242a591dda712bf24ee93396aa40769f8a27ddd927ca45e08",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Native accessibility hierarchy_0_B91D3F66-681F-4C32-A6DC-1E3E5CC4CB6E.txt",
+      "attachmentTimestamp": 1792488866.067
+    },
+    {
+      "file": "AsterRegressionTests-attachments/B49C1857-D1E1-427D-87F8-73CF586C66C3.png",
+      "artifactPath": "AsterRegressionTests-attachments/B49C1857-D1E1-427D-87F8-73CF586C66C3.png",
+      "bytes": 523922,
+      "sha256": "15c92c3792a4bdb87c2f02ba4b08b517121e4be76b6c84328b737314eecc808f",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Final display_0_AC16C665-4661-4812-ADEE-35FAE7C340F3.png",
+      "attachmentTimestamp": 1792488865.543
+    },
+    {
+      "file": "AsterRegressionTests-attachments/62E36A4F-5BA4-4E26-B1DA-99AE97C94CEC.txt",
+      "artifactPath": "AsterRegressionTests-attachments/62E36A4F-5BA4-4E26-B1DA-99AE97C94CEC.txt",
+      "bytes": 7488,
+      "sha256": "16b58e164430db886b98a11d69615953d00aff460a57fa842658a63e42ced119",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Native accessibility hierarchy_0_C9D6A640-C4AA-4007-83D2-7240B12A2858.txt",
+      "attachmentTimestamp": 1792489335.342
+    },
+    {
+      "file": "AsterRegressionTests-attachments/C1989B53-48F7-42A6-B0B7-B5C7AF215210.png",
+      "artifactPath": "AsterRegressionTests-attachments/C1989B53-48F7-42A6-B0B7-B5C7AF215210.png",
+      "bytes": 185605,
+      "sha256": "51046b2eee3b29a33cb96b45c2cb1c5f8f8ed14c226110d0806d2f6504e98837",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Final display_0_E35076E7-68D4-40A3-A19B-5A7D2F5C7BA8.png",
+      "attachmentTimestamp": 1792489334.816
+    },
+    {
+      "file": "AsterRegressionTests-attachments/manifest.json",
+      "artifactPath": "AsterRegressionTests-attachments/manifest.json",
+      "bytes": 56245,
+      "sha256": "8fbff812321266fbfed47223677cb6c42471e1e7e917a00c782ad4a4bb550fe9"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "native-probe-excerpt.txt",
+      "bytes": 19216,
+      "sha256": "fa66e65838351778fc38033f8169dae42699b042720e36b36e7a44bd6628c200",
+      "matchedLineCount": 28,
+      "probeCountsAcrossBothSourceLogs": {
+        "legacy": 28,
+        "engine": 0,
+        "reparent": 0
+      },
+      "sourceCommit": "273578ee85af23845bf517e76572f02a04a3f678",
+      "originalArtifactID": 12256581113,
+      "origins": [
+        {
+          "artifactPath": "session-diagnostics/app/Library/Caches/Logs/Firefox.log",
+          "bytes": 3311688,
+          "sha256": "b3d262b87ade40a4bea87f6c53848b29bb4238b88274fb73a862ba1367bcbc66",
+          "matchedLineCount": 28
+        },
+        {
+          "artifactPath": "session-diagnostics/app/Library/Caches/Logs/Firefox.1.log",
+          "bytes": 5242973,
+          "sha256": "344486fa2a95e175af368727aab0d9a909054898f1429625ab4cbc5c816993a6",
+          "matchedLineCount": 0
+        }
+      ],
+      "derivation": "Concatenate the complete original byte-lines containing the literal ASCII text AsterFullscreenProbe from each origin in the listed order, preserving byte order and original line endings within each file. No headers, separators, redaction or text normalization added. This is an exact-line subset, not a complete original logfile."
+    }
+  ],
+  "filesUnmodifiedScope": "The nine files entries are complete unmodified original files. derivedFiles separately describes exact-line excerpts."
+}

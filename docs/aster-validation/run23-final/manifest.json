@@ -1,0 +1,264 @@
+{
+  "runID": 39406335775,
+  "runNumber": 23,
+  "runAttempt": 1,
+  "jobID": 118573067624,
+  "sourceCommit": "4557246b64453abb464844aa8ff4358e90107c5b",
+  "runConclusion": "failure",
+  "artifactID": 12263454989,
+  "artifactName": "Aster-compact-validation-evidence-attempt-1",
+  "artifactBytes": 28700577,
+  "artifactSHA256": "55a9ecaa83a3b45bc587a9d4e3a3f98e0eb817a0d38ea0cc224f306580a2df78",
+  "archiveVerification": {
+    "zipCRC": "Passed",
+    "zipEntryCount": 203,
+    "compactManifestFileCount": 202,
+    "compactManifestTotalBytes": 88482502,
+    "allCompactManifestSizesAndSHA256Matched": true
+  },
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "architecture": "arm64",
+  "xcode": "26.5 (17F42)",
+  "scope": "Final evidence for source4557246, a failed full validation. No delivered IPA, full-validation pass, independent binary audit, signed installation or physical-device claim. Current run26 remains separate.",
+  "filesUnmodified": true,
+  "filesUnmodifiedScope": "files contains thirteen complete, byte-identical originals. derivedFiles separately identifies a 27-line exact-byte subset of the original native log; no full logs, videos or XCResults are copied.",
+  "officialSummaries": {
+    "AsterUnitTests": {
+      "result": "Passed",
+      "passedTests": 5747,
+      "failedTests": 0,
+      "skippedTests": 2,
+      "expectedFailures": 0,
+      "totalTestCount": 5749
+    },
+    "AsterRegressionTests": {
+      "result": "Failed",
+      "passedTests": 3,
+      "failedTests": 2,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 5
+    },
+    "AsterAcceptanceTests": {
+      "result": "Failed",
+      "passedTests": 15,
+      "failedTests": 1,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 16
+    },
+    "AsterDownloadTests": {
+      "result": "Passed",
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 1
+    }
+  },
+  "summaryCountMethod": "Official top-level summary counts; device configuration counts may include expanded parameterized runs.",
+  "originalCIDevicePackageAudit": {
+    "result": "Passed",
+    "build": "23.1",
+    "ipaBytes": 207499582,
+    "ipaSHA256": "2d31a076651fb1b547a114dd668e7f2e5cfe86e02092b6071f9cedcaba661536",
+    "extensions": 6
+  },
+  "downloadIntegrity": {
+    "filename": "aster-payload.txt",
+    "bytes": 95,
+    "sha256": "fa7f6baddf7671ff0f6f7aa8c03fe987c556a4bc590406da2e8d9542bfdb3dbc"
+  },
+  "ipaPublication": "Withheld because two required preflight cases and one main UI case failed.",
+  "independentBinaryAudit": false,
+  "actualIPABinaryDownloaded": false,
+  "mainBoundaryEvidence": {
+    "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+    "firstBoundaryEpochMs": 1792495100240.953,
+    "rotationRequestedEpochMs": 1792495099843.142,
+    "requestOffsetFromPredictedFirstBoundaryMs": -397.811,
+    "actualLayoutRotationObservation": null,
+    "actualBoundaryWindowPassEstablished": false,
+    "finalAXSamples": [
+      {
+        "path": "AsterAcceptanceTests-attachments/695DBF54-88D5-4CA5-9946-FBD0EF3F30FB.txt",
+        "clockEpochMs": 1792495116057,
+        "mediaSeconds": 2.933532757999522,
+        "decodedFrames": 221,
+        "landscapePhaseLoops": 2,
+        "totalNaturalWraps": 3
+      },
+      {
+        "path": "AsterAcceptanceTests-attachments/AE50918D-F92C-41D4-9A51-A327CACE1541.txt",
+        "clockEpochMs": 1792495116560,
+        "mediaSeconds": 3.436439925333532,
+        "decodedFrames": 227,
+        "landscapePhaseLoops": 2,
+        "totalNaturalWraps": 3
+      }
+    ],
+    "finding": "MAIN independently shows advancing decoded landscape playback at the failure captures; the expected rotation-observed text was absent and the immutable observation remained null. This rules out a persistent zero-frame freeze at those captures but does not certify continuous playback through the entire transition or the strict first-boundary timing."
+  },
+  "originalManifestScope": "AsterAcceptanceTests-attachments/manifest.json is the unmodified complete MAIN index. It references files not copied in this smaller selected set; those payloads remain in upstream artifacts.",
+  "files": [
+    {
+      "file": "AsterUnitTests-summary.json",
+      "artifactPath": "AsterUnitTests-summary.json",
+      "bytes": 1765,
+      "sha256": "08853cd510de14f41e825d3b2f462eae8a2fa48c4357cf9f545f53f71e41b239",
+      "purpose": "Original final unit summary; use top-level counts"
+    },
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "bytes": 2137,
+      "sha256": "01a366c49dc42d22482371ac51fc014d417c372da0a36afaffb44227c49bbbdd",
+      "purpose": "Original final preflight summary; boundary observer and tab 18 viewport failures"
+    },
+    {
+      "file": "AsterAcceptanceTests-summary.json",
+      "artifactPath": "AsterAcceptanceTests-summary.json",
+      "bytes": 1746,
+      "sha256": "3fa4cbed6f2bd9d37802440eba9a1d5930852cf581d5d2c4f7bb0e955c0cab20",
+      "purpose": "Original final MAIN summary; only boundary observer case failed"
+    },
+    {
+      "file": "AsterDownloadTests-summary.json",
+      "artifactPath": "AsterDownloadTests-summary.json",
+      "bytes": 991,
+      "sha256": "0430827c013b887f18836ca44f32e8f931a6082e04e9ddda22791091f353aea1",
+      "purpose": "Original final download summary"
+    },
+    {
+      "file": "device-ipa-audit.json",
+      "artifactPath": "device-ipa-audit.json",
+      "bytes": 6326,
+      "sha256": "b50bde17270bd1a3d5d0e5ff45fbc236231723c467814c121b9395e214eb70b9",
+      "purpose": "Original CI-only device package audit; actual IPA not independently downloaded or inspected"
+    },
+    {
+      "file": "download-integrity.json",
+      "artifactPath": "download-integrity.json",
+      "bytes": 133,
+      "sha256": "13809d61350403dcf80e9319bd69f6d6f1ed5ee938da8302fbdac61e5140b5db",
+      "purpose": "Original CI download integrity record for the 95-byte payload"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "80e7f99d7710801b5793fd14fdb4eb94f7e22eb32aafca75a4f320e13bfaee9f",
+      "purpose": "Original exact source marker"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be",
+      "purpose": "Original Xcode and SDK marker"
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/B13C8A3A-25E4-443C-AA79-5C08379A62C2.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/B13C8A3A-25E4-443C-AA79-5C08379A62C2.txt",
+      "bytes": 364,
+      "sha256": "ba06373e13170239598a5bd2df62234e4b1a88f441e0d679cacd369cb0a1e116",
+      "purpose": "MAIN first-loop media clock and native rotation schedule",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "First-loop media clock and native rotation schedule_0_1D0ADDCD-F80E-40DB-A3C8-E49F79AB2005.txt",
+      "attachmentTimestamp": 1792495100.825,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/4CF79E45-D292-4584-8626-C24D6A51CD1F.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/4CF79E45-D292-4584-8626-C24D6A51CD1F.png",
+      "bytes": 632007,
+      "sha256": "783edb68bd46f0a94dce8018ec67c554a64dcc3ffe33d5f93a376e0275d71796",
+      "purpose": "MAIN final landscape decoded display; rotation observation still waiting",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Final display_0_FEB314DA-6EF4-4CC9-A5F2-99652165DA7B.png",
+      "attachmentTimestamp": 1792495116.724,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/695DBF54-88D5-4CA5-9946-FBD0EF3F30FB.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/695DBF54-88D5-4CA5-9946-FBD0EF3F30FB.txt",
+      "bytes": 13012,
+      "sha256": "e897819a4385bdddc0a3c3a695e029914a0cb5d6a052c3c232ffc2d0d356a82a",
+      "purpose": "MAIN app hierarchy: 221 decoded frames at media time 2.934 seconds",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "App UI hierarchy for com.omarkebrit_0_5148F305-0DAB-4F1C-A865-C15975201649.aster",
+      "attachmentTimestamp": 1792495116.223,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/AE50918D-F92C-41D4-9A51-A327CACE1541.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/AE50918D-F92C-41D4-9A51-A327CACE1541.txt",
+      "bytes": 8221,
+      "sha256": "5f7c15979739a885c470c8bd5768bf2a9c2a6d624fcdbda430850f888f3cffd0",
+      "purpose": "MAIN final native hierarchy: 227 decoded frames at media time 3.437 seconds",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Native accessibility hierarchy_0_C90B5CE6-7AFD-43DD-919A-367F218CD310.txt",
+      "attachmentTimestamp": 1792495117.154,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/manifest.json",
+      "artifactPath": "AsterAcceptanceTests-attachments/manifest.json",
+      "bytes": 42340,
+      "sha256": "c4e88de0da48800a5b89a4b98c124c077c1f4a107353046756d15e1e86d77d7c",
+      "purpose": "Original complete MAIN attachment index; references payloads outside this selected proof set"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "derived/boundary-native-excerpt.txt",
+      "bytes": 15012,
+      "sha256": "27fc18ad53ceb87a01e3fb8a84d1b33550191784c57300aa0c4eb036fdacca76",
+      "matchedLineCount": 27,
+      "sourceLineNumbers": [
+        28431,
+        28432,
+        28433,
+        28434,
+        28435,
+        28436,
+        28438,
+        28440,
+        28442,
+        28443,
+        28449,
+        28451,
+        28452,
+        28454,
+        28455,
+        28456,
+        28457,
+        28459,
+        28460,
+        28462,
+        28464,
+        28466,
+        28468,
+        28469,
+        28470,
+        28472,
+        28478
+      ],
+      "origin": {
+        "artifactPath": "session-diagnostics/main-ui/app/Library/Caches/Logs/Firefox.1.log",
+        "bytes": 5242934,
+        "sha256": "c2deb557b44fcad4b7860a6ea5076e420add0af863f7ad4f99242dd387750a04"
+      },
+      "matchingRules": {
+        "allLinesContain": "2026-10-20 11:18:",
+        "andAtLeastOneOf": [
+          "AsterFullscreenProbe",
+          "AVPlayerViewController",
+          "WKFullScreenViewController"
+        ]
+      },
+      "derivation": "Retain byte-identical complete lines containing 2026-10-20 11:18: and at least one of AsterFullscreenProbe, AVPlayerViewController, WKFullScreenViewController. Preserve source line order and newline bytes. This is a derived excerpt, not the original full log."
+    }
+  ]
+}

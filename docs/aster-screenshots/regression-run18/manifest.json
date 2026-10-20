@@ -1,0 +1,67 @@
+{
+  "runID": 39379658275,
+  "runNumber": 18,
+  "runAttempt": 1,
+  "runURL": "https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275",
+  "jobID": 118485608884,
+  "artifactID": 12247766739,
+  "artifactBytes": 122240494,
+  "sourceCommit": "7788245534fc23c00a93fb8375c83ebce8703a1e",
+  "suite": "AsterRegressionTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "evidencePurpose": "Passing preflight checkpoint only; full unit stage failed and full native validation is incomplete",
+  "preflight": {
+    "result": "Passed",
+    "passedTests": 4,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 4
+  },
+  "validationStatusAtPublication": {
+    "fullUnitPlan": "failed; diagnosis pending final logs",
+    "mainUI": "running",
+    "isolatedDownload": "pending",
+    "unsignedDeviceBuildAndAudit": "pending",
+    "productionIPA": "not produced"
+  },
+  "files": [
+    {
+      "file": "5A898014-16BB-4B19-A1BE-63CAEB12314A.png",
+      "artifactPath": "AsterRegressionTests-attachments/5A898014-16BB-4B19-A1BE-63CAEB12314A.png",
+      "label": "Decoded fullscreen frames after two landscape end/start transitions",
+      "bytes": 506833,
+      "sha256": "991cd979ff143619404f86e3f8f3288fefb639be70bf937e38a1db81f7b2f7e4",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "attachmentName": "Decoded fullscreen frames continue after two landscape loops_0_7008C2F9-69AC-4E30-B804-3A19F8C50B94.png",
+      "timestamp": 1792480261.301
+    },
+    {
+      "file": "2B754D89-CF91-4F68-BA0A-6DAB9E467BD6.png",
+      "artifactPath": "AsterRegressionTests-attachments/2B754D89-CF91-4F68-BA0A-6DAB9E467BD6.png",
+      "label": "First numbered fixture page selected after process relaunch; native tab count 25",
+      "bytes": 184553,
+      "sha256": "29098a03c2543fed6186906f4ad84a79a32dcca5bdc6ea5f4b33fae5540ea0f3",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Restored first tab_0_A36FC25B-9C6E-4E9A-BBEB-F0C781AD6852.png",
+      "timestamp": 1792480904.604
+    },
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "label": "Unmodified official four-case native preflight summary",
+      "bytes": 991,
+      "sha256": "fd47558ec75e36e9d88ab35021d7c2fec5aab4ee56a60239e6b342399b52b3ed"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "label": "Unmodified source identity recorded by native workflow",
+      "bytes": 41,
+      "sha256": "a1c4425d8df0719362ea489a0fdd16f25e003835dbf397fa39180669491220cd"
+    }
+  ]
+}

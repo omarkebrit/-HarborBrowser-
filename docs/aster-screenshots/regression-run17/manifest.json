@@ -1,0 +1,71 @@
+{
+  "runID": 38410673448,
+  "runNumber": 17,
+  "runAttempt": 1,
+  "runURL": "https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448",
+  "jobID": 115341845594,
+  "artifactID": 11823414971,
+  "sourceCommit": "6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8",
+  "suite": "AsterRegressionTests",
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "evidencePurpose": "Failure evidence for the recorded source; not a runtime fix or passing release",
+  "preflight": {
+    "result": "Failed",
+    "passedTests": 3,
+    "failedTests": 1,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 4
+  },
+  "failedTestIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+  "failureText": "failed - Missing rendered media text: Fullscreen video playing in landscape",
+  "files": [
+    {
+      "file": "FD223A04-5350-431B-BF7B-AB3F9D7F6F55.png",
+      "artifactPath": "AsterRegressionTests-attachments/FD223A04-5350-431B-BF7B-AB3F9D7F6F55.png",
+      "label": "Portrait fullscreen capture, media time 5.167/frame 62",
+      "bytes": 446388,
+      "sha256": "a9373ac2d3f4567d72f7d1939bc47c718b82731202109e5eb7ebdf1b3fd40ee4",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "attachmentName": "Actual portrait fullscreen video_0_CC206B77-7D71-4255-BBF4-E3A2EE3E3B92.png",
+      "timestamp": 1791902312.863
+    },
+    {
+      "file": "C468925B-5E87-420E-9DF2-9F29B4371FE0.png",
+      "artifactPath": "AsterRegressionTests-attachments/C468925B-5E87-420E-9DF2-9F29B4371FE0.png",
+      "label": "Failed landscape fullscreen capture, media time 0.000/frame 0 and stale portrait label",
+      "bytes": 434811,
+      "sha256": "14ef837692885ded5a532b4b3b75e9a08d9d4dc383b361ccce0674dce789cb43",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "attachmentName": "Final display_0_45325765-771B-4802-A47F-D9373E9917E0.png",
+      "timestamp": 1791902331.816
+    },
+    {
+      "file": "5B8FEAC6-4252-4CF6-8496-4AA796B81062.txt",
+      "artifactPath": "AsterRegressionTests-attachments/5B8FEAC6-4252-4CF6-8496-4AA796B81062.txt",
+      "label": "Final native accessibility hierarchy for the failed fullscreen case",
+      "bytes": 6885,
+      "sha256": "c320eb38d33501ba26116bd31be75e1b272fba6c485dc65dc04a8ce6d961b962",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+      "attachmentName": "Native accessibility hierarchy_0_D9CCF560-B48D-4AD6-9864-CAF9799B5C70.txt",
+      "timestamp": 1791902332.104
+    },
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "label": "Unmodified official four-case native preflight summary",
+      "bytes": 1505,
+      "sha256": "534c1f34be5c1965ebce48df2dd2f1a56dd3668af154e59722c04f8517551944"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "label": "Unmodified source identity recorded by the native workflow",
+      "bytes": 41,
+      "sha256": "cea98862f6cf7768fcbbb75680683e3045c19e2916f3bc4d36884c85d95bae27"
+    }
+  ]
+}
