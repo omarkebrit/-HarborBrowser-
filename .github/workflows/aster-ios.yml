@@ -2,6 +2,12 @@ name: Build and test Aster for iPhone
 
 on:
   workflow_dispatch:
+    inputs:
+      evidence_run_id:
+        description: 'Extract compact evidence from an existing run instead of building'
+        type: string
+        required: false
+        default: ''
   push:
     branches: [main, feat/aster-browser]
 
@@ -9,11 +15,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: aster-ios-${{ github.ref }}
+  group: aster-ios-${{ github.ref }}-${{ inputs.evidence_run_id || 'native' }}
   cancel-in-progress: true
 
 jobs:
   native:
+    if: ${{ !inputs.evidence_run_id }}
     runs-on: macos-26
     timeout-minutes: 180
     env:
@@ -532,11 +539,68 @@ jobs:
             build-output/session-diagnostics/
           if-no-files-found: warn
           retention-days: 7
+      - name: Prepare compact native validation evidence
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: python3 scripts/aster-compact-evidence.py build-output build-output-compact
+      - name: Preserve compact native validation evidence
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-compact-validation-evidence-attempt-${{ github.run_attempt }}
+          path: build-output-compact/
+          if-no-files-found: error
+          retention-days: 7
       - name: Publish unsigned IPA only after required checks pass
         if: ${{ success() }}
         uses: actions/upload-artifact@v4
         with:
           name: Aster-iPhone-UNSIGNED-needs-signing-attempt-${{ github.run_attempt }}
           path: build-output/Aster-UNSIGNED-needs-signing.ipa
+          if-no-files-found: error
+          retention-days: 7
+  extract_evidence:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.evidence_run_id != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate source run
+        env:
+          EVIDENCE_RUN_ID: ${{ inputs.evidence_run_id }}
+        run: |
+          if [[ ! "$EVIDENCE_RUN_ID" =~ ^[1-9][0-9]*$ ]]; then
+            echo '::error::An existing numeric workflow run ID is required.'
+            exit 1
+          fi
+      - name: Retrieve original evidence without changing it
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.evidence_run_id }}
+          pattern: Aster-native-validation-evidence-attempt-*
+          path: original-evidence
+      - name: Copy summaries, logs and still attachments with their hashes
+        run: python3 scripts/aster-compact-evidence.py original-evidence compact-evidence
+      - name: Record source run
+        env:
+          EVIDENCE_RUN_ID: ${{ inputs.evidence_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          source = {'repository': os.environ['GITHUB_REPOSITORY'],
+                    'sourceRunID': os.environ['EVIDENCE_RUN_ID'],
+                    'extractionCommit': os.environ['GITHUB_SHA']}
+          pathlib.Path('compact-evidence/extraction-source.json').write_text(json.dumps(source, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aster-compact-evidence-from-${{ inputs.evidence_run_id }}
+          path: compact-evidence/
           if-no-files-found: error
           retention-days: 7
