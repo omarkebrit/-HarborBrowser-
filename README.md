@@ -6,9 +6,9 @@ Aster is an independent fork of [Firefox for iOS](https://github.com/mozilla-mob
 
 ## Current delivery status
 
-The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor browser branches and history. Aster's source is on `feat/aster-browser`. As of 20 October 2026, [run 17](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`, completed with three preflight passes and one fullscreen-video failure. **No production IPA has been produced yet.**
+The [repository](https://github.com/omarkebrit/-HarborBrowser-) is public, including the earlier Harbor branches and history. Aster's source is on `feat/aster-browser`. [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, has passed all four media/session preflight cases with zero failures or skips. **No production IPA or full-validation pass is available yet.**
 
-Popup playback, restrictive autoplay and 25-tab creation/restoration passed. After rotation, the fullscreen video froze at its first loop boundary; the cause remains unconfirmed. The candidate adds playback diagnostics and requires decoded frames through two landscape loops. Native [run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, is launched for source `7788245534fc23c00a93fb8375c83ebce8703a1e`; its results remain unverified. Independent test and device-build stages will collect results even if another stage fails, while IPA publication still requires every required check to pass. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
+The checkpoint includes fresh decoded video frames through two landscape loops and 25-tab creation/restoration. The full unit stage failed; diagnosis awaits final logs. The main 15-case UI selection is running, and download/device-package results remain pending. Production playback behavior was unchanged by the read-only diagnostics, so this pass does not establish a fix for run 17's stall. Independent stages continue collecting results, while IPA publication requires all required checks to pass. See [TEST-REPORT.md](TEST-REPORT.md) and [native screenshots](docs/aster-screenshots/README.md).
 
 ## What is included
 
@@ -22,7 +22,7 @@ Brave Playlist, Rewards, Wallet, Leo, Brave Sync and its paid VPN/backend servic
 
 ## Build and install
 
-Run **Build and test Aster for iPhone** in GitHub Actions. The workflow prepares pinned dependencies, generates and compiles a production advertising filter pack, runs the full upstream unit plan and native acceptance tests on an iPhone 15 Pro Max simulator, and builds an iPhone release app. It audits the actual unsigned package and publishes an IPA only if all required checks pass.
+Run **Build and test Aster for iPhone** in GitHub Actions. The workflow prepares pinned dependencies, generates and compiles a production advertising filter pack, runs the full upstream unit plan and native acceptance tests on an iPhone 15 Pro Max simulator, and builds an iPhone release app. It audits the actual unsigned package and publishes an IPA only if all required checks pass. The prepared next candidate expands selection to five preflight and 16 main UI cases plus the isolated download; its new boundary-timed rotation case has not run natively.
 
 **Any IPA produced by this workflow is unsigned and requires valid Apple signing before installation on an iPhone.** GitHub compilation does not replace Apple's signing requirements. TestFlight requires an Apple Developer account, provisioning and App Store Connect credentials. No signing credentials are included. [BUILD-INSTALL.md](BUILD-INSTALL.md) explains the available routes. [دليل الآيفون بالعربي](INSTALL-AR.md).
 

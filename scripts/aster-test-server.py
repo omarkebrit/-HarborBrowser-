@@ -130,12 +130,16 @@ PAGES = {
             #stage:fullscreen p{margin:0;flex:0 0 auto}
             #stage:fullscreen button{min-height:44px;flex:0 0 auto}
             #media-observation{position:absolute;top:8px;left:8px;right:8px;pointer-events:none;
-                font:10px/1.2 monospace;white-space:pre-wrap;background:#12323acc;color:white;z-index:2}
+                font:10px/1.2 monospace;white-space:pre-wrap;overflow-wrap:anywhere;
+                background:#12323acc;color:white;z-index:2}
         </style>
         <div id='stage'><video id='v' playsinline loop controls preload='auto'
             src='/media/video.mp4' width='320'></video><p id='status'>Waiting for fullscreen</p>
             <button id='exit'>Exit fullscreen</button><aside id='media-observation' aria-live='off'>
-                <p id='media-state'></p><p id='loop-state'>Loop playback pending</p></aside>
+                <p id='media-state'></p><p id='loop-state'>Loop playback pending</p>
+                <p id='media-clock'>Aster media clock null</p>
+                <p id='rotation-state'>Waiting for first-loop boundary rotation</p>
+                <p id='rotation-observation'>Aster rotation observation null</p></aside>
             </div><button id='enter'>Enter fullscreen</button>
     """, """
         const stage = document.getElementById('stage');
@@ -143,6 +147,9 @@ PAGES = {
         const status = document.getElementById('status');
         const diagnostic = document.getElementById('media-state');
         const loopStatus = document.getElementById('loop-state');
+        const clock = document.getElementById('media-clock');
+        const rotationStatus = document.getElementById('rotation-state');
+        const rotationDetails = document.getElementById('rotation-observation');
         let frames = 0;
         let phaseFrames = 0;
         let geometry = '';
@@ -150,6 +157,11 @@ PAGES = {
         let phaseLoops = 0;
         let loopFrames = 0;
         let previousTime = 0;
+        let globalPreviousTime = 0;
+        let totalNaturalWraps = 0;
+        let portraitFullscreenSeen = false;
+        let rotationObservation = null;
+        let playRequestedEpochMs = null;
         let lastFrameAt = 0;
         const events = [];
         if (v.requestVideoFrameCallback) {
@@ -159,11 +171,14 @@ PAGES = {
             v.requestVideoFrameCallback(frame);
         }
         document.getElementById('enter').onclick = async () => {
-            try { v.play(); await stage.requestFullscreen(); }
+            try {
+                if (playRequestedEpochMs === null) playRequestedEpochMs = Date.now();
+                v.play(); await stage.requestFullscreen();
+            }
             catch (error) { status.textContent = 'Fullscreen failed: ' + error.name; }
         };
         document.getElementById('exit').onclick = () => document.exitFullscreen();
-        function report() {
+        function report(event) {
             const size = stage.clientWidth + 'x' + stage.clientHeight;
             if (geometry !== size) { geometry = size; phaseFrames = frames; }
             const orientation = stage.clientWidth > stage.clientHeight ? 'landscape' : 'portrait';
@@ -171,6 +186,9 @@ PAGES = {
                 phaseOrientation = orientation; phaseLoops = 0; previousTime = v.currentTime;
             }
             const loopWindow = Math.min(1, v.duration / 4);
+            if (v.duration > 0 && globalPreviousTime >= v.duration - loopWindow && v.currentTime <= loopWindow)
+                totalNaturalWraps++;
+            globalPreviousTime = v.currentTime;
             if (v.duration > 0 && previousTime >= v.duration - loopWindow && v.currentTime <= loopWindow) {
                 phaseLoops++; loopFrames = frames;
             }
@@ -178,6 +196,19 @@ PAGES = {
             const freshFrames = !v.requestVideoFrameCallback
                 || (frames > phaseFrames && performance.now() - lastFrameAt < 1000);
             const playing = !v.paused && v.videoWidth > 0 && v.currentTime > 0.25 && freshFrames;
+            const sample = { t: v.currentTime, duration: v.duration, rate: v.playbackRate, playing,
+                epochMs: Date.now(), playRequestedEpochMs, totalNaturalWraps, orientation };
+            clock.textContent = 'Aster media clock ' + JSON.stringify(sample);
+            if (document.fullscreenElement && orientation === 'portrait') portraitFullscreenSeen = true;
+            if (event && event.type === 'resize' && document.fullscreenElement && portraitFullscreenSeen
+                    && orientation === 'landscape' && !rotationObservation) {
+                const nearBoundary = Number.isFinite(sample.duration) && sample.duration > 0
+                    && totalNaturalWraps <= 1 && (sample.t >= sample.duration - 0.75 || sample.t <= 0.5);
+                rotationObservation = { ...sample, frames, stage: size, nearBoundary };
+                rotationDetails.textContent = 'Aster rotation observation ' + JSON.stringify(rotationObservation);
+                rotationStatus.textContent = nearBoundary ? 'Fullscreen first-loop boundary rotation observed'
+                    : 'Fullscreen rotation missed first-loop boundary';
+            }
             if (document.fullscreenElement) {
                 status.textContent = 'Fullscreen video ' + (playing ? 'playing' : 'waiting') + ' in ' + orientation;
             }
@@ -195,7 +226,7 @@ PAGES = {
         function record(event) {
             events.push(event.type + '@' + v.currentTime.toFixed(3));
             if (events.length > 8) events.shift();
-            report();
+            report(event);
         }
         document.addEventListener('fullscreenchange', event => {
             status.textContent = document.fullscreenElement ? 'Fullscreen active' : 'Fullscreen exited';

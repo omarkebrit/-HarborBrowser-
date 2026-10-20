@@ -11,6 +11,24 @@ final class AsterAcceptanceTests: BaseTestCase {
     private var toolbar: ToolbarScreen { ToolbarScreen(app: app) }
     private var tabTray: TabTrayScreen { TabTrayScreen(app: app) }
 
+    private struct FullscreenMediaClock: Decodable {
+        let t: TimeInterval
+        let duration: TimeInterval
+        let rate: Double
+        let playing: Bool
+        let epochMs: Double
+        let playRequestedEpochMs: Double
+        let totalNaturalWraps: Int
+        let orientation: String
+    }
+
+    private struct FullscreenRotationObservation: Decodable {
+        let t: TimeInterval
+        let duration: TimeInterval
+        let epochMs: Double
+        let totalNaturalWraps: Int
+    }
+
     override func setUp() async throws {
         XCUIDevice.shared.orientation = .portrait
         launchArguments += [LaunchArguments.ClearWebData,
@@ -230,6 +248,66 @@ final class AsterAcceptanceTests: BaseTestCase {
         expectText("Fullscreen exited")
     }
 
+    func testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation() {
+        defer { exitFullscreenIfNeeded(); XCUIDevice.shared.orientation = .portrait }
+        open("/media/fullscreen.html", expecting: "Waiting for fullscreen")
+        app.webViews.buttons["Enter fullscreen"].waitAndTap()
+        expectMediaText("Fullscreen video playing in portrait", timeout: 15)
+        guard let firstBoundary = rotateAtFirstFullscreenLoopBoundary() else { return }
+        expectMediaText("Fullscreen first-loop boundary rotation observed", timeout: 15)
+        let prefix = "Aster rotation observation "
+        let observation = app.webViews.staticTexts.matching(
+            NSPredicate(format: "label BEGINSWITH %@", prefix)
+        ).firstMatch.label
+        let resizeEvidence = XCTAttachment(string: observation)
+        resizeEvidence.name = "First actual landscape resize at the first loop boundary"
+        resizeEvidence.lifetime = .keepAlways
+        add(resizeEvidence)
+        guard observation.hasPrefix(prefix),
+              let data = String(observation.dropFirst(prefix.count)).data(using: .utf8),
+              let resize = try? JSONDecoder().decode(FullscreenRotationObservation.self, from: data),
+              resize.t.isFinite, resize.duration.isFinite, resize.epochMs.isFinite,
+              resize.t >= 0, resize.t <= resize.duration, (5.9...6.1).contains(resize.duration) else {
+            XCTFail("Invalid actual landscape resize observation: \(observation)")
+            return
+        }
+        let resizeOffset = resize.epochMs / 1000 - firstBoundary
+        let actualTiming = XCTAttachment(string: "\(observation)\nfirstBoundaryEpochMs=\(firstBoundary * 1000)\n"
+            + "actualResizeOffsetSeconds=\(resizeOffset)")
+        actualTiming.name = "Actual landscape resize offset from the predicted first loop boundary"
+        actualTiming.lifetime = .keepAlways
+        add(actualTiming)
+        XCTAssertTrue((-0.75...0.5).contains(resizeOffset),
+                      "Actual landscape resize missed the first boundary: offset=\(resizeOffset), \(observation)")
+        XCTAssertTrue((0...1).contains(resize.totalNaturalWraps),
+                      "Actual landscape resize happened after the first loop: \(observation)")
+        expectMediaText("Fullscreen video playing in landscape", timeout: 15)
+        captureDisplay("Actual first-loop boundary landscape fullscreen video")
+        expectMediaText("Fullscreen loop playback verified in landscape", timeout: 20)
+        captureDisplay("Decoded fullscreen frames continue after two boundary-targeted landscape loops")
+        let exit = app.webViews.buttons["Exit fullscreen"].firstMatch
+        mozWaitForElementToExist(exit)
+        XCTAssertTrue(exit.isHittable)
+        exit.waitAndTap()
+        expectText("Fullscreen exited")
+        XCUIDevice.shared.orientation = .portrait
+        for identifier in [AccessibilityIdentifiers.Toolbar.settingsMenuButton,
+                           AccessibilityIdentifiers.Toolbar.tabsButton] {
+            waitForPredicate("exists == true AND hittable == true", element: app.buttons[identifier])
+        }
+        toolbar.assertToolbarIsVisible()
+        captureDisplay("Boundary rotation exit restores browser controls")
+        app.buttons[AccessibilityIdentifiers.Toolbar.settingsMenuButton].waitAndTap()
+        let settings = app.tables.cells[AccessibilityIdentifiers.MainMenu.settings].firstMatch
+        waitForPredicate("exists == true AND hittable == true", element: settings)
+        captureDisplay("Recovered native browser menu accepts interaction after boundary rotation")
+        settings.waitAndTap()
+        mozWaitForElementToExist(app.tables[AccessibilityIdentifiers.Settings.tableViewController])
+        app.buttons[AccessibilityIdentifiers.Settings.navigationBarItem].waitAndTap()
+        navigator.nowAt(BrowserTab)
+        expectText("Fullscreen exited")
+    }
+
     func testAutomaticPopupBlockedAndUserPlayerWindowAllowed() {
         open("/popup.html", expecting: "Automatic popup attempted")
         idle(for: 1.5)
@@ -437,6 +515,58 @@ final class AsterAcceptanceTests: BaseTestCase {
         }, object: element)
         XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: timeout), .completed,
                        "Media text must render inside the native viewport and display: \(text)", file: file, line: line)
+    }
+
+    private func rotateAtFirstFullscreenLoopBoundary(file: StaticString = #filePath, line: UInt = #line) -> TimeInterval? {
+        let prefix = "Aster media clock "
+        let raw = app.webViews.staticTexts.matching(
+            NSPredicate(format: "label BEGINSWITH %@", prefix)
+        ).firstMatch.label
+        let receivedAt = Date().timeIntervalSince1970
+        guard raw.hasPrefix(prefix),
+              let data = String(raw.dropFirst(prefix.count)).data(using: .utf8),
+              let clock = try? JSONDecoder().decode(FullscreenMediaClock.self, from: data) else {
+            XCTFail("SETUP: Missing or invalid first-loop media clock: \(raw)", file: file, line: line)
+            return nil
+        }
+        let sampleAt = clock.epochMs / 1000
+        let playRequestedAt = clock.playRequestedEpochMs / 1000
+        let age = receivedAt - sampleAt
+        guard clock.t.isFinite, clock.duration.isFinite, clock.rate.isFinite, clock.epochMs.isFinite,
+              clock.playRequestedEpochMs.isFinite,
+              clock.t >= 0, clock.t < clock.duration, (5.9...6.1).contains(clock.duration), clock.rate > 0,
+              clock.playing, clock.orientation == "portrait", clock.totalNaturalWraps == 0,
+              sampleAt >= playRequestedAt, sampleAt - playRequestedAt < clock.duration / clock.rate,
+              age >= 0, age <= 1.5 else {
+            XCTFail("SETUP: First-loop clock must be fresh, playing in portrait, and before its first wrap; age=\(age), \(raw)",
+                    file: file, line: line)
+            return nil
+        }
+        let firstBoundary = sampleAt + (clock.duration - clock.t) / clock.rate
+        let target = firstBoundary - 0.4
+        let waitDuration = target - Date().timeIntervalSince1970
+        guard waitDuration > 0, waitDuration <= min(6.1, clock.duration / clock.rate) else {
+            XCTFail("SETUP: Too late to target the first loop boundary; target=\(target), wait=\(waitDuration), \(raw)",
+                    file: file, line: line)
+            return nil
+        }
+        let targetReached = XCTestExpectation(description: "First loop boundary rotation target")
+        DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + waitDuration) {
+            targetReached.fulfill()
+        }
+        guard XCTWaiter().wait(for: [targetReached], timeout: waitDuration + 1) == .completed else {
+            XCTFail("SETUP: First-loop rotation timer did not complete; \(raw)", file: file, line: line)
+            return nil
+        }
+        let requestedAt = Date().timeIntervalSince1970
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let schedule = XCTAttachment(string: "\(raw)\nreceivedEpochMs=\(receivedAt * 1000)\n"
+            + "sampleAge=\(age)\nfirstBoundaryEpochMs=\(firstBoundary * 1000)\n"
+            + "targetEpochMs=\(target * 1000)\nrotationRequestedEpochMs=\(requestedAt * 1000)")
+        schedule.name = "First-loop media clock and native rotation schedule"
+        schedule.lifetime = .keepAlways
+        add(schedule)
+        return firstBoundary
     }
 
     private func captureDisplay(_ title: String) {

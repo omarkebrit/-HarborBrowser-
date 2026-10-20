@@ -90,6 +90,9 @@ function createScene(orientation = 'landscape') {
         status: { textContent: 'Waiting for fullscreen' },
         'media-state': { textContent: '' },
         'loop-state': { textContent: 'Loop playback pending' },
+        'media-clock': { textContent: 'Aster media clock null' },
+        'rotation-state': { textContent: 'Waiting for first-loop boundary rotation' },
+        'rotation-observation': { textContent: 'Aster rotation observation null' },
         enter: {},
         exit: {},
     };
@@ -109,6 +112,7 @@ function createScene(orientation = 'landscape') {
         document,
         window,
         performance: { now: () => now },
+        Date: { now: () => 1760000000000 + now },
         setInterval(callback, milliseconds) {
             assert.equal(milliseconds, 500);
             intervals.push(callback);
@@ -126,6 +130,19 @@ function createScene(orientation = 'landscape') {
         get status() { return elements.status.textContent; },
         get loopStatus() { return elements['loop-state'].textContent; },
         get diagnostic() { return elements['media-state'].textContent; },
+        enter() { return elements.enter.onclick(); },
+        get epochMs() { return 1760000000000 + now; },
+        get clock() {
+            const label = elements['media-clock'].textContent;
+            assert.ok(label.startsWith('Aster media clock '));
+            return JSON.parse(label.slice('Aster media clock '.length));
+        },
+        get rotationStatus() { return elements['rotation-state'].textContent; },
+        get rotation() {
+            const label = elements['rotation-observation'].textContent;
+            assert.ok(label.startsWith('Aster rotation observation '));
+            return JSON.parse(label.slice('Aster rotation observation '.length));
+        },
         tick(milliseconds = 500) {
             now += milliseconds;
             intervals[0]();
@@ -140,8 +157,11 @@ function createScene(orientation = 'landscape') {
             }
             video.emit('timeupdate');
         },
-        rotate(nextOrientation) {
+        setOrientation(nextOrientation) {
             dimensions = nextOrientation === 'landscape' ? [932, 430] : [430, 932];
+        },
+        rotate(nextOrientation) {
+            scene.setOrientation(nextOrientation);
             window.emit('resize');
         },
         exit() {
@@ -188,6 +208,7 @@ test('reporting and lifecycle observations never start, stop, seek, or enter ful
     scene.document.emit('visibilitychange');
     scene.exit();
     scene.tick();
+    assert.equal(scene.clock.playRequestedEpochMs, null);
     assert.deepEqual(scene.actions, []);
 });
 
@@ -274,6 +295,7 @@ test('natural end/start loops remain observable when the media emits seeking eve
         scene.media.seeking = false;
         scene.video.emit('seeked');
         scene.sample(0.5);
+        assert.equal(scene.clock.totalNaturalWraps, completed);
         if (completed < 2) expectPending(scene);
     }
     assert.equal(scene.loopStatus, 'Fullscreen loop playback verified in landscape');
@@ -313,4 +335,165 @@ test('subsequent timer, media, resize, and visibility reports preserve Fullscree
     assert.equal(scene.status, 'Fullscreen exited');
     expectPending(scene);
     assert.match(scene.diagnostic, /fullscreen=false/);
+});
+
+test('the clock publishes a complete current sample with epoch freshness and observed playing state', () => {
+    const scene = createScene('portrait');
+    assert.deepEqual(scene.clock, {
+        t: 0, duration: 6, rate: 1, playing: false, epochMs: scene.epochMs,
+        playRequestedEpochMs: null, totalNaturalWraps: 0, orientation: 'portrait',
+    });
+    scene.media.playbackRate = 1.25;
+    scene.sample(1.125);
+    const playingSample = scene.clock;
+    assert.equal(playingSample.t, 1.125);
+    assert.equal(playingSample.rate, 1.25);
+    assert.equal(playingSample.playing, true);
+    assert.equal(playingSample.epochMs, scene.epochMs);
+    scene.tick(1500);
+    assert.equal(scene.clock.t, 1.125);
+    assert.equal(scene.clock.epochMs - playingSample.epochMs, 1500);
+    assert.equal(scene.clock.playing, false);
+    assert.equal(playingSample.playing, true, 'Previously read samples remain immutable snapshots');
+    assert.deepEqual(scene.actions, []);
+});
+
+test('global wrap tracking observes a boundary during resize and survives orientation changes', () => {
+    const scene = createScene('portrait');
+    scene.sample(5.8);
+    scene.media.currentTime = 0.2;
+    scene.rotate('landscape');
+    assert.equal(scene.clock.totalNaturalWraps, 1);
+    expectPending(scene);
+    for (const type of ['playing', 'timeupdate', 'seeked']) scene.video.emit(type);
+    scene.window.emit('resize');
+    assert.equal(scene.clock.totalNaturalWraps, 1, 'Repeated observations do not invent extra wraps');
+    scene.sample(0.5);
+    scene.rotate('portrait');
+    assert.equal(scene.clock.totalNaturalWraps, 1);
+    completeLoop(scene);
+    scene.rotate('landscape');
+    assert.equal(scene.clock.totalNaturalWraps, 2);
+    expectPending(scene);
+});
+
+test('the actual first landscape resize must reach the final 0.75 seconds of the first loop', () => {
+    for (const [time, nearBoundary] of [[5.249, false], [5.25, true], [5.9, true]]) {
+        const scene = createScene('portrait');
+        scene.sample(time);
+        scene.rotate('landscape');
+        assert.equal(scene.rotation.t, time);
+        assert.equal(scene.rotation.duration, 6);
+        assert.equal(scene.rotation.epochMs, scene.epochMs);
+        assert.equal(scene.rotation.frames, 1);
+        assert.equal(scene.rotation.stage, '932x430');
+        assert.equal(scene.rotation.orientation, 'landscape');
+        assert.equal(scene.rotation.totalNaturalWraps, 0);
+        assert.equal(scene.rotation.nearBoundary, nearBoundary);
+        assert.equal(scene.rotationStatus, nearBoundary
+            ? 'Fullscreen first-loop boundary rotation observed'
+            : 'Fullscreen rotation missed first-loop boundary');
+        assert.deepEqual(scene.actions, []);
+    }
+});
+
+test('the first wrap qualifies only through the first 0.5 seconds after the boundary', () => {
+    for (const [time, nearBoundary] of [[0, true], [0.5, true], [0.501, false]]) {
+        const scene = createScene('portrait');
+        scene.sample(5.8);
+        scene.media.currentTime = time;
+        scene.rotate('landscape');
+        assert.equal(scene.rotation.t, time);
+        assert.equal(scene.rotation.totalNaturalWraps, 1);
+        assert.equal(scene.rotation.nearBoundary, nearBoundary);
+    }
+});
+
+test('the first resize miss and its raw evidence cannot be overwritten by a later qualifying resize', () => {
+    const scene = createScene('portrait');
+    scene.sample(4.075);
+    scene.rotate('landscape');
+    const firstResize = scene.rotation;
+    assert.equal(firstResize.nearBoundary, false);
+    scene.sample(5.8);
+    scene.window.emit('resize');
+    scene.rotate('portrait');
+    scene.rotate('landscape');
+    assert.deepEqual(scene.rotation, firstResize);
+    assert.equal(scene.rotationStatus, 'Fullscreen rotation missed first-loop boundary');
+    assert.equal(scene.clock.t, 5.8, 'The live clock continues after resize evidence is latched');
+});
+
+test('rotation near a later loop cannot satisfy the first-loop boundary claim', () => {
+    const scene = createScene('portrait');
+    completeLoop(scene);
+    completeLoop(scene);
+    scene.sample(5.8);
+    scene.rotate('landscape');
+    assert.equal(scene.rotation.totalNaturalWraps, 2);
+    assert.equal(scene.rotation.nearBoundary, false);
+    assert.equal(scene.rotationStatus, 'Fullscreen rotation missed first-loop boundary');
+});
+
+test('rotation evidence requires an earlier fullscreen portrait observation and current fullscreen', () => {
+    const scene = createScene();
+    scene.sample(5.8);
+    scene.window.emit('resize');
+    assert.equal(scene.rotation, null);
+    scene.rotate('portrait');
+    scene.exit();
+    scene.rotate('landscape');
+    assert.equal(scene.rotation, null);
+});
+
+test('timeupdate geometry observations cannot replace evidence of an actual window resize', () => {
+    const scene = createScene('portrait');
+    scene.sample(5.8);
+    scene.setOrientation('landscape');
+    scene.video.emit('timeupdate');
+    assert.equal(scene.rotation, null);
+    scene.window.emit('resize');
+    assert.equal(scene.rotation.nearBoundary, true);
+    assert.equal(scene.rotation.t, 5.8);
+    assert.equal(scene.rotationStatus, 'Fullscreen first-loop boundary rotation observed');
+});
+
+test('only the explicit Enter gesture sets the play anchor, once and before requesting playback', async () => {
+    const scene = createScene('portrait');
+    const stage = scene.document.fullscreenElement;
+    const guardedPlay = scene.video.play;
+    const guardedRequestFullscreen = stage.requestFullscreen;
+    const calls = [];
+    const anchorsAtPlay = [];
+    scene.video.play = () => {
+        calls.push('explicit play');
+        scene.video.emit('play');
+        anchorsAtPlay.push(scene.clock.playRequestedEpochMs);
+        return Promise.resolve();
+    };
+    stage.requestFullscreen = () => {
+        calls.push('explicit requestFullscreen');
+        return Promise.resolve();
+    };
+    const firstTapAt = scene.epochMs;
+    await scene.enter();
+    assert.equal(anchorsAtPlay[0], firstTapAt, 'The anchor exists when the user-requested play begins');
+    scene.sample(0.5);
+    scene.video.emit('playing');
+    completeLoop(scene);
+    scene.rotate('landscape');
+    scene.tick(1500);
+    assert.equal(scene.clock.playRequestedEpochMs, firstTapAt);
+    assert.equal(scene.rotation.playRequestedEpochMs, firstTapAt);
+    await scene.enter();
+    assert.deepEqual(anchorsAtPlay, [firstTapAt, firstTapAt]);
+    assert.deepEqual(calls, ['explicit play', 'explicit requestFullscreen',
+        'explicit play', 'explicit requestFullscreen']);
+    scene.video.play = guardedPlay;
+    stage.requestFullscreen = guardedRequestFullscreen;
+    scene.video.emit('playing');
+    scene.window.emit('resize');
+    scene.tick();
+    assert.equal(scene.clock.playRequestedEpochMs, firstTapAt);
+    assert.deepEqual(scene.actions, []);
 });

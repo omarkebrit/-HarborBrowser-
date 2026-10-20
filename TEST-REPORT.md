@@ -1,37 +1,45 @@
 # Aster validation report
 
-Validation is in progress as of 20 October 2026. The repository is public. [Run 17](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`, completed with an official preflight summary of three passes, one failure and zero skips. Popup playback, restrictive autoplay and 25-tab creation/restoration passed; fullscreen video froze after rotation at its first loop boundary. The remaining native stages were gated. No completed full-validation result or production iPhone IPA is available yet.
+Validation is in progress as of 20 October 2026. [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, has an official preflight result of four passes, zero failures, zero skips and zero expected failures. It includes fresh decoded frames through two landscape end/start transitions and 25-tab creation/restoration. Simulator build/signing verification passed, but the full unit stage failed; diagnosis awaits final logs. The 15-case main UI selection is running, and download/device-package results remain pending. No production IPA or full-validation pass is available yet.
 
-The next candidate adds read-only playback/ownership diagnostics and requires fresh decoded frames through two landscape loops. Native [run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, is launched for source `7788245534fc23c00a93fb8375c83ebce8703a1e`; its results remain unverified, and these changes do not establish a fix. CI now runs the full unit plan first and independently executes the preflight, main UI, download and device-build/package-audit stages even if another stage fails. IPA publication still requires all required checks to pass.
+Production playback behavior was unchanged by this candidate's read-only media diagnostics. This passing checkpoint does not establish the cause or a fix for run 17's fullscreen stall. CI runs units first and independently collects later stages despite an earlier failure; IPA publication still requires every required check to pass.
 
 ## Completed evidence and current requirements
 
-| Area | Latest completed evidence | Current requirement |
+| Area | Latest evidence | Current requirement |
 | --- | --- | --- |
-| Four media/session preflight cases | Run 17: official 3 passed, 1 failed, 0 skipped; fullscreen video stalled after rotation | All four must pass, including the stronger decoded-frame/two-loop assertion |
-| Full upstream `UnitTest` plan | Run 15 failed `SearchTests.testSuggestClient` at its first 10-second expectation; no aggregate official count is claimed. Earlier [run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, passed | Async fixture fix and full plan require native verification; runs 16 and 17 did not reach units |
-| Main local acceptance and selected upstream UI tests | Run 38083870485: 14 passed, 1 failed at the fullscreen post-rotation toolbar assertion | All 15 selected cases must pass for the candidate source |
+| Four media/session preflight cases | Run 18: official 4 passed, 0 failed, 0 skipped, 0 expected failures; stronger two-loop decoded-frame assertion and 25-tab restoration passed | Preserve this four-case checkpoint; the prepared next candidate requires all five cases, including boundary-timed rotation |
+| Full upstream `UnitTest` plan | Run 18's unit stage failed; diagnosis and individual test results await final logs. Earlier [run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, passed | Diagnose and resolve the failure; full plan must pass for delivery |
+| Main local acceptance and selected upstream UI tests | Run 18's 15-case selection is running. Run 38083870485 passed 14/15, failing the fullscreen post-rotation toolbar assertion | The prepared next candidate requires all 16 selected cases; run 18 retains its original 15-case selection |
 | Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
 | Unsigned iPhone release build and actual IPA audit | No device IPA produced or audited | Device compilation, package integrity and all publication gates must pass |
 | Signed installation and physical-device validation | Not performed | Requires Apple signing and physical iPhone testing |
 
 The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
 
-## Verified preflight checkpoint
+## Verified preflight checkpoints
 
-[Run 15](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825)'s official `AsterRegressionTests-summary.json` records `result: Passed`, four passes, zero failures and zero skips. Its recorded source matches `aab3dc3ac23bf2e58c1334920fe70528e9dad527`. The environment is Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator. The checkpoint includes popup playback, restrictive autoplay, fullscreen exit with real menu/Settings interaction, and completed 25-tab creation/restoration.
+Run 18's saved `AsterRegressionTests-summary.json` records `result: Passed`, four passes, zero failures, zero skips and zero expected failures. Its recorded source matches `7788245534fc23c00a93fb8375c83ebce8703a1e`. The [preserved run 18 checkpoint](docs/aster-screenshots/regression-run18/README.md) contains two original captures, the official summary and exact source/hash provenance. The environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on the iPhone 15 Pro Max simulator.
 
-The preceding run 38386794212 failed while requesting tab 4 because a tabs context menu appeared where the test expected the tray. The gesture-recognition cause remains unknown. Run 15's passing creation case used the regular tray throughout, so it does not establish why that earlier menu appeared or verify the alternative command branch or the helper's private-mode creation route.
+The popup, restrictive-autoplay, fullscreen and 25-tab cases passed in 79.623, 60.387, 67.117 and 613.488 seconds respectively. Fullscreen required two landscape end/start transitions and new decoded frames, followed by fullscreen exit and real native menu/Settings interaction. The tab case loaded 25 unique numbered pages with exact counts, relaunched the process and selected the first tab. All creation used the normal tray; the alternative context-menu and private-mode creation routes remain unverified by this checkpoint.
 
-Earlier run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78`, passed all four cases. Initial native build/launch took 18 minutes 6 seconds and the cases took 669.133 seconds. That attempt was manually canceled during subsequent unit compilation, leaving no full-suite or IPA result.
+[Run 15](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38393771825), source `aab3dc3ac23bf2e58c1334920fe70528e9dad527`, also passed its earlier four-case checkpoint. Earlier run 38086721963 attempt 3, source `ae128811a91010fa972eba2849635d289e9b8e78`, passed all four cases but was manually canceled during subsequent unit compilation. Those partial results remain tied to their recorded sources.
 
-## Latest fullscreen failure and diagnostic candidate
+## Fullscreen failure and subsequent passing checkpoint
 
 Run 17's popup and restrictive-autoplay cases passed in 114.987 and 74.272 seconds; the 25-tab case passed in 686.101 seconds. The fullscreen case failed after 54.709 seconds at `Missing rendered media text: Fullscreen video playing in landscape`. The official summary records three passes, one failure, zero skips and zero expected failures.
 
 The native recording shows decoded portrait frames near media time 5.167 seconds. After rotation around the six-second loop boundary, the landscape stage is correctly sized but the video remains at time 0.000/frame 0 for about 15 seconds. The old page status retains its previous portrait-playing text; the failure is supported by frozen video frames and the native media time, rather than that stale label alone. The cause remains unconfirmed. The MP4 decodes cleanly across repeated loops with FFmpeg, and local byte-range checks have not identified a fixture-server defect. The [preserved run 17 failure evidence](docs/aster-screenshots/regression-run17/README.md) includes both original captures, the native hierarchy, official summary and exact source/hash provenance.
 
-The candidate records media time, paused/ended flags, readiness/network state, errors, decoded frames and recent media events. DEBUG-only native probes record WebView fullscreen transitions, ownership, geometry and public playback state. These observations do not start, pause, seek or resume media. The acceptance case also requires two landscape loops with newly decoded frames before exiting fullscreen and interacting with the native menu and Settings. Native compilation and execution results for this candidate remain unverified.
+Run 18's JavaScript records media time, paused/ended flags, readiness/network state, errors, decoded frames and recent media events. Its screenshots and decoded-frame evidence are valid. The native Client probes were compiled out: Fennec's Debug Swift flags include `MOCKABLE_STORE` and `MOZ_CHANNEL_developer`, but omit Swift `DEBUG`. No `AsterFullscreenProbe` lines appear in its file logs. The prepared guard change to `#if DEBUG || MOZ_CHANNEL_developer` in `WebviewViewController.swift` enables those read-only probes for a future developer build while leaving the release channel excluded; native runtime verification of that guard change remains pending.
+
+Run 18 passed the stronger two-loop fullscreen case, including exit and native menu/Settings interaction. Its recorded rotation resize occurred at media time 4.075 seconds in the six-second clip. Two healthy landscape end/start transitions therefore do not exercise run 17's combined rotation/first-loop-boundary timing. A separate explicit boundary-timing test is now prepared locally for the next candidate; it has not run natively. Playback code was unchanged; the stall's cause remains unconfirmed, and this pass does not establish a fix.
+
+## Prepared next candidate
+
+The next candidate has not been launched. It adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
+
+The next strict selection requires five preflight cases, 16 main UI cases and one isolated download case, all without skips or failures, plus the full unit plan, download-byte verification and device-package audit. That is 22 UI test executions covering 17 unique cases. These future requirements do not change run 18's recorded four-case preflight or 15-case main selection.
 
 ## Verified document-readiness change
 
@@ -41,13 +49,13 @@ Run 17 gave only the 25-tab stress case a 30-second document-existence budget an
 
 ## Current unit-fixture fix
 
-Run 15's job log records `SearchTests.testSuggestClient` timing out while waiting for its first local suggestion response. The server served successful responses after that deadline; server deallocation is not established as the cause. The fix introduced in run 16 and retained in run 17 makes this main-actor test async so it yields while the production URL session delivers callbacks on the main queue. It retains the server through both queries and stops it afterward. Both 10-second deadlines, real localhost requests, six exact suggestion assertions and error checks are unchanged. No production browser code changed. Runtime verification remains pending because runs 16 and 17's preflight failures gated unit execution.
+Run 15's job log records `SearchTests.testSuggestClient` timing out while waiting for its first local suggestion response. The server served successful responses after that deadline; server deallocation is not established as the cause. The fix introduced in run 16 and retained in run 17 makes this main-actor test async so it yields while the production URL session delivers callbacks on the main queue. It retains the server through both queries and stops it afterward. Both 10-second deadlines, real localhost requests, six exact suggestion assertions and error checks are unchanged. No production browser code changed. Runs 16 and 17 did not reach units. Run 18 reached the unit stage and failed, but the individual result of this search test and the failure's cause remain unknown until the final logs are available.
 
-The candidate runs units first so this fix can be checked before the media preflight. Independent subsequent stages collect additional native results despite earlier failures. Official summaries are exported for every result bundle present. The actual device package is audited even when an earlier test fails; failed runs preserve audit JSON/logs, while IPA bytes are published only after all required checks pass.
+The candidate runs units first so this fixture change can be checked before the media preflight. Independent subsequent stages collect additional native results despite earlier failures. Official summaries are exported for every result bundle present. The actual device package is audited even when an earlier test fails; failed runs preserve audit JSON/logs, while IPA bytes are published only after all required checks pass.
 
 ## Evidence checkpoint
 
-Run 15's strict four-pass/zero-failure/zero-skip summary check and upload completed successfully. Its `Aster-regression-validation-evidence-attempt-1` preserves the result bundle, summary, attachments, logs and recorded source before the remaining tests. This completed checkpoint remains available despite the later unit failure; it is a partial validation result for the recorded source.
+Run 18's strict four-pass/zero-failure/zero-skip checkpoint was uploaded as artifact `12247766739` (122,240,494 bytes), despite the earlier unit-stage failure. Its result bundle, summary, attachments, logs and recorded source establish a partial preflight result only. The small permanent capture set preserves unmodified files and their SHA-256 hashes without copying the video or result bundle.
 
 Artifacts use an `attempt-N` suffix. The full native evidence is `Aster-native-validation-evidence-attempt-N`; filter evidence is `aster-ad-filters-attempt-N`. The future IPA artifact is `Aster-iPhone-UNSIGNED-needs-signing-attempt-N`, containing `Aster-UNSIGNED-needs-signing.ipa`. A checkpoint or filter artifact is not an installable app. An IPA is published only after all required native tests, download-integrity verification, device build/package and actual-package audit succeed. Artifact retention is seven days.
 
@@ -59,13 +67,13 @@ The checked-in pack is the exact snapshot tested and WebKit-compiled in run 3808
 
 Earlier local verification recorded 58 fixture-server HTTP contract checks covering HEAD, byte ranges, suffix ranges, invalid requests, missing resources and correct payloads. Fixture JavaScript syntax was checked with Node; the original six-second media fixture was confirmed as H.264 video with AAC audio, including HLS segments. Localization string syntax, opaque icon assets and primary palette text contrast were checked. New native source/resources and unit assertions were registered in the Xcode project.
 
-On 20 October, the JavaScript production build passed. The new package auditor passed 25 synthetic contract tests, and the fullscreen observer passed 11 Node contract tests against JavaScript extracted from the generated fixture. These checks cover frozen/stale decoded frames and read-only observation; they do not prove native playback or audit an actual device IPA.
+On 20 October, the JavaScript production build passed. The new package auditor passed 25 synthetic contract tests, and the fullscreen observer passed 20 Node contract tests against JavaScript extracted from the generated fixture. These checks cover frozen/stale decoded frames and read-only observation; they do not prove native playback or audit an actual device IPA.
 
 Local checks complement native execution. They do not replace the unexecuted download test, iPhone release compilation, signed installation or physical-device testing.
 
 ## Checks still required
 
-- Run the diagnostic candidate and resolve the fullscreen stall using native evidence. Complete all four preflight cases, the full upstream unit plan, all 15 main UI cases, dedicated download and exact file-byte verification for the candidate source.
+- Diagnose and resolve run 18's unit-stage failure from final logs. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the next delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
 - Complete the iPhone release build and packaging; audit the actual IPA and record its hash, source/build identity, device platform, extensions, privacy/offline resources and exact filter provenance.
 - Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
 - Test the signed application on a physical iPhone 15 Pro Max.
