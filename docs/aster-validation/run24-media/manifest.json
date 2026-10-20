@@ -1,0 +1,208 @@
+{
+  "runID": 39414241881,
+  "runNumber": 24,
+  "runAttempt": 1,
+  "jobID": 118599258724,
+  "sourceCommit": "e0f89e5f8ce34e6faa230dac404b5a1434712486",
+  "artifactID": 12263368897,
+  "artifactName": "Aster-media-DIAGNOSTIC-compact-attempt-1",
+  "artifactBytes": 3874303,
+  "artifactSHA256": "9b6a283f87d17ea87acc766472c43fd90dac86e241b4e90b734ca9a8e98979f9",
+  "archiveVerification": {
+    "zipCRC": "Passed",
+    "zipEntryCount": 36,
+    "compactManifestFileCount": 35,
+    "compactManifestTotalBytes": 16436290,
+    "allCompactManifestSizesAndSHA256Matched": true
+  },
+  "rawArtifact": {
+    "artifactID": 12263633596,
+    "artifactName": "Aster-media-DIAGNOSTIC-attempt-1",
+    "artifactBytes": 183840872,
+    "downloaded": false
+  },
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "architecture": "arm64",
+  "xcode": "26.5 (17F42)",
+  "scope": "Isolated two-case media/session diagnostic only. No full unit-plan, complete browser validation, IPA, signed-installation or physical-device result. Full run 26 remains separate.",
+  "filesUnmodified": true,
+  "filesUnmodifiedScope": "files contains sixteen complete, byte-identical original artifact files. No derived excerpts, modified screenshots, full logs, videos or XCResults are copied.",
+  "officialSummary": {
+    "result": "Passed",
+    "passedTests": 2,
+    "failedTests": 0,
+    "skippedTests": 0,
+    "expectedFailures": 0,
+    "totalTestCount": 2
+  },
+  "cases": [
+    {
+      "identifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "result": "Passed",
+      "durationSeconds": 147.313
+    },
+    {
+      "identifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "result": "Passed",
+      "durationSeconds": 754.799
+    }
+  ],
+  "boundaryObservation": {
+    "firstBoundaryEpochMs": 1792497534638.3474,
+    "rotationRequestedEpochMs": 1792497533912.724,
+    "actualResizeEpochMs": 1792497535015,
+    "actualResizeOffsetSeconds": 0.37665271759033203,
+    "requiredActualResizeOffsetSeconds": [
+      -0.75,
+      0.5
+    ],
+    "observationSource": "ResizeObserver",
+    "framesAtFirstResize": 53,
+    "framesInFirstLandscapeCapture": 108,
+    "framesAfterTwoAdditionalLandscapeLoops": 183,
+    "totalNaturalWrapsAfterTwoAdditionalLandscapeLoops": 3
+  },
+  "files": [
+    {
+      "file": "AsterMediaDiagnostics-summary.json",
+      "artifactPath": "AsterMediaDiagnostics-summary.json",
+      "bytes": 991,
+      "sha256": "3c2aee4add47e6e95829559ce213a07dfade02a0543a6e80f8c6b4aa337d57c0"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "81e0d74196a15572cce95e31d6ee03d1d25604246bb6d642ed4a82d23a62315d"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    },
+    {
+      "file": "diagnostic-scope.txt",
+      "artifactPath": "diagnostic-scope.txt",
+      "bytes": 146,
+      "sha256": "b0cfb36b7bb8db7d5c24a21c1832999557465d7b6f1fbe3c7e5597cd44b4b4d9"
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/manifest.json",
+      "artifactPath": "AsterMediaDiagnostics-attachments/manifest.json",
+      "bytes": 7007,
+      "sha256": "04206ef95c9ee487f377eef1df60d617865fd0cd61783af4dac98e84c1f2a90e"
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/1ED6E835-68BC-4BC9-8967-20E4C52BC327.txt",
+      "artifactPath": "AsterMediaDiagnostics-attachments/1ED6E835-68BC-4BC9-8967-20E4C52BC327.txt",
+      "bytes": 366,
+      "sha256": "27cae2586c343b1b5a8b6988d877b7577433919a16c48beb98ab40b3e002698a",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "First-loop media clock and native rotation schedule_0_1A5433C5-AB61-43DE-AC89-C2D5943EEFF6.txt",
+      "attachmentTimestamp": 1792497534.91,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/CE048F6D-4617-4384-8A79-6BCA29C3BAF0.txt",
+      "artifactPath": "AsterMediaDiagnostics-attachments/CE048F6D-4617-4384-8A79-6BCA29C3BAF0.txt",
+      "bytes": 343,
+      "sha256": "3c3771bab98361e4c998666717fae49d13c533d8d1d3b3714181acdb79111c04",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Actual landscape resize offset from the predicted first loop boundary_0_3757FEEB-C64A-4B53-AC7F-8B03B53E660A.txt",
+      "attachmentTimestamp": 1792497538.258,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/919FB1C4-D611-4B4B-9F11-0818E81BBAEA.txt",
+      "artifactPath": "AsterMediaDiagnostics-attachments/919FB1C4-D611-4B4B-9F11-0818E81BBAEA.txt",
+      "bytes": 39,
+      "sha256": "7f558e427e66f4270f0235667e5621eefb5d436e2a6c83b6422c4b053e7de66a",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Portrait fullscreen and media clock from one native snapshot_0_98A6AA20-64AF-4552-BCA8-1FCE87EC223C.txt",
+      "attachmentTimestamp": 1792497534.708,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/2DF24D21-B59B-4441-ABB1-AE4C7F2466B8.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/2DF24D21-B59B-4441-ABB1-AE4C7F2466B8.png",
+      "bytes": 609863,
+      "sha256": "31e18fb60bf4740bd036388d14dcc2a661b09a64dbf0bcc84491d7d01c2430e2",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Actual first-loop boundary landscape fullscreen video_0_8D313442-9E10-48D5-A594-96973DC46763.png",
+      "attachmentTimestamp": 1792497541.321,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/913F7DED-E740-4A3A-AB42-9C641AB06637.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/913F7DED-E740-4A3A-AB42-9C641AB06637.png",
+      "bytes": 607589,
+      "sha256": "5872ce686489297b31ce87eb4bf01859cbea7ab370ce96a7e4af78097f9d7461",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Decoded fullscreen frames continue after two boundary-targeted landscape loops_0_C9E53A3C-E8C6-4CD7-8BD0-3085C3034322.png",
+      "attachmentTimestamp": 1792497550.089,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/21AE2A43-6F1F-4E93-95D6-861A0A7E0912.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/21AE2A43-6F1F-4E93-95D6-861A0A7E0912.png",
+      "bytes": 574228,
+      "sha256": "0a1021722584f2e0ed7cd14ed706a12bb82753c52a418a793523f031b6067911",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Boundary rotation exit restores browser controls_0_FC8528CB-84B4-498C-98B3-C6C82FDAD27B.png",
+      "attachmentTimestamp": 1792497560.176,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/B630B04F-64E1-47C9-BD74-7B7129C3BD6F.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/B630B04F-64E1-47C9-BD74-7B7129C3BD6F.png",
+      "bytes": 609007,
+      "sha256": "38aae3637b04bc41eeb9769583d79be7503f941b65faf392a2e3912d3b8f036e",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Recovered native browser menu accepts interaction after boundary rotation_0_0DF41014-9AD2-4901-891F-D8FA6FED00A6.png",
+      "attachmentTimestamp": 1792497564.962,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/1EA7FB07-D847-463D-870E-F162E3D2828D.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/1EA7FB07-D847-463D-870E-F162E3D2828D.png",
+      "bytes": 189961,
+      "sha256": "df2cc2a40f782772fb4d8b3ac2f83b0461d3eeb1cea6f2593925495d7a7c2979",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Twenty five loaded tabs_0_945544F1-DD06-49D8-83E2-9851D244C080.png",
+      "attachmentTimestamp": 1792498217.482,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/662B34D3-AB3D-4B51-851D-1F3A8B0E92F6.png",
+      "artifactPath": "AsterMediaDiagnostics-attachments/662B34D3-AB3D-4B51-851D-1F3A8B0E92F6.png",
+      "bytes": 183977,
+      "sha256": "67f83a87d95f4b77e7bb470ab5b46b44188f3a3e0ca3a39cfd9e18e2feb7b753",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Restored first tab_0_A7DB960D-C07B-4739-BC1E-A9426CA6A007.png",
+      "attachmentTimestamp": 1792498331.408,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/F5B08F02-EA78-44D1-9AE0-B9296C94D6A6.txt",
+      "artifactPath": "AsterMediaDiagnostics-attachments/F5B08F02-EA78-44D1-9AE0-B9296C94D6A6.txt",
+      "bytes": 8879,
+      "sha256": "c7e7603f2ba55ac68f18f1c9517c92bee90d9a46bed11f6d6c88fecfddf5345c",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Native accessibility hierarchy_0_A363DFD7-1682-456D-AB12-63E3E8200FDB.txt",
+      "attachmentTimestamp": 1792497576.677,
+      "isAssociatedWithFailure": false
+    },
+    {
+      "file": "AsterMediaDiagnostics-attachments/A4CD4243-D937-4C69-916D-0B86CB2F179D.txt",
+      "artifactPath": "AsterMediaDiagnostics-attachments/A4CD4243-D937-4C69-916D-0B86CB2F179D.txt",
+      "bytes": 7409,
+      "sha256": "8e92947b2162d955e35a92fa2a67f03dff6448d3f5237cd416f93c7986582437",
+      "testIdentifier": "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+      "attachmentName": "Native accessibility hierarchy_0_B9404570-4C5A-49E0-B598-E4191951D733.txt",
+      "attachmentTimestamp": 1792498332.309,
+      "isAssociatedWithFailure": false
+    }
+  ]
+}
