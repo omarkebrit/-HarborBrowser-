@@ -56,11 +56,13 @@ public final class DefaultCrashManager: CrashManager, @unchecked Sendable {
                 && isValidReleaseName
     }
 
-    private var isValidReleaseName: Bool {
-        if skipReleaseNameCheck { return true }
-
+    public static var supportsCrashReporting: Bool {
         return AppInfo.bundleIdentifier == "org.mozilla.ios.Firefox"
                 || AppInfo.bundleIdentifier == "org.mozilla.ios.FirefoxBeta"
+    }
+
+    private var isValidReleaseName: Bool {
+        return skipReleaseNameCheck || Self.supportsCrashReporting
     }
 
     private var environment: Environment {

@@ -471,8 +471,7 @@ class AppSettingsTableViewController: SettingsTableViewController,
         guard let sendTechnicalDataSetting,
               let sendDailyUsagePingSetting,
               let studiesToggleSetting,
-              let rolloutsToggleSetting,
-              let sendCrashReportsSetting else {
+              let rolloutsToggleSetting else {
             return []
         }
 
@@ -480,9 +479,12 @@ class AppSettingsTableViewController: SettingsTableViewController,
             sendTechnicalDataSetting,
             studiesToggleSetting,
             rolloutsToggleSetting,
-            sendDailyUsagePingSetting,
-            sendCrashReportsSetting
+            sendDailyUsagePingSetting
         ])
+
+        if DefaultCrashManager.supportsCrashReporting, let sendCrashReportsSetting {
+            supportSettings.append(sendCrashReportsSetting)
+        }
 
         supportSettings.append(contentsOf: [
             OpenSupportPageSetting(delegate: settingsDelegate,
