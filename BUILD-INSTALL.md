@@ -2,10 +2,12 @@
 
 ## GitHub build
 
-The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 38410673448](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), run number 17, attempt 1, is launched for source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`. Run 16 recorded three preflight passes and one tab-7 document-existence failure before visibility checks. The current candidate changes only the 25-tab case's document-readiness budget to 30 seconds, retaining its visibility and restoration checks. Its preflight, full unit plan, 15 main UI cases, download/integrity check and device build remain unverified; the async search fixture also awaits runtime validation. No production IPA is available yet.
+The repository is public. Aster's source is on [`feat/aster-browser`](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser); the earlier Harbor branches and history are also public. [Run 17](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38410673448), source `6d8eec264d4eaafea4eaed6bd2ff919e0005f7f8`, finished with three preflight passes and one fullscreen-video failure. The 25-tab restoration case passed; the video froze after rotation at its first loop boundary. No production IPA is available yet.
 
-1. Open the current run and monitor its native job. The 180-minute job budget accommodates native compilation and the required test stages. In an earlier attempt, initial native build/launch took about 18 minutes before the four test cases began; the cases then took about 11 minutes.
-2. Wait for all required checks and the device build to pass in the current run. Run 15's **Aster-regression-validation-evidence-attempt-1** is saved after its strict four-pass preflight check; it is partial proof for that older source. Select the current successful run's artifacts for delivery.
+Native [run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, is launched for source `7788245534fc23c00a93fb8375c83ebce8703a1e`; its results remain unverified. Its workflow runs the full unit plan first, then independently collects the four preflight cases, 15 main UI cases, dedicated download/integrity check and device build/package audit. A failure remains a failure and prevents IPA publication. Read-only diagnostics and a two-landscape-loop decoded-frame assertion investigate the video stall; no runtime fix has been verified.
+
+1. Open [Aster's workflow runs](https://github.com/omarkebrit/-HarborBrowser-/actions/workflows/aster-ios.yml) and select the newest run for `feat/aster-browser`. The native job has a 180-minute budget.
+2. Wait for all required checks, device build and actual-package audit to pass for that source. Older screenshots and partial evidence do not establish delivery readiness.
 3. After the full run succeeds, sign in to GitHub and download **Aster-iPhone-UNSIGNED-needs-signing-attempt-1** from **Artifacts**.
 4. Extract `Aster-UNSIGNED-needs-signing.ipa` from the ZIP in the iPhone Files app.
 
