@@ -1,6 +1,6 @@
 # Aster validation report
 
-Validation is in progress as of 20 October 2026. [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, has an official preflight result of four passes, zero failures, zero skips and zero expected failures. It includes fresh decoded frames through two landscape end/start transitions and 25-tab creation/restoration. Simulator build/signing verification passed, but the full unit stage failed; diagnosis awaits final logs. The 15-case main UI selection is running, and download/device-package results remain pending. No production IPA or full-validation pass is available yet.
+Validation is in progress as of 20 October 2026. [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, has an official preflight result of four passes, zero failures, zero skips and zero expected failures. It includes fresh decoded frames through two landscape end/start transitions and 25-tab creation/restoration. Simulator build/signing verification passed, but the full unit stage failed; diagnosis awaits final logs. The 15-case main UI stage also failed; its failing cases and official count are not yet available. The isolated native download and exact 95-byte integrity check passed. Device build/audit results remain pending. No production IPA or full-validation pass is available yet.
 
 Production playback behavior was unchanged by this candidate's read-only media diagnostics. This passing checkpoint does not establish the cause or a fix for run 17's fullscreen stall. CI runs units first and independently collects later stages despite an earlier failure; IPA publication still requires every required check to pass.
 
@@ -10,12 +10,16 @@ Production playback behavior was unchanged by this candidate's read-only media d
 | --- | --- | --- |
 | Four media/session preflight cases | Run 18: official 4 passed, 0 failed, 0 skipped, 0 expected failures; stronger two-loop decoded-frame assertion and 25-tab restoration passed | Preserve this four-case checkpoint; the prepared next candidate requires all five cases, including boundary-timed rotation |
 | Full upstream `UnitTest` plan | Run 18's unit stage failed; diagnosis and individual test results await final logs. Earlier [run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, passed | Diagnose and resolve the failure; full plan must pass for delivery |
-| Main local acceptance and selected upstream UI tests | Run 18's 15-case selection is running. Run 38083870485 passed 14/15, failing the fullscreen post-rotation toolbar assertion | The prepared next candidate requires all 16 selected cases; run 18 retains its original 15-case selection |
-| Native download and exact file-byte verification | No completed native download/integrity result | Dedicated download case and byte verification pending |
+| Main local acceptance and selected upstream UI tests | Run 18's main stage failed; failing cases and official count await final evidence. Run 38083870485 passed 14/15, failing the fullscreen post-rotation toolbar assertion | The prepared next candidate requires all 16 selected cases; run 18 retains its original 15-case selection |
+| Native download and exact file-byte verification | Run 18 passed the isolated native case and exact 95-byte SHA-256 check | Passed for run 18; remains required for the next delivery candidate |
 | Unsigned iPhone release build and actual IPA audit | No device IPA produced or audited | Device compilation, package integrity and all publication gates must pass |
 | Signed installation and physical-device validation | Not performed | Requires Apple signing and physical iPhone testing |
 
 The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
+
+## Verified native download
+
+Run 18 passed its isolated native download case and the subsequent app-container byte check. `aster-payload.txt` contains exactly 95 bytes with SHA-256 `fa7f6baddf7671ff0f6f7aa8c03fe987c556a4bc590406da2e8d9542bfdb3dbc`. This establishes the fixture download for the recorded source; it does not override the failed unit/main UI stages or complete the pending device-package audit.
 
 ## Verified preflight checkpoints
 
@@ -37,7 +41,7 @@ Run 18 passed the stronger two-loop fullscreen case, including exit and native m
 
 ## Prepared next candidate
 
-The next candidate has not been launched. It adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
+The prepared HEAD candidate, with five preflight/16 main/one download selections, has not been launched or natively verified. It adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
 
 The next strict selection requires five preflight cases, 16 main UI cases and one isolated download case, all without skips or failures, plus the full unit plan, download-byte verification and device-package audit. That is 22 UI test executions covering 17 unique cases. These future requirements do not change run 18's recorded four-case preflight or 15-case main selection.
 
@@ -69,11 +73,11 @@ Earlier local verification recorded 58 fixture-server HTTP contract checks cover
 
 On 20 October, the JavaScript production build passed. The new package auditor passed 25 synthetic contract tests, and the fullscreen observer passed 20 Node contract tests against JavaScript extracted from the generated fixture. These checks cover frozen/stale decoded frames and read-only observation; they do not prove native playback or audit an actual device IPA.
 
-Local checks complement native execution. They do not replace the unexecuted download test, iPhone release compilation, signed installation or physical-device testing.
+These local checks complement native execution. Run 18's download is now verified, while iPhone release compilation/package audit, signed installation and physical-device testing remain pending.
 
 ## Checks still required
 
-- Diagnose and resolve run 18's unit-stage failure from final logs. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the next delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
+- Diagnose and resolve run 18's unit and main UI failures from final logs. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the next delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
 - Complete the iPhone release build and packaging; audit the actual IPA and record its hash, source/build identity, device platform, extensions, privacy/offline resources and exact filter provenance.
 - Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
 - Test the signed application on a physical iPhone 15 Pro Max.
