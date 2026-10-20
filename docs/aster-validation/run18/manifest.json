@@ -1,0 +1,154 @@
+{
+  "nativeRunID": 39379658275,
+  "nativeRunNumber": 18,
+  "nativeRunAttempt": 1,
+  "nativeJobID": 118485608884,
+  "nativeSourceCommit": "7788245534fc23c00a93fb8375c83ebce8703a1e",
+  "nativeRunConclusion": "failure",
+  "originalArtifactID": 12251425178,
+  "recoveryRunID": 39394322518,
+  "recoveryRunNumber": 19,
+  "recoveryRunAttempt": 1,
+  "recoveryJobID": 118533163859,
+  "recoveryArtifactID": 12251460795,
+  "recoverySourceCommit": "7613a000119a4877578a7df070d827e27c8fb954",
+  "recoveryScope": "Extraction of original run18 evidence only; native job skipped and no new native test/build evidence produced.",
+  "filesUnmodified": true,
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "officialSummaries": {
+    "AsterUnitTests-summary.json": {
+      "result": "Failed",
+      "passedTests": 5745,
+      "failedTests": 2,
+      "skippedTests": 2,
+      "expectedFailures": 0,
+      "totalTestCount": 5749
+    },
+    "AsterRegressionTests-summary.json": {
+      "result": "Passed",
+      "passedTests": 4,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 4
+    },
+    "AsterAcceptanceTests-summary.json": {
+      "result": "Failed",
+      "passedTests": 14,
+      "failedTests": 1,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 15
+    },
+    "AsterDownloadTests-summary.json": {
+      "result": "Passed",
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 1
+    }
+  },
+  "unsignedDevicePackage": {
+    "result": "Passed",
+    "ipaBytes": 207494746,
+    "ipaSHA256": "e1a064a96f3027356d0be1ee0abf4911eb54438336a3f7e9eca2847d95700274"
+  },
+  "ipaPublished": false,
+  "signing": "Unsigned; no Apple signing or signed installation verified.",
+  "files": [
+    {
+      "file": "AsterUnitTests-summary.json",
+      "originalArtifactPath": "AsterUnitTests-summary.json",
+      "bytes": 3280,
+      "sha256": "86df951419a73508f58a0a9a2e925c95b68ac6aec36636ca6ca202607abe825c"
+    },
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "originalArtifactPath": "AsterRegressionTests-summary.json",
+      "bytes": 991,
+      "sha256": "fd47558ec75e36e9d88ab35021d7c2fec5aab4ee56a60239e6b342399b52b3ed"
+    },
+    {
+      "file": "AsterAcceptanceTests-summary.json",
+      "originalArtifactPath": "AsterAcceptanceTests-summary.json",
+      "bytes": 1742,
+      "sha256": "b973114e1ce7e0da23ae1b39d50db50e4535edd9bd034b63c7f462c1096a8c45"
+    },
+    {
+      "file": "AsterDownloadTests-summary.json",
+      "originalArtifactPath": "AsterDownloadTests-summary.json",
+      "bytes": 991,
+      "sha256": "6894553b774f5758842fc4c0722be5b90e7e4d6a6ffacd83fc30a366f2be2b78"
+    },
+    {
+      "file": "device-ipa-audit.json",
+      "originalArtifactPath": "device-ipa-audit.json",
+      "bytes": 6326,
+      "sha256": "38a96ad05b7be5749ec67eb615b860215fa70093a89277efd8141077c032786d"
+    },
+    {
+      "file": "download-integrity.json",
+      "originalArtifactPath": "download-integrity.json",
+      "bytes": 133,
+      "sha256": "13809d61350403dcf80e9319bd69f6d6f1ed5ee938da8302fbdac61e5140b5db"
+    },
+    {
+      "file": "source-commit.txt",
+      "originalArtifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "a1c4425d8df0719362ea489a0fdd16f25e003835dbf397fa39180669491220cd"
+    },
+    {
+      "file": "toolchain.txt",
+      "originalArtifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/F1E23B6D-0560-4B4F-99FE-374F11718523.png",
+      "originalArtifactPath": "AsterAcceptanceTests-attachments/F1E23B6D-0560-4B4F-99FE-374F11718523.png",
+      "bytes": 578236,
+      "sha256": "c0c78cf67b9d597b16bec5409d39d6bf767d7f83985fee2e382b87391c609452",
+      "exportedSuite": "AsterAcceptanceTests",
+      "exportedTestIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Final display_0_EE548BB6-A5FF-455B-8668-AA2A9EFAE114.png",
+      "attachmentTimestamp": 1792481735.021
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/A04A0037-E663-41C7-8F9E-744BE063B7F1.txt",
+      "originalArtifactPath": "AsterAcceptanceTests-attachments/A04A0037-E663-41C7-8F9E-744BE063B7F1.txt",
+      "bytes": 10724,
+      "sha256": "1b3f7e794fec338a07d6b4d387eec01098fb798a0b87a61cfd5694a546eca307",
+      "exportedSuite": "AsterAcceptanceTests",
+      "exportedTestIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "App UI hierarchy for com.omarkebrit_0_7D587815-FE25-4DE7-A36B-A2355B19F0BC.aster",
+      "attachmentTimestamp": 1792481731.467
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/FC0438AD-2F50-460B-8EA8-BB0909403D50.txt",
+      "originalArtifactPath": "AsterAcceptanceTests-attachments/FC0438AD-2F50-460B-8EA8-BB0909403D50.txt",
+      "bytes": 6883,
+      "sha256": "1fe3378c4fad4a2b8271db6674b9949c281b6bcf2bc70d24a7942b2051744c7b",
+      "exportedSuite": "AsterAcceptanceTests",
+      "exportedTestIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Native accessibility hierarchy_0_614A9A71-994F-42F8-891C-77866E62959F.txt",
+      "attachmentTimestamp": 1792481735.687
+    },
+    {
+      "file": "AsterUnitTests-attachments/EFE15380-5019-49CF-AE5F-D9EFCDE4FA35.ips",
+      "originalArtifactPath": "AsterUnitTests-attachments/EFE15380-5019-49CF-AE5F-D9EFCDE4FA35.ips",
+      "bytes": 45956,
+      "sha256": "62f7681ede815654c5355d96449577d8962654d86e879d864ea1dc64e17414f6",
+      "exportedSuite": "AsterUnitTests",
+      "exportedTestIdentifier": "WKEngineWebViewTests/testLoad_callsObservers()",
+      "attachmentName": "Crash Log 2026-10-20 at 06.46.29 AM.ips",
+      "attachmentTimestamp": 1792478789.623,
+      "actualCrashOwner": "SummarizeViewModelTests/test_summarize_withNotEnoughStartingWords()",
+      "actualCaptureTime": "2026-10-20 06:45:45.2127 +0000",
+      "ownershipNote": "Exported under WKEngineWebViewTests, but crash body and stack identify the earlier Summarize callback. This is not evidence that WKEngineWebViewTests crashed."
+    }
+  ]
+}

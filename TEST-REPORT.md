@@ -1,25 +1,37 @@
 # Aster validation report
 
-Validation is in progress as of 20 October 2026. [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, has an official preflight result of four passes, zero failures, zero skips and zero expected failures. It includes fresh decoded frames through two landscape end/start transitions and 25-tab creation/restoration. Simulator build/signing verification passed, but the full unit stage failed; diagnosis awaits final logs. The 15-case main UI stage also failed; its failing cases and official count are not yet available. The isolated native download and exact 95-byte integrity check passed. Device build/audit results remain pending. No production IPA or full-validation pass is available yet.
+Native [run 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415), source `273578ee85af23845bf517e76572f02a04a3f678`, is in progress. Its 45 local-contract checks passed in CI; native unit, five-preflight, 16-main, isolated-download and device-package outcomes remain pending.
 
-Production playback behavior was unchanged by this candidate's read-only media diagnostics. This passing checkpoint does not establish the cause or a fix for run 17's fullscreen stall. CI runs units first and independently collects later stages despite an earlier failure; IPA publication still requires every required check to pass.
+[Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, completed with four preflight passes, 14/15 main UI passes and a passing isolated native download/integrity check. The official full-unit summary records 5,745 passed, two failed and two skipped, out of 5,749. The iPhone release build and actual unsigned-package audit passed, but the IPA was withheld because required tests failed. No full-validation pass or signed installation is established.
+
+The [preserved final evidence](docs/aster-validation/run18/README.md) contains the original summaries, audit, download integrity, source/toolchain and relevant failure attachments with exact hashes. [Recovery run 19](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394322518), source `7613a000119a4877578a7df070d827e27c8fb954`, extracted run 18's files only; its native job was skipped. Its successful conclusion is not a new native test pass. Production playback behavior was unchanged by run 18's read-only diagnostics, and its passing fullscreen case does not establish a fix for run 17's stall.
 
 ## Completed evidence and current requirements
 
-| Area | Latest evidence | Current requirement |
+| Area | Run 18 official result | Delivery requirement |
 | --- | --- | --- |
-| Four media/session preflight cases | Run 18: official 4 passed, 0 failed, 0 skipped, 0 expected failures; stronger two-loop decoded-frame assertion and 25-tab restoration passed | Preserve this four-case checkpoint; the prepared next candidate requires all five cases, including boundary-timed rotation |
-| Full upstream `UnitTest` plan | Run 18's unit stage failed; diagnosis and individual test results await final logs. Earlier [run 38083870485](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/38083870485), source `51fe284ead04c0d17b55c51725aa590dd951d031`, passed | Diagnose and resolve the failure; full plan must pass for delivery |
-| Main local acceptance and selected upstream UI tests | Run 18's main stage failed; failing cases and official count await final evidence. Run 38083870485 passed 14/15, failing the fullscreen post-rotation toolbar assertion | The prepared next candidate requires all 16 selected cases; run 18 retains its original 15-case selection |
-| Native download and exact file-byte verification | Run 18 passed the isolated native case and exact 95-byte SHA-256 check | Passed for run 18; remains required for the next delivery candidate |
-| Unsigned iPhone release build and actual IPA audit | No device IPA produced or audited | Device compilation, package integrity and all publication gates must pass |
-| Signed installation and physical-device validation | Not performed | Requires Apple signing and physical iPhone testing |
+| Four media/session preflight cases | 4 passed, 0 failed, 0 skipped, 0 expected failures; two-loop decoded-frame and 25-tab restoration checks passed | Run 20 requires five cases, including first-loop boundary rotation |
+| Full upstream `UnitTest` plan | 5,745 passed, 2 failed, 2 skipped; 5,749 total | Correct the two fixture failures and pass the full plan |
+| Main UI selection | 14 passed, 1 failed, 0 skipped; first MP4 status-label hittability failure | Run 20 requires all 16 cases; run 18 selected 15 |
+| Native download and exact file-byte verification | 1 passed, 0 failed, 0 skipped; exact 95-byte SHA-256 check passed | Remains required for the run 20 candidate |
+| Unsigned iPhone release build and actual IPA audit | Passed; build 18.1, arm64 iOS device and six extensions | Tests must also pass before IPA publication |
+| Signed installation and physical-device validation | Not performed | Requires valid Apple signing and physical iPhone testing |
 
 The earlier completed native test environment was Xcode 26.5 (17F42), iOS 26.5 (23F77), on an iPhone 15 Pro Max simulator using the standard `macos-26` runner. Results are bounded to their recorded sources and simulator environment.
 
 ## Verified native download
 
-Run 18 passed its isolated native download case and the subsequent app-container byte check. `aster-payload.txt` contains exactly 95 bytes with SHA-256 `fa7f6baddf7671ff0f6f7aa8c03fe987c556a4bc590406da2e8d9542bfdb3dbc`. This establishes the fixture download for the recorded source; it does not override the failed unit/main UI stages or complete the pending device-package audit.
+Run 18 passed its isolated native download case and the subsequent app-container byte check. `aster-payload.txt` contains exactly 95 bytes with SHA-256 `fa7f6baddf7671ff0f6f7aa8c03fe987c556a4bc590406da2e8d9542bfdb3dbc`. This establishes the fixture download for the recorded source; the failed unit/main UI stages still prevent IPA publication.
+
+## Verified unsigned device package
+
+Run 18 built and audited an actual unsigned iPhone IPA: build `18.1`, 207,494,746 bytes, SHA-256 `e1a064a96f3027356d0be1ee0abf4911eb54438336a3f7e9eca2847d95700274`. The audit confirms arm64 iOS-device binaries, all six extension identities/builds, privacy and offline resources, and exact bundled filter integrity. The package contains 42,195 rules; the checked-in historical snapshot below remains distinct. The IPA was not published because required tests failed. Audit success does not provide Apple signing, installation or a full browser pass.
+
+## Run 18 failures
+
+`SummarizeViewModelTests/test_summarize_withNotEnoughStartingWords()` exceeded its 0.5-second callback expectation. A subsequent xctest crash has capture time 06:45:45.2127 UTC and a late Summarize callback stack. The attachment was exported under `WKEngineWebViewTests/testLoad_callsObservers()`, but that association does not establish a WK-test crash. The WK observer case separately exceeded its 30-second progress/content-size expectations; its root cause is not confirmed.
+
+The main failure was `testMP4HLSIframeAndBlobPlayRealAudioAndVideo()`: XCTest could not determine the hittability of the first MP4's `Audio and video playing` status. The preserved screenshot shows decoded playback with 67 observed frames, media time 5.64, paused false, readyState 4 and no error. Later HLS, iframe and blob iterations did not execute. The separate fullscreen case passed in both preflight and main UI. The prepared assertion-helper correction still requires native verification.
 
 ## Verified preflight checkpoints
 
@@ -37,13 +49,15 @@ The native recording shows decoded portrait frames near media time 5.167 seconds
 
 Run 18's JavaScript records media time, paused/ended flags, readiness/network state, errors, decoded frames and recent media events. Its screenshots and decoded-frame evidence are valid. The native Client probes were compiled out: Fennec's Debug Swift flags include `MOCKABLE_STORE` and `MOZ_CHANNEL_developer`, but omit Swift `DEBUG`. No `AsterFullscreenProbe` lines appear in its file logs. The prepared guard change to `#if DEBUG || MOZ_CHANNEL_developer` in `WebviewViewController.swift` enables those read-only probes for a future developer build while leaving the release channel excluded; native runtime verification of that guard change remains pending.
 
-Run 18 passed the stronger two-loop fullscreen case, including exit and native menu/Settings interaction. Its recorded rotation resize occurred at media time 4.075 seconds in the six-second clip. Two healthy landscape end/start transitions therefore do not exercise run 17's combined rotation/first-loop-boundary timing. A separate explicit boundary-timing test is now prepared locally for the next candidate; it has not run natively. Playback code was unchanged; the stall's cause remains unconfirmed, and this pass does not establish a fix.
+Run 18 passed the stronger two-loop fullscreen case, including exit and native menu/Settings interaction. Its recorded rotation resize occurred at media time 4.075 seconds in the six-second clip. Two healthy landscape end/start transitions therefore do not exercise run 17's combined rotation/first-loop-boundary timing. A separate explicit boundary-timing test is included in run 20; its native result remains pending. Playback code was unchanged; the stall's cause remains unconfirmed, and this pass does not establish a fix.
 
-## Prepared next candidate
+## Current native candidate
 
-The prepared HEAD candidate, with five preflight/16 main/one download selections, has not been launched or natively verified. It adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
+Run 20 requires five preflight/16 main/one download selections; its corrections remain native-unverified. Run 19 was extraction-only and did not run the native job. Run 20 adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
 
-The next strict selection requires five preflight cases, 16 main UI cases and one isolated download case, all without skips or failures, plus the full unit plan, download-byte verification and device-package audit. That is 22 UI test executions covering 17 unique cases. These future requirements do not change run 18's recorded four-case preflight or 15-case main selection.
+Prepared unit-fixture corrections make all six main-actor Summarize tests async with the same 0.5-second deadlines and capture their mock by value to avoid a late callback dereferencing torn-down test state. The WK observer case gets a finite 320×640 viewport and local tall HTML, with a stronger content-size predicate requiring width greater than zero and height greater than the 640-point viewport. All eight observers, progress==1, the 30-second deadline and delegate/leak assertions remain. These are test-fixture corrections, not a proven production playback fix.
+
+The current run 20 strict selection requires five preflight cases, 16 main UI cases and one isolated download case, all without skips or failures, plus the full unit plan, download-byte verification and device-package audit. That is 22 UI test executions covering 17 unique cases. These future requirements do not change run 18's recorded four-case preflight or 15-case main selection.
 
 ## Verified document-readiness change
 
@@ -51,15 +65,15 @@ Run 16 failed its 10-second existence wait for `Local tab 7 ready`, before any h
 
 Run 17 gave only the 25-tab stress case a 30-second document-existence budget and passed it. Other existence defaults and the subsequent 10/20-second hittability budgets were unchanged. All 25 numbered loads, exact counts, process relaunch and first-tab tray selection remained required. This proves that scoped readiness change for run 17's source, without establishing the owner of run 16's delay.
 
-## Current unit-fixture fix
+## Verified search fixture correction
 
-Run 15's job log records `SearchTests.testSuggestClient` timing out while waiting for its first local suggestion response. The server served successful responses after that deadline; server deallocation is not established as the cause. The fix introduced in run 16 and retained in run 17 makes this main-actor test async so it yields while the production URL session delivers callbacks on the main queue. It retains the server through both queries and stops it afterward. Both 10-second deadlines, real localhost requests, six exact suggestion assertions and error checks are unchanged. No production browser code changed. Runs 16 and 17 did not reach units. Run 18 reached the unit stage and failed, but the individual result of this search test and the failure's cause remain unknown until the final logs are available.
-
-The candidate runs units first so this fixture change can be checked before the media preflight. Independent subsequent stages collect additional native results despite earlier failures. Official summaries are exported for every result bundle present. The actual device package is audited even when an earlier test fails; failed runs preserve audit JSON/logs, while IPA bytes are published only after all required checks pass.
+`SearchTests.testSuggestClient` passed in run 18 in 0.709 seconds. Its main-actor async fixture yields while the URL session delivers callbacks on the main queue, retains the server through both real localhost queries and stops it afterward. Both 10-second deadlines, six exact suggestion assertions and error checks remain. This resolves the earlier unverified search-fixture result; run 18's two unit failures were in the separate cases identified above.
 
 ## Evidence checkpoint
 
 Run 18's strict four-pass/zero-failure/zero-skip checkpoint was uploaded as artifact `12247766739` (122,240,494 bytes), despite the earlier unit-stage failure. Its result bundle, summary, attachments, logs and recorded source establish a partial preflight result only. The small permanent capture set preserves unmodified files and their SHA-256 hashes without copying the video or result bundle.
+
+The final original native evidence artifact is `12251425178`. Recovery artifact `12251460795` contains extracted copies; native source identity remains run 18's `7788245`, not the recovery workflow's source.
 
 Artifacts use an `attempt-N` suffix. The full native evidence is `Aster-native-validation-evidence-attempt-N`; filter evidence is `aster-ad-filters-attempt-N`. The future IPA artifact is `Aster-iPhone-UNSIGNED-needs-signing-attempt-N`, containing `Aster-UNSIGNED-needs-signing.ipa`. A checkpoint or filter artifact is not an installable app. An IPA is published only after all required native tests, download-integrity verification, device build/package and actual-package audit succeed. Artifact retention is seven days.
 
@@ -71,14 +85,14 @@ The checked-in pack is the exact snapshot tested and WebKit-compiled in run 3808
 
 Earlier local verification recorded 58 fixture-server HTTP contract checks covering HEAD, byte ranges, suffix ranges, invalid requests, missing resources and correct payloads. Fixture JavaScript syntax was checked with Node; the original six-second media fixture was confirmed as H.264 video with AAC audio, including HLS segments. Localization string syntax, opaque icon assets and primary palette text contrast were checked. New native source/resources and unit assertions were registered in the Xcode project.
 
-On 20 October, the JavaScript production build passed. The new package auditor passed 25 synthetic contract tests, and the fullscreen observer passed 20 Node contract tests against JavaScript extracted from the generated fixture. These checks cover frozen/stale decoded frames and read-only observation; they do not prove native playback or audit an actual device IPA.
+On 20 October, the JavaScript production build passed. The new package auditor passed 25 synthetic contract tests, and the fullscreen observer passed 20 Node contract tests against JavaScript extracted from the generated fixture. These checks cover frozen/stale decoded frames and read-only observation; they do not replace native playback or actual-package checks; run 18 separately completed its real IPA audit.
 
-These local checks complement native execution. Run 18's download is now verified, while iPhone release compilation/package audit, signed installation and physical-device testing remain pending.
+These local checks complement native execution. Run 18's download and iPhone release compilation/package audit are verified; failed tests, signed installation and physical-device testing remain unresolved.
 
 ## Checks still required
 
-- Diagnose and resolve run 18's unit and main UI failures from final logs. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the next delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
-- Complete the iPhone release build and packaging; audit the actual IPA and record its hash, source/build identity, device platform, extensions, privacy/offline resources and exact filter provenance.
+- Verify the prepared corrections for run 18's two unit failures and MP4 status-label assertion. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the current delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
+- Repeat the iPhone release build/package audit for the corrected delivery source, retaining its exact package hash and provenance. Run 18's completed audit applies only to its recorded source.
 - Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
 - Test the signed application on a physical iPhone 15 Pro Max.
 
