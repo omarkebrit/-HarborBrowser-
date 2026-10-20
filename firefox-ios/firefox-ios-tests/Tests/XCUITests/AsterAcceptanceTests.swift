@@ -205,6 +205,8 @@ final class AsterAcceptanceTests: BaseTestCase {
         XCUIDevice.shared.orientation = .landscapeLeft
         expectMediaText("Fullscreen video playing in landscape", timeout: 15)
         captureDisplay("Actual landscape fullscreen video")
+        expectMediaText("Fullscreen loop playback verified in landscape", timeout: 20)
+        captureDisplay("Decoded fullscreen frames continue after two landscape loops")
         let exit = app.webViews.buttons["Exit fullscreen"].firstMatch
         mozWaitForElementToExist(exit)
         XCTAssertTrue(exit.isHittable)

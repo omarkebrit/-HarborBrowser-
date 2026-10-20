@@ -15,6 +15,10 @@ class WebviewViewController: UIViewController,
     private var fullscreenObservation: NSKeyValueObservation?
     private var retiringFullscreenWebViews: [ObjectIdentifier: WKWebView] = [:]
     private var retiringFullscreenObservations: [ObjectIdentifier: NSKeyValueObservation] = [:]
+#if DEBUG
+    private var fullscreenProbeLastSignature: String?
+    private var fullscreenProbePlaybackRequestInFlight = false
+#endif
     var contentType: ContentType = .webview
 
     init(webView: WKWebView) {
@@ -36,13 +40,38 @@ class WebviewViewController: UIViewController,
         super.viewDidLayoutSubviews()
         releaseCompletedFullscreenWebViews()
         layoutHostedWebView()
+#if DEBUG
+        if let webView { recordFullscreenProbe("layout", webView: webView) }
+#endif
     }
+
+#if DEBUG
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        guard let webView, #available(iOS 16.0, *),
+              webView.fullscreenState != .notInFullscreen || fullscreenProbeLastSignature != nil else { return }
+        recordFullscreenProbe("rotation begin target=\(size)", webView: webView, force: true)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            guard let self, let webView = self.webView else { return }
+            self.recordFullscreenProbe("rotation complete", webView: webView, force: true)
+        }
+    }
+#endif
 
     private func setupWebView() {
         guard let webView else { return }
+#if DEBUG
+        recordFullscreenProbe("setup", webView: webView)
+#endif
         if #available(iOS 16.0, *), webView.fullscreenState != .notInFullscreen { return }
         if webView.superview !== view {
+#if DEBUG
+            recordFullscreenProbe("reparent before", webView: webView)
+#endif
             view.addSubview(webView)
+#if DEBUG
+            recordFullscreenProbe("reparent after", webView: webView)
+#endif
         }
         // WebKit moves this view into its own window during element fullscreen.
         webView.translatesAutoresizingMaskIntoConstraints = true
@@ -59,12 +88,57 @@ class WebviewViewController: UIViewController,
     private func observeFullscreenChanges() {
         fullscreenObservation = nil
         guard let webView, #available(iOS 16.0, *) else { return }
-        fullscreenObservation = webView.observe(\.fullscreenState) { [weak self] _, _ in
+#if DEBUG
+        let options: NSKeyValueObservingOptions = [.old, .new]
+#else
+        let options: NSKeyValueObservingOptions = []
+#endif
+        fullscreenObservation = webView.observe(\.fullscreenState, options: options) { [weak self] observedWebView, change in
+#if DEBUG
+            let transition = "state old=\(String(describing: change.oldValue)) new=\(String(describing: change.newValue))"
+#endif
             DispatchQueue.main.async { [weak self] in
+#if DEBUG
+                self?.recordFullscreenProbe(transition, webView: observedWebView, force: true)
+#endif
                 self?.setupWebView()
             }
         }
     }
+
+#if DEBUG
+    private func recordFullscreenProbe(_ event: String, webView: WKWebView, force: Bool = false) {
+        guard #available(iOS 16.0, *) else { return }
+        guard force || webView.fullscreenState != .notInFullscreen || fullscreenProbeLastSignature != nil else { return }
+        let host = viewIfLoaded
+        let signature = [
+            "state=\(String(describing: webView.fullscreenState))",
+            "web=\(fullscreenProbeIdentity(webView)) frame=\(webView.frame) bounds=\(webView.bounds)",
+            "parent=\(fullscreenProbeIdentity(webView.superview)) frame=\(String(describing: webView.superview?.frame))",
+            "window=\(fullscreenProbeIdentity(webView.window)) bounds=\(String(describing: webView.window?.bounds))",
+            "host=\(fullscreenProbeIdentity(host)) frame=\(String(describing: host?.frame)) "
+                + "bounds=\(String(describing: host?.bounds)) window=\(fullscreenProbeIdentity(host?.window))"
+        ].joined(separator: " ")
+        guard force || signature != fullscreenProbeLastSignature else { return }
+        fullscreenProbeLastSignature = signature
+        DefaultLogger.shared.log("AsterFullscreenProbe legacy \(event) \(signature)", level: .debug, category: .webview)
+        guard !fullscreenProbePlaybackRequestInFlight else { return }
+        fullscreenProbePlaybackRequestInFlight = true
+        webView.requestMediaPlaybackState { [weak self, weak webView] state in
+            guard let self else { return }
+            self.fullscreenProbePlaybackRequestInFlight = false
+            guard let webView else { return }
+            let parent = self.fullscreenProbeIdentity(webView.superview)
+            DefaultLogger.shared.log("AsterFullscreenProbe legacy playback=\(String(describing: state)) "
+                + "event=\(event) parent=\(parent) request=\(signature)", level: .debug, category: .webview)
+        }
+    }
+
+    private func fullscreenProbeIdentity(_ view: UIView?) -> String {
+        guard let view else { return "nil" }
+        return "\(type(of: view))@\(ObjectIdentifier(view))"
+    }
+#endif
 
     func update(webView: WKWebView?) {
         let didChangeWebView = self.webView !== webView

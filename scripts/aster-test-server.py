@@ -121,7 +121,7 @@ PAGES = {
         "onerror=\"document.getElementById('tracker').textContent='Tracker blocked'\"></script>"),
     "/media/fullscreen.html": page("Aster fullscreen player", """
         <style>
-            #stage{background:#12323a;color:white;padding:12px}
+            #stage{position:relative;background:#12323a;color:white;padding:12px}
             #stage:fullscreen{box-sizing:border-box;width:100vw;height:100vh;display:flex;
                 flex-direction:column;align-items:center;justify-content:center;gap:8px;
                 padding:max(12px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))
@@ -129,30 +129,85 @@ PAGES = {
             #stage:fullscreen video{width:100%;height:calc(100% - 110px);min-height:0;object-fit:contain}
             #stage:fullscreen p{margin:0;flex:0 0 auto}
             #stage:fullscreen button{min-height:44px;flex:0 0 auto}
+            #media-observation{position:absolute;top:8px;left:8px;right:8px;pointer-events:none;
+                font:10px/1.2 monospace;white-space:pre-wrap;background:#12323acc;color:white;z-index:2}
         </style>
         <div id='stage'><video id='v' playsinline loop controls preload='auto'
             src='/media/video.mp4' width='320'></video><p id='status'>Waiting for fullscreen</p>
-            <button id='exit'>Exit fullscreen</button></div><button id='enter'>Enter fullscreen</button>
+            <button id='exit'>Exit fullscreen</button><aside id='media-observation' aria-live='off'>
+                <p id='media-state'></p><p id='loop-state'>Loop playback pending</p></aside>
+            </div><button id='enter'>Enter fullscreen</button>
     """, """
         const stage = document.getElementById('stage');
         const v = document.getElementById('v');
         const status = document.getElementById('status');
+        const diagnostic = document.getElementById('media-state');
+        const loopStatus = document.getElementById('loop-state');
+        let frames = 0;
+        let phaseFrames = 0;
+        let geometry = '';
+        let phaseOrientation = '';
+        let phaseLoops = 0;
+        let loopFrames = 0;
+        let previousTime = 0;
+        let lastFrameAt = 0;
+        const events = [];
+        if (v.requestVideoFrameCallback) {
+            const frame = () => {
+                frames++; lastFrameAt = performance.now(); v.requestVideoFrameCallback(frame);
+            };
+            v.requestVideoFrameCallback(frame);
+        }
         document.getElementById('enter').onclick = async () => {
             try { v.play(); await stage.requestFullscreen(); }
             catch (error) { status.textContent = 'Fullscreen failed: ' + error.name; }
         };
         document.getElementById('exit').onclick = () => document.exitFullscreen();
         function report() {
-            if (document.fullscreenElement && !v.paused && v.videoWidth > 0 && v.currentTime > 0.25)
-                status.textContent = 'Fullscreen video playing in '
-                    + (stage.clientWidth > stage.clientHeight ? 'landscape' : 'portrait');
+            const size = stage.clientWidth + 'x' + stage.clientHeight;
+            if (geometry !== size) { geometry = size; phaseFrames = frames; }
+            const orientation = stage.clientWidth > stage.clientHeight ? 'landscape' : 'portrait';
+            if (phaseOrientation !== orientation) {
+                phaseOrientation = orientation; phaseLoops = 0; previousTime = v.currentTime;
+            }
+            const loopWindow = Math.min(1, v.duration / 4);
+            if (v.duration > 0 && previousTime >= v.duration - loopWindow && v.currentTime <= loopWindow) {
+                phaseLoops++; loopFrames = frames;
+            }
+            previousTime = v.currentTime;
+            const freshFrames = !v.requestVideoFrameCallback
+                || (frames > phaseFrames && performance.now() - lastFrameAt < 1000);
+            const playing = !v.paused && v.videoWidth > 0 && v.currentTime > 0.25 && freshFrames;
+            if (document.fullscreenElement) {
+                status.textContent = 'Fullscreen video ' + (playing ? 'playing' : 'waiting') + ' in ' + orientation;
+            }
+            loopStatus.textContent = document.fullscreenElement && orientation === 'landscape'
+                && phaseLoops >= 2 && playing && frames > loopFrames
+                ? 'Fullscreen loop playback verified in landscape' : 'Loop playback pending';
+            diagnostic.textContent = 'Media: t=' + v.currentTime.toFixed(3) + ' frames=' + frames
+                + ' loops=' + phaseLoops
+                + ' paused=' + v.paused + ' ended=' + v.ended + ' ready=' + v.readyState
+                + ' network=' + v.networkState + ' rate=' + v.playbackRate
+                + ' error=' + (v.error ? v.error.code + ':' + v.error.message : 'none')
+                + ' fullscreen=' + Boolean(document.fullscreenElement) + ' stage=' + size
+                + ' visibility=' + document.visibilityState + '; Events: ' + events.join(' > ');
         }
-        document.addEventListener('fullscreenchange', () => {
-            status.textContent = document.fullscreenElement ? 'Fullscreen active' : 'Fullscreen exited';
+        function record(event) {
+            events.push(event.type + '@' + v.currentTime.toFixed(3));
+            if (events.length > 8) events.shift();
             report();
+        }
+        document.addEventListener('fullscreenchange', event => {
+            status.textContent = document.fullscreenElement ? 'Fullscreen active' : 'Fullscreen exited';
+            record(event);
         });
+        for (const event of ['play', 'playing', 'pause', 'waiting', 'stalled', 'seeking', 'seeked',
+                             'ended', 'error', 'emptied', 'loadedmetadata', 'ratechange'])
+            v.addEventListener(event, record);
         v.addEventListener('timeupdate', report);
-        window.addEventListener('resize', report);
+        window.addEventListener('resize', record);
+        document.addEventListener('visibilitychange', record);
+        setInterval(report, 500);
     """),
 }
 
