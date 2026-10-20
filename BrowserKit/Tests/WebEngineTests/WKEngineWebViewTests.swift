@@ -44,6 +44,34 @@ final class WKEngineWebViewTests: XCTestCase, @unchecked Sendable {
         <title>Test Page</title></head><body style="min-height:2000px">
         <h1>Test Page</h1><p>Content</p></body></html>
         """
+        // Package tests can run without an application; retain a visible window for the real view lifecycle.
+        let application = UIApplication.perform(NSSelectorFromString("sharedApplication"))?
+            .takeUnretainedValue() as? UIApplication
+        let scene = application?.connectedScenes.compactMap { $0 as? UIWindowScene }.first {
+            $0.activationState == .foregroundActive
+        }
+        let previousKeyWindow = scene?.windows.first(where: \.isKeyWindow)
+        let window = scene.map(UIWindow.init(windowScene:)) ?? UIWindow(frame: subject.frame)
+        window.frame = subject.frame
+        let controller = UIViewController()
+        controller.view.addSubview(subject)
+        window.rootViewController = controller
+        defer {
+            window.isHidden = true
+            subject.removeFromSuperview()
+            window.rootViewController = nil
+            previousKeyWindow?.makeKey()
+        }
+        if application != nil {
+            window.makeKeyAndVisible()
+        } else {
+            window.isHidden = false
+        }
+        window.layoutIfNeeded()
+        subject.layoutIfNeeded()
+        XCTAssertTrue(subject.window === window)
+        XCTAssertEqual(subject.bounds.size, viewportSize)
+
         let loadingExpectation = expectation(that: \WKWebView.isLoading, on: subject) { _, change in
             guard change.newValue != nil else { return false }
             return true
