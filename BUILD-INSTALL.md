@@ -27,6 +27,8 @@ For a supported TestFlight route, use an Apple Developer membership and App Stor
 
 With only an iPhone, installation still depends on a compatible signing route. AltStore documents on-device Classic 2.3 setup through PAL on iOS 27 in eligible regions; Aster compatibility remains unverified. [SIGNING-REQUIREMENTS.md](SIGNING-REQUIREMENTS.md) covers that conditional free route, account limits and the actual-IPA entitlement checks still needed. TestFlight testers do not need their own paid developer membership, although a legitimate developer team must supply the signed upload.
 
+Apple lists the AutoFill-provider capability for program members, with no support mark for free developer accounts. A generic free AltStore route therefore does not establish free provisioning of complete Aster with all six extensions and system AutoFill.
+
 The application identifier is `com.omarkebrit.aster`; the app group is `group.com.omarkebrit.aster`. The main application does not request Mozilla's managed default-browser entitlement. Additional managed capabilities require Apple's approval and appropriate provisioning.
 
 The retained package has these seven profile assignments when all extensions are included:
