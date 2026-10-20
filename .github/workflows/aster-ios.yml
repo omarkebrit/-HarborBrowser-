@@ -131,6 +131,35 @@ jobs:
             CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/unit-tests.log"
+      - name: Export the completed upstream unit test summary
+        if: ${{ always() && !cancelled() && (steps.unit_tests.outcome == 'success' || steps.unit_tests.outcome == 'failure') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "$ASTER_RESULTS/AsterUnitTests.xcresult" ]; then
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterUnitTests.xcresult" \
+              > "$ASTER_RESULTS/AsterUnitTests-summary.json.tmp" \
+              2> "$ASTER_RESULTS/unit-summary-export.log"
+            mv "$ASTER_RESULTS/AsterUnitTests-summary.json.tmp" "$ASTER_RESULTS/AsterUnitTests-summary.json"
+          else
+            echo '::warning::The unit test step did not produce an XCResult bundle; its available log is preserved.'
+          fi
+      - name: Preserve completed upstream unit test evidence
+        if: ${{ always() && !cancelled() && (steps.unit_tests.outcome == 'success' || steps.unit_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-unit-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/AsterUnitTests.xcresult
+            build-output/AsterUnitTests-summary.json
+            build-output/unit-tests.log
+            build-output/unit-summary-export.log
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+            build-output/simulator-runtimes.json
+            build-output/simulator-devices.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Verify the locally signed simulator host entitlements
         if: ${{ always() && !cancelled() }}
         shell: bash
@@ -430,14 +459,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          export_failed=false
           for suite in AsterUnitTests AsterRegressionTests AsterAcceptanceTests AsterDownloadTests; do
             if [ -d "$ASTER_RESULTS/$suite.xcresult" ]; then
-              xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
-                > "$ASTER_RESULTS/$suite-summary.json"
+              if xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/$suite.xcresult" \
+                > "$ASTER_RESULTS/$suite-summary.json.tmp"; then
+                mv "$ASTER_RESULTS/$suite-summary.json.tmp" "$ASTER_RESULTS/$suite-summary.json"
+              else
+                rm -f "$ASTER_RESULTS/$suite-summary.json.tmp"
+                echo "::error::Could not export $suite summary; remaining suites will still be exported."
+                export_failed=true
+              fi
               xcrun xcresulttool export attachments --path "$ASTER_RESULTS/$suite.xcresult" \
                 --output-path "$ASTER_RESULTS/$suite-attachments" || true
             fi
           done
+          if [ "$export_failed" = true ]; then
+            exit 1
+          fi
       - name: Preserve native validation evidence
         if: ${{ always() && !cancelled() }}
         uses: actions/upload-artifact@v4
