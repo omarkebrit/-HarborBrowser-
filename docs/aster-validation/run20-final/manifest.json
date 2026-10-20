@@ -1,0 +1,241 @@
+{
+  "runID": 39394936415,
+  "runNumber": 20,
+  "runAttempt": 1,
+  "jobID": 118535214881,
+  "sourceCommit": "273578ee85af23845bf517e76572f02a04a3f678",
+  "runConclusion": "failure",
+  "compactArtifactID": 12260145582,
+  "compactArtifactBytes": 31020032,
+  "device": "iPhone 15 Pro Max Simulator",
+  "iOS": "26.5 (23F77)",
+  "xcode": "26.5 (17F42)",
+  "filesUnmodified": true,
+  "officialSummaries": {
+    "AsterUnitTests": {
+      "result": "Failed",
+      "passedTests": 5746,
+      "failedTests": 1,
+      "skippedTests": 2,
+      "expectedFailures": 0,
+      "totalTestCount": 5749
+    },
+    "AsterRegressionTests": {
+      "result": "Failed",
+      "passedTests": 3,
+      "failedTests": 2,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 5
+    },
+    "AsterAcceptanceTests": {
+      "result": "Passed",
+      "passedTests": 16,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 16
+    },
+    "AsterDownloadTests": {
+      "result": "Passed",
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "expectedFailures": 0,
+      "totalTestCount": 1
+    }
+  },
+  "originalCIDevicePackageAudit": {
+    "result": "Passed",
+    "build": "20.1",
+    "ipaBytes": 207496026,
+    "ipaSHA256": "24e29193921ac2ecf3fe7e4862ee7ff8d871befdc96abd3919401e755b0bb167",
+    "extensions": 6
+  },
+  "ipaPublication": "Skipped because one unit case and two preflight cases failed.",
+  "independentBinaryAudit": false,
+  "actualIPABinaryDownloaded": false,
+  "scope": "Source273578e final native evidence only; original CI audit report preserved, not the IPA binary. No full validation, signed installation or physical-device claim.",
+  "files": [
+    {
+      "file": "AsterUnitTests-summary.json",
+      "artifactPath": "AsterUnitTests-summary.json",
+      "bytes": 2731,
+      "sha256": "9e2bef785e3271514e495d2e3ac3051a85dd96a5cb771fd143c8130208348577"
+    },
+    {
+      "file": "AsterRegressionTests-summary.json",
+      "artifactPath": "AsterRegressionTests-summary.json",
+      "bytes": 2337,
+      "sha256": "856193b13e5145e406215dad145315706d34448799d9236387eabbc0a62416f5"
+    },
+    {
+      "file": "AsterAcceptanceTests-summary.json",
+      "artifactPath": "AsterAcceptanceTests-summary.json",
+      "bytes": 1186,
+      "sha256": "513fd466fd691efcf97309ace878bf412ffa5b7847dddec4eb787c760a5149dc"
+    },
+    {
+      "file": "AsterDownloadTests-summary.json",
+      "artifactPath": "AsterDownloadTests-summary.json",
+      "bytes": 991,
+      "sha256": "95f7e26031908f68773d42c8cbeb6f79ee81796423b3dfe06091e1b889e0312d"
+    },
+    {
+      "file": "device-ipa-audit.json",
+      "artifactPath": "device-ipa-audit.json",
+      "bytes": 6326,
+      "sha256": "79d5b2fc6099d6d7eff1a21d2db79a3ca5c0ef156a69d6d64ff748741516d366"
+    },
+    {
+      "file": "download-integrity.json",
+      "artifactPath": "download-integrity.json",
+      "bytes": 133,
+      "sha256": "13809d61350403dcf80e9319bd69f6d6f1ed5ee938da8302fbdac61e5140b5db"
+    },
+    {
+      "file": "source-commit.txt",
+      "artifactPath": "source-commit.txt",
+      "bytes": 41,
+      "sha256": "cf8f315df3ce25c6ebcf116003156c82d44d4453f304823dbbc1cf1f91b4d152"
+    },
+    {
+      "file": "toolchain.txt",
+      "artifactPath": "toolchain.txt",
+      "bytes": 36,
+      "sha256": "75c51ee7825838b82cbf1cb623d7e7421d3d780e78046abde6886199be8204be"
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/0CA298D5-D18E-4970-8E69-020DB998B7EB.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/0CA298D5-D18E-4970-8E69-020DB998B7EB.txt",
+      "bytes": 367,
+      "sha256": "052774391c17d412fc16db813fc5aca6bb5e458ebc516b09cd2ed7dc5c5ffbb4",
+      "purpose": "First-loop clock and native rotation schedule",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "First-loop media clock and native rotation schedule_0_420191B1-11B8-4723-9180-15FD59A3A2BD.txt",
+      "attachmentTimestamp": 1792490067.402
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/873D3CC6-582D-495A-9AD8-51994D846760.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/873D3CC6-582D-495A-9AD8-51994D846760.txt",
+      "bytes": 315,
+      "sha256": "b9687e31a0794e9fc577b48e3d6b9727fa46bbdf0cbd4a96874382d79e65f4ec",
+      "purpose": "Immutable first landscape resize and actual epoch offset",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Actual landscape resize offset from the predicted first loop boundary_0_43061DD0-E145-4BCF-AF43-823A16A5F3BE.txt",
+      "attachmentTimestamp": 1792490069.93
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/A8E4A7D4-57B5-46EF-A486-AD7339D0C446.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/A8E4A7D4-57B5-46EF-A486-AD7339D0C446.png",
+      "bytes": 680289,
+      "sha256": "44a2f66762bd72ffab9e803f691b80d7ab0a91269ae6292e523ae1245a4b027c",
+      "purpose": "Decoded landscape frames before AVPlayer controller reappearance",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Actual first-loop boundary landscape fullscreen video_0_690856CE-70CC-47DF-BDC2-F290CD1B4A57.png",
+      "attachmentTimestamp": 1792490072.597
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/C103CEFF-78EA-47BA-8121-4B7B35E560F3.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/C103CEFF-78EA-47BA-8121-4B7B35E560F3.png",
+      "bytes": 667836,
+      "sha256": "86a61d0f73deb080a2b88fecd957a65776415e41923245634ffbcef355a411ed",
+      "purpose": "Fresh decoded frames after two additional landscape loops",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Decoded fullscreen frames continue after two boundary-targeted landscape loops_0_FFEED333-E307-42F5-A7B2-DF8B53ACD539.png",
+      "attachmentTimestamp": 1792490082.07
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/1CC61EFD-DEC4-4369-B7B5-DE77F390470D.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/1CC61EFD-DEC4-4369-B7B5-DE77F390470D.png",
+      "bytes": 573814,
+      "sha256": "69c9e1293cb35b5f784943a7dc473936cfa0b2cf8959955ff41dce2194b08f75",
+      "purpose": "Native browser controls after fullscreen exit",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Boundary rotation exit restores browser controls_0_86DE6E51-6DCC-4A0E-AA03-482314693FA7.png",
+      "attachmentTimestamp": 1792490089.99
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/05462677-EF09-461F-91E5-51B3D36725B6.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/05462677-EF09-461F-91E5-51B3D36725B6.png",
+      "bytes": 584105,
+      "sha256": "4c8abce4f182c054ff7b719d44043a978a0335f0a6aeccb71e7fa639177f69c6",
+      "purpose": "Native menu interaction after fullscreen exit",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Recovered native browser menu accepts interaction after boundary rotation_0_44C5D21B-2405-445D-BBDD-AACAE53062B4.png",
+      "attachmentTimestamp": 1792490095.642
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/527F2859-D83B-4FAD-A55A-CF163A368F1E.txt",
+      "artifactPath": "AsterAcceptanceTests-attachments/527F2859-D83B-4FAD-A55A-CF163A368F1E.txt",
+      "bytes": 8850,
+      "sha256": "d4323fa8ce16a9a2638fa45a3340ab594b3c5e69d3e589adc1313a2fb7353d53",
+      "purpose": "Final native hierarchy preserves resize observation and exited page",
+      "testIdentifier": "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+      "attachmentName": "Native accessibility hierarchy_0_61953CE9-1F15-4CE4-ABF4-896848538B73.txt",
+      "attachmentTimestamp": 1792490105.9
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/869C30C0-BF1D-49D0-9A86-834B7B2C5CB3.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/869C30C0-BF1D-49D0-9A86-834B7B2C5CB3.png",
+      "bytes": 477272,
+      "sha256": "ef3631b38c20117e8ee33cd3aea36fed48f26ef86e647323a1ba15e296dc274d",
+      "purpose": "MP4 decoded playback",
+      "testIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Decoded mp4 video with audio_0_7E75B64E-EB07-4569-9BD1-7690B2B04223.png",
+      "attachmentTimestamp": 1792490254.245
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/07AD2198-A469-411F-A4D2-6F21454A1B3C.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/07AD2198-A469-411F-A4D2-6F21454A1B3C.png",
+      "bytes": 485425,
+      "sha256": "2ee2db335323a465164a9de80bf2ae79b427ee60bad5d92bfba05812a1a5efaa",
+      "purpose": "HLS decoded playback",
+      "testIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Decoded hls video with audio_0_3BDA9BDC-7782-47BD-B700-C67AA1CC18C7.png",
+      "attachmentTimestamp": 1792490266.81
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/3414FABD-41CA-4DD5-B71D-69D591C5BA48.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/3414FABD-41CA-4DD5-B71D-69D591C5BA48.png",
+      "bytes": 506295,
+      "sha256": "bc066d8f41c6a68aa10ff92d484c2051a01ecde3f353b5d3775ca0f8329e0263",
+      "purpose": "Iframe decoded playback",
+      "testIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Decoded iframe video with audio_0_B6B9BA05-DB30-4E21-9619-3BB185FAABFD.png",
+      "attachmentTimestamp": 1792490279.549
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/49DE4BA5-D1B6-4D47-B484-EE8A36BB6DC5.png",
+      "artifactPath": "AsterAcceptanceTests-attachments/49DE4BA5-D1B6-4D47-B484-EE8A36BB6DC5.png",
+      "bytes": 489788,
+      "sha256": "fe9b63666c16759ca22dcd814d9425fdb073324ca239f6439e868a177573d14d",
+      "purpose": "Blob decoded playback",
+      "testIdentifier": "AsterAcceptanceTests/testMP4HLSIframeAndBlobPlayRealAudioAndVideo()",
+      "attachmentName": "Decoded blob video with audio_0_26DAB641-4CFB-46DE-8174-1D27068DC535.png",
+      "attachmentTimestamp": 1792490291.161
+    },
+    {
+      "file": "AsterAcceptanceTests-attachments/manifest.json",
+      "artifactPath": "AsterAcceptanceTests-attachments/manifest.json",
+      "bytes": 32333,
+      "sha256": "14b8f4eb91d7045f74ebc917e16945ae4bd6521fd597f6d419fdacfb1ea66690",
+      "purpose": "Original complete main attachment index; unselected attachment bytes remain in original artifact"
+    }
+  ],
+  "derivedFiles": [
+    {
+      "file": "boundary-native-excerpt.txt",
+      "bytes": 15012,
+      "sha256": "2f4918f6adf7bf3095cb72281c3c5be395a7df14836e2e94a34e9ca5f9d4a005",
+      "matchedLineCount": 27,
+      "origin": {
+        "artifactPath": "session-diagnostics/main-ui/app/Library/Caches/Logs/Firefox.1.log",
+        "bytes": 5242956,
+        "sha256": "f7b0e226f018e0f8ab8d1006e4c39863a96d61a43e20a4af2d1eaeb0ff4ac286"
+      },
+      "derivation": "Concatenate complete original byte-lines, in original order with existing line endings, containing literal 2026-10-20 09:54: and at least one of AsterFullscreenProbe, AVPlayerViewController, WKFullScreenViewController. No headers, separators, trimming, normalization or redaction. This is a derived exact-line subset, not the complete original log."
+    }
+  ],
+  "filesUnmodifiedScope": "files contains twenty complete unmodified originals. derivedFiles separately identifies the native exact-line subset."
+}

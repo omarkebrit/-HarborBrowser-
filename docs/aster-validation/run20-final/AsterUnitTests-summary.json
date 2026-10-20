@@ -1,0 +1,70 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "41783647-CABA-4716-8550-950C56E9F6C0",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "modelName" : "iPhone 15 Pro Max",
+        "osBuildNumber" : "23F77",
+        "osVersion" : "26.5",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 1,
+      "passedTests" : 5757,
+      "skippedTests" : 2,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Configuration 1"
+      }
+    }
+  ],
+  "environmentDescription" : "UnitTest · Built with macOS 26.6.2",
+  "expectedFailures" : 0,
+  "failedTests" : 1,
+  "finishTime" : 1792488231.509,
+  "passedTests" : 5746,
+  "result" : "Failed",
+  "skippedTests" : 2,
+  "startTime" : 1792486259.73,
+  "statistics" : [
+    {
+      "subtitle" : "14 test runs",
+      "title" : "3 tests ran with dynamic parameters"
+    },
+    {
+      "subtitle" : "3 test runs",
+      "title" : "3 tests collected performance metrics"
+    }
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "Asynchronous wait failed: Exceeded timeout of 30 seconds, with unfulfilled expectations: \"Expect change to '\\WKWebView.estimatedProgress' of <WebEngine.DefaultWKEngineWebView: 0x10b110000; frame = (0 0; 320 640); layer = <CALayer: 0x10b270720>>\", \"Expect change to '\\UIScrollView.contentSize' of <WKScrollView: 0x10b110a00; baseClass = UIScrollView; frame = (0 0; 320 640); clipsToBounds = YES; gestureRecognizers = <NSArray: 0x10b270540>; backgroundColor = kCGColorSpaceModelRGB 1 1 1 1; layer = <CALayer: 0x10b271d70>; contentOffset: {0, 0}; contentSize: {0, 0}; adjustedContentInset: {0, 0, 0, 0}>\".",
+      "targetName" : "WebEngineTests",
+      "testIdentifier" : 931,
+      "testIdentifierString" : "WKEngineWebViewTests/testLoad_callsObservers()",
+      "testIdentifierURL" : "test://com.apple.xcode/BrowserKit/WebEngineTests/WKEngineWebViewTests/testLoad_callsObservers",
+      "testName" : "testLoad_callsObservers()"
+    }
+  ],
+  "title" : "Test - Fennec",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "80% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 6.53s (three standard deviations)"
+    },
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "24% of duration",
+      "text" : "1 longest test run with outlier durations exceeding 0.83s (three standard deviations)"
+    },
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "34% of duration",
+      "text" : "96 longest test runs with outlier durations exceeding 0.91s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 5749
+}

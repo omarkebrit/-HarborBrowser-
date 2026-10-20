@@ -1,0 +1,3 @@
+Aster rotation observation {"t":0,"duration":6,"rate":1,"playing":false,"epochMs":1792490067532,"playRequestedEpochMs":1792490060483,"totalNaturalWraps":1,"orientation":"landscape","frames":55,"stage":"814x348","nearBoundary":true}
+firstBoundaryEpochMs=1792490067298.799
+actualResizeOffsetSeconds=0.2332010269165039
