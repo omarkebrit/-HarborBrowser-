@@ -2,7 +2,9 @@
 
 Aster متصفح iOS مستقل بواجهة هادئة، مبني على Firefox for iOS. يحتوي على التبويبات والتصفح الخاص وحجب الإعلانات والتنزيلات والقارئ. نطاق الميزات والفحوص موثق في [تقرير الاختبارات](TEST-REPORT.md) و[مقارنة الميزات](ASTER-COVERAGE.md).
 
-[المستودع](https://github.com/omarkebrit/-HarborBrowser-) عام، وكود Aster موجود على [فرع المشروع](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser). يجري الآن [التشغيل 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415)، على المصدر `273578ee85af23845bf517e76572f02a04a3f678`. نجح 45 فحصًا للشيفرة في GitHub؛ نتائج اختبارات المتصفح على iOS وبناء حزمته ما زالت معلّقة.
+[المستودع](https://github.com/omarkebrit/-HarborBrowser-) عام، وكود Aster موجود على [فرع المشروع](https://github.com/omarkebrit/-HarborBrowser-/tree/feat/aster-browser). يجري الآن [التشغيل 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415)، على المصدر `273578ee85af23845bf517e76572f02a04a3f678`. نجح 45 فحصًا للشيفرة في GitHub. سجلت اختبارات الوحدة 5746 نجاحًا وإخفاقًا واحدًا وفحصين متجاوزين من أصل 5749. نجحت اختبارات Summarize الستة المعدّلة ومجموعتها؛ الإخفاق الوحيد المتبقي في انتظار مراقبي تقدّم التحميل وحجم المحتوى في WK WebView. الفحوص التمهيدية ما زالت جارية، وتنتظر بقية فحوص الواجهة والتنزيل والحزمة نتائجها.
+
+أُطلق [التشغيل التشخيصي 21](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39402334591)، على المصدر `92473b44727bb14183775748a0d057ff35a0aae3`، لفحص أربع حالات تجريبية مؤقتة لهذا الاختبار. نتائجه معلّقة؛ لا يشغّل دورة التحقق الكاملة ولا ينتج ملف IPA، ويستمر التشغيل 20 بشكل مستقل.
 
 اكتمل [التشغيل 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275)، على المصدر `7788245534fc23c00a93fb8375c83ebce8703a1e`: نجحت الفحوص التمهيدية الأربعة و14 من أصل 15 فحص واجهة، والتنزيل المستقل وتطابق ملفه ذي 95 بايت. اختبارات الوحدة سجلت 5745 نجاحًا وإخفاقين وفحصين متجاوزين.
 

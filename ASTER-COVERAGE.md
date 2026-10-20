@@ -1,6 +1,8 @@
 # Feature coverage
 
-Native [run 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415), source `273578ee85af23845bf517e76572f02a04a3f678`, is in progress. Its 45 local-contract checks passed in CI; native outcomes for the 5/16/1 selection, full units and device package remain pending.
+Native [run 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415), source `273578ee85af23845bf517e76572f02a04a3f678`, is in progress. Its 45 local-contract checks passed in CI. Run 20's official unit result is 5,746 passed, one failed and two skipped (5,749 total). All six corrected async Summarize tests and their suite passed; the sole remaining failure is the WK WebView observer case's 30-second progress/content-size wait. Preflight is still running, with later UI/download/device-package outcomes pending.
+
+Targeted [diagnostic run 21](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39402334591), source `92473b44727bb14183775748a0d057ff35a0aae3`, was dispatched to investigate four temporary observer-test variants. Its results are pending; it does not run the full validation pipeline or produce an IPA. Full run 20 continues independently.
 
 [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), source `7788245534fc23c00a93fb8375c83ebce8703a1e`, completed with four preflight passes, 14/15 main UI passes and a passing native download/integrity check. Units recorded 5,745 passed, two failed and two skipped. The unsigned iPhone build and actual-package audit passed, but the IPA was withheld because required tests failed. Recovery run 19 only extracted evidence, with its native job skipped. Run 20's 5/16/1 selection remains native-unverified. See [TEST-REPORT.md](TEST-REPORT.md) and [final evidence](docs/aster-validation/run18/README.md).
 

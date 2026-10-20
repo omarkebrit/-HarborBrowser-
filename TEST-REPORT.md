@@ -1,10 +1,16 @@
 # Aster validation report
 
-Native [run 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415), source `273578ee85af23845bf517e76572f02a04a3f678`, is in progress. Its 45 local-contract checks passed in CI; native unit, five-preflight, 16-main, isolated-download and device-package outcomes remain pending.
+Native [run 20](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394936415), source `273578ee85af23845bf517e76572f02a04a3f678`, is in progress. Its 45 local-contract checks passed in CI. Run 20's official unit result is 5,746 passed, one failed and two skipped (5,749 total). All six corrected async Summarize tests and their suite passed; the sole remaining failure is the WK WebView observer case's 30-second progress/content-size wait. Preflight is still running, with later UI/download/device-package outcomes pending.
 
 [Run 18](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39379658275), attempt 1, source `7788245534fc23c00a93fb8375c83ebce8703a1e`, completed with four preflight passes, 14/15 main UI passes and a passing isolated native download/integrity check. The official full-unit summary records 5,745 passed, two failed and two skipped, out of 5,749. The iPhone release build and actual unsigned-package audit passed, but the IPA was withheld because required tests failed. No full-validation pass or signed installation is established.
 
 The [preserved final evidence](docs/aster-validation/run18/README.md) contains the original summaries, audit, download integrity, source/toolchain and relevant failure attachments with exact hashes. [Recovery run 19](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39394322518), source `7613a000119a4877578a7df070d827e27c8fb954`, extracted run 18's files only; its native job was skipped. Its successful conclusion is not a new native test pass. Production playback behavior was unchanged by run 18's read-only diagnostics, and its passing fullscreen case does not establish a fix for run 17's stall.
+
+## Run 20 unit result and targeted diagnostic
+
+Run 20's official summary records `Failed`: 5,746 passed, one failed, two skipped and zero expected failures, out of 5,749. All six corrected async Summarize tests and the containing suite passed, including `test_summarize_withNotEnoughStartingWords` in 0.198 seconds. The sole failure is `WKEngineWebViewTests/testLoad_callsObservers()`, which exceeded its unchanged 30-second progress/content-size expectations. The WebView has its intended 320×640 frame, but its scroll content size remains zero. The finite-viewport fixture change did not resolve this failure; its cause remains unconfirmed.
+
+Targeted [diagnostic run 21](https://github.com/omarkebrit/-HarborBrowser-/actions/runs/39402334591), source `92473b44727bb14183775748a0d057ff35a0aae3`, was dispatched to investigate four temporary observer-test variants. Its results are pending; it does not run the full validation pipeline or produce an IPA. Full run 20 continues independently. No successful diagnostic result will itself establish a full unit, browser or release pass.
 
 ## Completed evidence and current requirements
 
@@ -53,9 +59,9 @@ Run 18 passed the stronger two-loop fullscreen case, including exit and native m
 
 ## Current native candidate
 
-Run 20 requires five preflight/16 main/one download selections; its corrections remain native-unverified. Run 19 was extraction-only and did not run the native job. Run 20 adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
+Run 20 requires five preflight/16 main/one download selections. Its Summarize correction is verified; the WK observer failure persists, and its UI/media corrections remain pending native results. Run 19 was extraction-only and did not run the native job. Run 20 adds a separate first-loop rotation case; run 18's passing fullscreen case is unchanged. The new case uses a read-only epoch clock, a fixed play-tap anchor and the actual first-resize epoch to check rotation timing at the first loop boundary. Its native runtime result remains pending, as does the Client probe guard change described above.
 
-Prepared unit-fixture corrections make all six main-actor Summarize tests async with the same 0.5-second deadlines and capture their mock by value to avoid a late callback dereferencing torn-down test state. The WK observer case gets a finite 320×640 viewport and local tall HTML, with a stronger content-size predicate requiring width greater than zero and height greater than the 640-point viewport. All eight observers, progress==1, the 30-second deadline and delegate/leak assertions remain. These are test-fixture corrections, not a proven production playback fix.
+Run 20's verified Summarize fixture correction makes all six main-actor tests async with the same 0.5-second deadlines and capture their mock by value to avoid a late callback dereferencing torn-down test state. The still-failing WK observer case uses a finite 320×640 viewport and local tall HTML, with a stronger content-size predicate requiring width greater than zero and height greater than the 640-point viewport. All eight observers, progress==1, the 30-second deadline and delegate/leak assertions remain. These are test-fixture corrections, not a proven production playback fix.
 
 A later signing-declaration correction restores the main app's AutoFill-provider entitlement to match upstream and its extension. It is not included in run 20's source and does not certify signed AutoFill. The actual unsigned IPA must still be inspected for embedded entitlements before promising compatibility with a signing tool. [Signing requirements](SIGNING-REQUIREMENTS.md) record this remaining installation work and conditional phone-only routes.
 
@@ -93,7 +99,7 @@ These local checks complement native execution. Run 18's download and iPhone rel
 
 ## Checks still required
 
-- Verify the prepared corrections for run 18's two unit failures and MP4 status-label assertion. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the current delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
+- Diagnose and resolve the remaining WK observer failure; verify the MP4 status-label assertion and timing-sensitive media cases. Run 20 has verified the Summarize fixture correction. Complete the full unit plan, all 16 main UI cases, all five preflight cases, dedicated download and exact file-byte verification for the current delivery candidate. Investigate any recurrence of the earlier fullscreen stall using the new native diagnostics.
 - Repeat the iPhone release build/package audit for the corrected delivery source, retaining its exact package hash and provenance. Run 18's completed audit applies only to its recorded source.
 - Provide valid Apple signing and matching provisioning for the app and all six extensions before installation. TestFlight also requires Apple Developer/App Store Connect setup; no signing credentials are configured.
 - Test the signed application on a physical iPhone 15 Pro Max.
