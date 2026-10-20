@@ -279,11 +279,16 @@ jobs:
           printf '\n127.0.0.1 aster-acceptance.adnxs.com\n' | sudo tee -a /etc/hosts >/dev/null
           python3 scripts/aster-test-server.py > "$ASTER_RESULTS/fixture-server.log" 2>&1 &
           fixture_pid=$!
-          stop_fixture_server() {
+          collect_acceptance_evidence() {
+            local test_status=$?
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics/main-ui" \
+              > "$ASTER_RESULTS/main-ui-session-collection.log" 2>&1 || true
             kill "$fixture_pid" 2>/dev/null || true
             wait "$fixture_pid" 2>/dev/null || true
+            return "$test_status"
           }
-          trap stop_fixture_server EXIT
+          trap collect_acceptance_evidence EXIT
           fixture_ready=false
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then
@@ -317,6 +322,35 @@ jobs:
             CODE_SIGN_INJECT_BASE_ENTITLEMENTS=YES PROVISIONING_PROFILE='' PROVISIONING_PROFILE_SPECIFIER='' \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee "$ASTER_RESULTS/acceptance-tests.log"
+      - name: Export the completed main UI test summary
+        if: ${{ !cancelled() && (steps.acceptance_tests.outcome == 'success' || steps.acceptance_tests.outcome == 'failure') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" ]; then
+            xcrun xcresulttool get test-results summary --path "$ASTER_RESULTS/AsterAcceptanceTests.xcresult" \
+              > "$ASTER_RESULTS/AsterAcceptanceTests-summary.json.tmp" \
+              2> "$ASTER_RESULTS/acceptance-summary-export.log"
+            mv "$ASTER_RESULTS/AsterAcceptanceTests-summary.json.tmp" "$ASTER_RESULTS/AsterAcceptanceTests-summary.json"
+          else
+            echo '::warning::The main UI test step did not produce an XCResult bundle; its available logs are preserved.'
+          fi
+      - name: Preserve completed main UI test evidence before download tests
+        if: ${{ !cancelled() && (steps.acceptance_tests.outcome == 'success' || steps.acceptance_tests.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aster-main-ui-validation-evidence-attempt-${{ github.run_attempt }}
+          path: |
+            build-output/acceptance-tests.log
+            build-output/fixture-server.log
+            build-output/AsterAcceptanceTests-summary.json
+            build-output/acceptance-summary-export.log
+            build-output/main-ui-session-collection.log
+            build-output/session-diagnostics/main-ui/
+            build-output/source-commit.txt
+            build-output/toolchain.txt
+          if-no-files-found: error
+          retention-days: 7
       - name: Run isolated native download acceptance
         id: download_tests
         if: ${{ !cancelled() && steps.prepare.outcome == 'success' && steps.resolve_packages.outcome == 'success' && steps.boot_simulator.outcome == 'success' }}
@@ -326,11 +360,16 @@ jobs:
           set -euo pipefail
           python3 scripts/aster-test-server.py > "$ASTER_RESULTS/download-fixture-server.log" 2>&1 &
           fixture_pid=$!
-          stop_fixture_server() {
+          collect_download_evidence() {
+            local test_status=$?
+            python3 scripts/aster-collect-session-evidence.py "$ASTER_SIMULATOR_UDID" \
+              "$ASTER_RESULTS/session-diagnostics/download" \
+              > "$ASTER_RESULTS/download-session-collection.log" 2>&1 || true
             kill "$fixture_pid" 2>/dev/null || true
             wait "$fixture_pid" 2>/dev/null || true
+            return "$test_status"
           }
-          trap stop_fixture_server EXIT
+          trap collect_download_evidence EXIT
           fixture_ready=false
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:8766/healthz >/dev/null; then
