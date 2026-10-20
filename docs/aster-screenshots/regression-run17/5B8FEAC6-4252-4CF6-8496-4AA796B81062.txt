@@ -1,0 +1,87 @@
+Attributes: Application, 0x1066b6940, pid: 62222, label: 'Aster'
+Element subtree:
+ →Application, 0x1066b6940, pid: 62222, label: 'Aster'
+    Window (Main), 0x1066b6a80, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x1066b6bc0, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x1066b6d00, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x1066b6e40, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x1066b6f80, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x1066b70c0, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x1066b7200, {{0.0, 0.0}, {932.0, 430.0}}
+            WebView, 0x1066b7340, {{0.0, 0.0}, {932.0, 430.0}}, identifier: 'contentView', label: 'Web content'
+              WebView, 0x1066b7480, {{0.0, 0.0}, {932.0, 430.0}}
+                Other, 0x1066b75c0, {{0.0, -376.0}, {932.0, 430.0}}
+                  Image, 0x1066b7700, {{437.9, -17.1}, {56.2, 56.2}}, identifier: 'arrowClockwiseLarge'
+                  Other, 0x1066b7840, {{451.0, -4.0}, {30.0, 30.0}}
+                WebView, 0x1066b7980, {{0.0, 0.0}, {932.0, 430.0}}
+                  Other, 0x1066b7ac0, {{0.0, 0.0}, {932.0, 430.0}}
+                    Other, 0x1066b7c00, {{0.0, 0.0}, {932.0, 430.0}}
+                      Other, 0x1066b7d40, {{59.0, 54.0}, {932.0, 430.0}}
+                        Other, 0x1066b7e80, {{59.0, 54.0}, {814.0, 348.0}}, label: 'Aster fullscreen player', Focused
+                          Other, 0x117854000, {{79.0, 69.0}, {774.0, 214.0}}, label: '6 seconds', value: 0 seconds, Focused
+                          Other, 0x117854140, {{328.0, 291.0}, {276.0, 27.0}}, Focused
+                            StaticText, 0x117854280, {{328.0, 293.0}, {276.0, 23.0}}, label: 'Fullscreen video playing in portrait', value: Fullscreen video p..., Focused
+                          Button, 0x1178543c0, {{392.0, 334.0}, {148.0, 45.0}}, label: 'Exit fullscreen', Focused
+                Other, 0x117854500, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                  Other, 0x117854640, {{926.0, 58.0}, {3.0, 148.0}}
+                Other, 0x117854780, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                  Other, 0x1178548c0, {{442.0, 396.0}, {432.0, 3.0}}
+                Other, 0x117854a00, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                  Other, 0x117854b40, {{926.0, 58.0}, {3.0, 148.0}}
+                Other, 0x117854c80, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                  Other, 0x117854dc0, {{442.0, 396.0}, {432.0, 3.0}}
+            Other, 0x117854f00, {{75.0, 54.0}, {60.0, 47.0}}
+              Other, 0x117855040, {{75.0, 54.0}, {60.0, 47.0}}
+                Other, 0x117855180, {{75.0, 54.0}, {60.0, 47.0}}
+                  Other, 0x1178552c0, {{75.0, 54.0}, {60.0, 47.0}}
+                Button, 0x117855400, {{75.0, 54.0}, {60.0, 47.0}}, label: 'Done'
+                  StaticText, 0x117855540, {{75.0, 54.0}, {0.0, 0.0}}
+                Other, 0x117855680, {{75.0, 54.0}, {60.0, 47.0}}
+    Window, 0x1178557c0, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x117855900, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x117855a40, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x117855b80, {{0.0, 0.0}, {932.0, 430.0}}
+            Other, 0x117855cc0, {{0.0, 0.0}, {932.0, 430.0}}
+              Other, 0x117855e00, {{0.0, 0.0}, {932.0, 430.0}}
+                Other, 0x117855f40, {{0.0, 0.0}, {932.0, 430.0}}
+                  Button, 0x117856080, {{0.0, 0.0}, {932.0, 32.0}}
+                    StaticText, 0x1178561c0, {{0.0, 0.0}, {0.0, 0.0}}
+                  Other, 0x117856300, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.topBlurView'
+                  Other, 0x117856440, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.statusBarOverlay'
+                  Other, 0x117856580, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.headerContainer'
+                    Other, 0x1178566c0, {{0.0, 0.0}, {932.0, 60.0}}
+                      Other, 0x117856800, {{0.0, 0.0}, {932.0, 60.0}}
+                        Other, 0x117856940, {{67.0, 8.0}, {798.0, 44.0}}
+                          Other, 0x117856a80, {{67.0, 8.0}, {88.0, 44.0}}
+                            Button, 0x117856bc0, {{67.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.backButton', label: 'Back'
+                            Button, 0x117856d00, {{111.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.forwardButton', label: 'Forward', Disabled
+                          Other, 0x117856e40, {{163.0, 8.0}, {562.0, 44.0}}
+                            Other, 0x117856f80, {{163.0, 8.0}, {44.0, 44.0}}
+                              Button, 0x1178570c0, {{163.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.shareButton', label: 'Share this page'
+                            Other, 0x117857200, {{207.0, 8.0}, {474.0, 44.0}}
+                              Other, 0x117857340, {{400.3, 8.0}, {24.0, 44.0}}
+                                Button, 0x117857480, {{400.3, 19.0}, {24.0, 22.0}}, identifier: 'AddressToolbar.lockIconOff', label: 'Privacy & Security Settings', Disabled
+                              TextField, 0x1178575c0, {{424.3, 8.0}, {63.7, 44.0}}, identifier: 'AddressToolbar.address', value: 127.0.0.1
+                            Other, 0x117857700, {{681.0, 8.0}, {44.0, 44.0}}
+                              Button, 0x117857840, {{681.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.reloadButton', label: 'Reload page'
+                          Other, 0x117857980, {{733.0, 8.0}, {132.0, 44.0}}
+                            Button, 0x117857ac0, {{733.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.addNewTabButton', label: 'New Tab'
+                            Button, 0x117857c00, {{777.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.menuButton', label: 'Menu'
+                            Button, 0x117857d40, {{821.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.tabsButton', label: 'Tabs open', value: 1
+                              StaticText, 0x117857e80, {{821.0, 23.3}, {44.0, 13.3}}, label: '1'
+                  Other, 0x117858000, {{0.0, 0.0}, {932.0, 430.0}}
+                  Other, 0x117858140, {{0.0, 60.0}, {932.0, 370.0}}, identifier: 'Browser.contentContainer'
+                    Other, 0x117858280, {{0.0, 60.0}, {932.0, 370.0}}
+                      Other, 0x1178583c0, {{0.0, 60.0}, {932.0, 370.0}}
+            Other, 0x117858500, {{0.0, 0.0}, {932.0, 430.0}}
+              Other, 0x117858640, {{0.0, 0.0}, {932.0, 430.0}}
+    Window, 0x117858780, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x1178588c0, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x117858a00, {{0.0, 0.0}, {932.0, 430.0}}
+Path to element:
+ →Application, 0x1066b6940, pid: 62222, label: 'Aster'
+Query chain:
+ →Find: Target Application 'com.omarkebrit.aster'
+  Output: {
+    Application, 0x117858b40, pid: 62222, label: 'Aster'
+  }
