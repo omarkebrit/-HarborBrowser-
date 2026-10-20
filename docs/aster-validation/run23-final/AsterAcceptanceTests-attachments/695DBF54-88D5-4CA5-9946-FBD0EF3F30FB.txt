@@ -1,0 +1,82 @@
+Application, 0x11a372bc0, pid: 37965, label: 'Aster' <App element pid: 37965>
+  Window (Main), 0x11a370a00, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5666495488.299>
+    Other, 0x11a371a40, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5556919808.300>
+      Other, 0x11a370780, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5648973824.302>
+        Other, 0x11a3717c0, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425621376.304>
+    Other, 0x11a3712c0, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5556913152.301>
+      Other, 0x11a371400, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425628992.303>
+        Other, 0x11a371180, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425621824.305>
+          WebView, 0x11a3703c0, {{0.0, 0.0}, {932.0, 430.0}}, identifier: 'contentView', label: 'Web content' <AX element pid: 37965, elementOrHash.elementID: 4419332096.284>
+            WebView, 0x11a372d00, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4419334656.285>
+              Other, 0x11a372e40, {{0.0, -376.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5649015552.327>
+                Image, 0x11a372f80, {{437.9, -17.1}, {56.2, 56.2}}, identifier: 'arrowClockwiseLarge' <AX element pid: 37965, elementOrHash.elementID: 5648418816.328>
+                Other, 0x11a3730c0, {{451.0, -4.0}, {30.0, 30.0}} <AX element pid: 37965, elementOrHash.elementID: 5972295680.329>
+              WebView, 0x11a373200, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4419937280.287>
+                Other, 0x11a373340, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4083963637007807948.9999>
+                  Other, 0x11a373480, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 38252, elementOrHash.elementID: 4311934976.3>
+                    Other, 0x11a3735c0, {{59.0, 54.0}, {932.0, 430.0}} <AX element pid: 38252, elementOrHash.elementID: 4367497536.4>
+                      Other, 0x11a373700, {{59.0, 54.0}, {814.0, 348.0}}, label: 'Aster fullscreen player', Focused <AX element pid: 38252, elementOrHash.elementID: 4367496960.5>
+                        Other, 0x11a373840, {{79.0, 69.0}, {774.0, 214.0}}, label: '6 seconds', value: 3 seconds, Focused <AX element pid: 38252, elementOrHash.elementID: 4367497984.7>
+                        Other, 0x11a373980, {{316.0, 291.0}, {299.0, 27.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367498016.8>
+                          StaticText, 0x11a373ac0, {{316.0, 293.0}, {299.0, 23.0}}, label: 'Fullscreen video playing in landscape', value: Fullscreen video p..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367472256.96>
+                        Button, 0x11a373c00, {{392.0, 334.0}, {148.0, 45.0}}, label: 'Exit fullscreen', Focused <AX element pid: 38252, elementOrHash.elementID: 4367498048.9>
+                        Other, 0x11a373d40, {{67.0, 62.0}, {798.0, 371.0}}, label: 'complementary', Focused <AX element pid: 38252, elementOrHash.elementID: 4367498080.10>
+                          Other, 0x11a373e80, {{67.0, 86.0}, {798.0, 100.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367514592.14>
+                            StaticText, 0x11b09fd40, {{67.0, 88.0}, {789.0, 96.0}}, label: 'Media: t=2.934 frames=221 loops=2 paused=false ended=false ready=4 network=1 rate=1 error=none fullscreen=true stage=814x348 visibility=visible; Events: resize@1.242 > seeking@0.000 > seeked@0.000 > resize@0.000 > seeking@0.000 > seeked@0.001 > seeking@0.000 > seeked@0.000', value: Media: t=2.934 fra..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367469984.97>
+                          Other, 0x11b096300, {{67.0, 186.0}, {798.0, 25.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367514688.15>
+                            StaticText, 0x11b096440, {{67.0, 188.0}, {471.0, 21.0}}, label: 'Fullscreen loop playback verified in landscape', value: Fullscreen loop pl..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367471200.98>
+                          Other, 0x11b097ac0, {{67.0, 235.0}, {798.0, 100.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367514752.16>
+                            StaticText, 0x11b096080, {{67.0, 237.0}, {789.0, 96.0}}, label: 'Aster media clock {"t":2.933532757999522,"duration":6,"rate":1,"playing":true,"epochMs":1792495116057,"playRequestedEpochMs":1792495093712,"totalNaturalWraps":3,"orientation":"landscape"}', value: Aster media clock ..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367471712.99>
+                          Other, 0x11b097d40, {{67.0, 359.0}, {798.0, 25.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367514816.17>
+                            StaticText, 0x11b097980, {{67.0, 361.0}, {410.0, 21.0}}, label: 'Waiting for first-loop boundary rotation', value: Waiting for first-..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367472096.22>
+                          Other, 0x11b095a40, {{67.0, 408.0}, {798.0, 25.0}}, Focused <AX element pid: 38252, elementOrHash.elementID: 4367514880.18>
+                            StaticText, 0x11b097840, {{67.0, 410.0}, {318.0, 21.0}}, label: 'Aster rotation observation null', value: Aster rotation obs..., Focused <AX element pid: 38252, elementOrHash.elementID: 4367471840.23>
+              Other, 0x11b097480, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 37965, elementOrHash.elementID: 5556922368.310>
+                Other, 0x11b097200, {{926.0, 58.0}, {3.0, 148.0}} <AX element pid: 37965, elementOrHash.elementID: 4425403456.320>
+              Other, 0x11b097340, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 37965, elementOrHash.elementID: 5556915712.311>
+                Other, 0x11b097e80, {{442.0, 396.0}, {432.0, 3.0}} <AX element pid: 37965, elementOrHash.elementID: 4425406592.321>
+              Other, 0x11b097700, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0% <AX element pid: 37965, elementOrHash.elementID: 5556922368.310>
+                Other, 0x11b097c00, {{926.0, 58.0}, {3.0, 148.0}} <AX element pid: 37965, elementOrHash.elementID: 4425403456.320>
+              Other, 0x11b096f80, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0% <AX element pid: 37965, elementOrHash.elementID: 5556915712.311>
+                Other, 0x11b0970c0, {{442.0, 396.0}, {432.0, 3.0}} <AX element pid: 37965, elementOrHash.elementID: 4425406592.321>
+  Window, 0x11b096e40, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4419307520.3>
+    Other, 0x11b0961c0, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4426078720.4>
+      Other, 0x11a364000, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4568191360.6>
+        Other, 0x11a364140, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425656384.7>
+          Other, 0x11a364280, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425657280.8>
+            Other, 0x11a3643c0, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425011136.10>
+              Other, 0x11a364500, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4419884288.12>
+                Button, 0x11a364640, {{0.0, 0.0}, {932.0, 32.0}} <AX element pid: 37965, elementOrHash.elementID: 4418720256.330>
+                  StaticText, 0x11a364780, {{0.0, 0.0}, {0.0, 0.0}} <AX element pid: 37965, elementOrHash.elementID: 5474549760.333>
+                Other, 0x11a3648c0, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.topBlurView' <AX element pid: 37965, elementOrHash.elementID: 4570790272.331>
+                Other, 0x11a364a00, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.statusBarOverlay' <AX element pid: 37965, elementOrHash.elementID: 4568195200.13>
+                Other, 0x11a364b40, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.headerContainer' <AX element pid: 37965, elementOrHash.elementID: 4571652096.332>
+                  Other, 0x11a364c80, {{0.0, 0.0}, {932.0, 60.0}} <AX element pid: 37965, elementOrHash.elementID: 4419193856.20>
+                    Other, 0x11a364dc0, {{0.0, 0.0}, {932.0, 60.0}} <AX element pid: 37965, elementOrHash.elementID: 4419192320.24>
+                      Other, 0x11a364f00, {{67.0, 8.0}, {798.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4419891456.39>
+                        Other, 0x11a365040, {{67.0, 8.0}, {88.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4420747264.334>
+                          Button, 0x11a365180, {{67.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.backButton', label: 'Back' <AX element pid: 37965, elementOrHash.elementID: 5494506752.335>
+                          Button, 0x11a3652c0, {{111.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.forwardButton', label: 'Forward', Disabled <AX element pid: 37965, elementOrHash.elementID: 5494508032.336>
+                        Other, 0x11a365400, {{163.0, 8.0}, {562.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4419892800.52>
+                          Other, 0x11a365540, {{163.0, 8.0}, {44.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4419893248.294>
+                            Button, 0x11a365680, {{163.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.shareButton', label: 'Share this page' <AX element pid: 37965, elementOrHash.elementID: 5490862080.296>
+                          Other, 0x11a3657c0, {{207.0, 8.0}, {474.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4419195392.74>
+                            Other, 0x11a365900, {{400.3, 8.0}, {24.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4425651904.99>
+                              Button, 0x11a365a40, {{400.3, 19.0}, {24.0, 22.0}}, identifier: 'AddressToolbar.lockIconOff', label: 'Privacy & Security Settings', Disabled <AX element pid: 37965, elementOrHash.elementID: 4418721792.298>
+                            TextField, 0x11a365b80, {{424.3, 8.0}, {63.7, 44.0}}, identifier: 'AddressToolbar.address', value: 127.0.0.1 <AX element pid: 37965, elementOrHash.elementID: 4419196928.100>
+                          Other, 0x11a365cc0, {{681.0, 8.0}, {44.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4425659968.295>
+                            Button, 0x11a365e00, {{681.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.reloadButton', label: 'Reload page' <AX element pid: 37965, elementOrHash.elementID: 5490859520.297>
+                        Other, 0x11a365f40, {{733.0, 8.0}, {132.0, 44.0}} <AX element pid: 37965, elementOrHash.elementID: 4420748160.185>
+                          Button, 0x11a366080, {{733.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.addNewTabButton', label: 'New Tab' <AX element pid: 37965, elementOrHash.elementID: 5490865920.337>
+                          Button, 0x11a3661c0, {{777.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.menuButton', label: 'Menu' <AX element pid: 37965, elementOrHash.elementID: 5490864640.338>
+                          Button, 0x11a366300, {{821.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.tabsButton', label: 'Tabs open', value: 1 <AX element pid: 37965, elementOrHash.elementID: 5494505472.339>
+                            StaticText, 0x11a366440, {{821.0, 23.3}, {44.0, 13.3}}, label: '1' <AX element pid: 37965, elementOrHash.elementID: 5662827264.340>
+                Other, 0x11a366580, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4419879808.15>
+                Other, 0x11a3666c0, {{0.0, 60.0}, {932.0, 370.0}}, identifier: 'Browser.contentContainer' <AX element pid: 37965, elementOrHash.elementID: 4419889216.14>
+                  Other, 0x11a366800, {{0.0, 60.0}, {932.0, 370.0}} <AX element pid: 37965, elementOrHash.elementID: 4425568640.283>
+                    Other, 0x11a366940, {{0.0, 60.0}, {932.0, 370.0}} <AX element pid: 37965, elementOrHash.elementID: 4425617344.326>
+          Other, 0x11a366a80, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4426076160.9>
+            Other, 0x11a366bc0, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4426078208.11>
+  Window, 0x11a366d00, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 5492462592.126>
+    Other, 0x11a366e40, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425117504.128>
+      Other, 0x11a366f80, {{0.0, 0.0}, {932.0, 430.0}} <AX element pid: 37965, elementOrHash.elementID: 4425108096.130>
