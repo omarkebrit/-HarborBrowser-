@@ -160,6 +160,7 @@ PAGES = {
         let globalPreviousTime = 0;
         let totalNaturalWraps = 0;
         let portraitFullscreenSeen = false;
+        let observedStageOrientation = '';
         let rotationObservation = null;
         let playRequestedEpochMs = null;
         let lastFrameAt = 0;
@@ -200,11 +201,12 @@ PAGES = {
                 epochMs: Date.now(), playRequestedEpochMs, totalNaturalWraps, orientation };
             clock.textContent = 'Aster media clock ' + JSON.stringify(sample);
             if (document.fullscreenElement && orientation === 'portrait') portraitFullscreenSeen = true;
-            if (event && event.type === 'resize' && document.fullscreenElement && portraitFullscreenSeen
+            if (event && event.type === 'stage-resize' && event.previousOrientation === 'portrait'
+                    && document.fullscreenElement && portraitFullscreenSeen
                     && orientation === 'landscape' && !rotationObservation) {
                 const nearBoundary = Number.isFinite(sample.duration) && sample.duration > 0
                     && totalNaturalWraps <= 1 && (sample.t >= sample.duration - 0.75 || sample.t <= 0.5);
-                rotationObservation = { ...sample, frames, stage: size, nearBoundary };
+                rotationObservation = { ...sample, frames, stage: size, nearBoundary, source: 'ResizeObserver' };
                 rotationDetails.textContent = 'Aster rotation observation ' + JSON.stringify(rotationObservation);
                 rotationStatus.textContent = nearBoundary ? 'Fullscreen first-loop boundary rotation observed'
                     : 'Fullscreen rotation missed first-loop boundary';
@@ -237,6 +239,19 @@ PAGES = {
             v.addEventListener(event, record);
         v.addEventListener('timeupdate', report);
         window.addEventListener('resize', record);
+        if (typeof ResizeObserver === 'function') {
+            const stageObserver = new ResizeObserver(() => {
+                const orientation = stage.clientWidth > stage.clientHeight ? 'landscape' : 'portrait';
+                const previousOrientation = observedStageOrientation;
+                observedStageOrientation = orientation;
+                record({ type: 'stage-resize', previousOrientation });
+            });
+            stageObserver.observe(stage);
+        } else {
+            rotationStatus.textContent = 'Fullscreen boundary observation unavailable: ResizeObserver';
+            rotationDetails.textContent = 'Aster rotation observation '
+                + JSON.stringify({ error: 'ResizeObserver unavailable' });
+        }
         document.addEventListener('visibilitychange', record);
         setInterval(report, 500);
     """),

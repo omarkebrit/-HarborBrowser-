@@ -34,7 +34,7 @@ function eventTarget() {
     };
 }
 
-function createScene(orientation = 'landscape') {
+function createScene(orientation = 'landscape', { resizeObserver = true } = {}) {
     let now = 100;
     let fullscreen = true;
     let dimensions = orientation === 'landscape' ? [932, 430] : [430, 932];
@@ -108,9 +108,24 @@ function createScene(orientation = 'landscape') {
     };
     const window = eventTarget();
     const intervals = [];
+    let resizeCallback;
+    const observedTargets = new Set();
+    class FakeResizeObserver {
+        constructor(callback) {
+            assert.equal(resizeCallback, undefined, 'Only one stage observer is needed');
+            resizeCallback = callback;
+        }
+        observe(target) {
+            assert.equal(target, stage, 'Observe the actual fullscreen stage');
+            observedTargets.add(target);
+        }
+    }
+    const ResizeObserver = resizeObserver ? FakeResizeObserver : undefined;
+    window.ResizeObserver = ResizeObserver;
     vm.runInNewContext(scripts[0], {
         document,
         window,
+        ResizeObserver,
         performance: { now: () => now },
         Date: { now: () => 1760000000000 + now },
         setInterval(callback, milliseconds) {
@@ -160,9 +175,20 @@ function createScene(orientation = 'landscape') {
         setOrientation(nextOrientation) {
             dimensions = nextOrientation === 'landscape' ? [932, 430] : [430, 932];
         },
+        setDimensions(width, height) {
+            dimensions = [width, height];
+        },
+        deliverStageResize(milliseconds = 0) {
+            now += milliseconds;
+            assert.ok(observedTargets.has(stage), 'The real stage must be observed before callback delivery');
+            resizeCallback([{ target: stage, contentRect: {
+                width: stage.clientWidth, height: stage.clientHeight,
+            } }]);
+        },
         rotate(nextOrientation) {
             scene.setOrientation(nextOrientation);
             window.emit('resize');
+            if (resizeObserver) scene.deliverStageResize();
         },
         exit() {
             fullscreen = false;
@@ -170,6 +196,7 @@ function createScene(orientation = 'landscape') {
         },
     };
     scene.tick();
+    if (resizeObserver) scene.deliverStageResize();
     return scene;
 }
 
@@ -388,6 +415,7 @@ test('the actual first landscape resize must reach the final 0.75 seconds of the
         assert.equal(scene.rotation.frames, 1);
         assert.equal(scene.rotation.stage, '932x430');
         assert.equal(scene.rotation.orientation, 'landscape');
+        assert.equal(scene.rotation.source, 'ResizeObserver');
         assert.equal(scene.rotation.totalNaturalWraps, 0);
         assert.equal(scene.rotation.nearBoundary, nearBoundary);
         assert.equal(scene.rotationStatus, nearBoundary
@@ -446,16 +474,91 @@ test('rotation evidence requires an earlier fullscreen portrait observation and 
     assert.equal(scene.rotation, null);
 });
 
-test('timeupdate geometry observations cannot replace evidence of an actual window resize', () => {
+test('only a delivered stage crossing supplies rotation evidence, not window events or polling', () => {
     const scene = createScene('portrait');
     scene.sample(5.8);
     scene.setOrientation('landscape');
     scene.video.emit('timeupdate');
     assert.equal(scene.rotation, null);
     scene.window.emit('resize');
+    assert.equal(scene.rotation, null);
+    scene.tick(50);
+    assert.equal(scene.rotation, null);
+    scene.deliverStageResize(25);
     assert.equal(scene.rotation.nearBoundary, true);
     assert.equal(scene.rotation.t, 5.8);
+    assert.equal(scene.rotation.source, 'ResizeObserver');
+    assert.equal(scene.rotation.epochMs, scene.epochMs);
     assert.equal(scene.rotationStatus, 'Fullscreen first-loop boundary rotation observed');
+});
+
+test('a window resize before layout does not latch until the stage actually crosses to landscape', () => {
+    const scene = createScene('portrait');
+    scene.sample(5.8);
+    scene.setDimensions(814, 831);
+    scene.sample(0.458);
+    const windowEpoch = scene.epochMs;
+    scene.window.emit('resize');
+    assert.equal(scene.rotation, null);
+    assert.equal(scene.clock.orientation, 'portrait');
+    scene.setDimensions(814, 348);
+    scene.sample(0.476, { milliseconds: 18 });
+    assert.equal(scene.rotation, null);
+    scene.deliverStageResize();
+    assert.equal(scene.rotation.t, 0.476);
+    assert.equal(scene.rotation.epochMs - windowEpoch, 18);
+    assert.equal(scene.rotation.epochMs, scene.epochMs);
+    assert.equal(scene.rotation.stage, '814x348');
+    assert.equal(scene.rotation.source, 'ResizeObserver');
+    assert.equal(scene.rotation.nearBoundary, true);
+    assert.deepEqual(scene.actions, []);
+});
+
+test('a qualifying early window event cannot backdate an actual stage crossing outside the window', () => {
+    const scene = createScene('portrait');
+    scene.sample(5.8);
+    scene.sample(0.458);
+    const windowEpoch = scene.epochMs;
+    scene.window.emit('resize');
+    assert.equal(scene.rotation, null);
+    scene.setOrientation('landscape');
+    scene.sample(0.6, { milliseconds: 142 });
+    scene.deliverStageResize();
+    const firstCrossing = scene.rotation;
+    assert.equal(firstCrossing.t, 0.6);
+    assert.equal(firstCrossing.epochMs - windowEpoch, 142);
+    assert.equal(firstCrossing.totalNaturalWraps, 1);
+    assert.equal(firstCrossing.nearBoundary, false);
+    scene.rotate('portrait');
+    scene.sample(5.8);
+    scene.rotate('landscape');
+    assert.deepEqual(scene.rotation, firstCrossing);
+    assert.equal(scene.rotationStatus, 'Fullscreen rotation missed first-loop boundary');
+});
+
+test('portrait polling cannot invent a portrait ResizeObserver notification before a same-orientation delivery', () => {
+    const scene = createScene();
+    scene.setOrientation('portrait');
+    scene.sample(5.8);
+    scene.setOrientation('landscape');
+    scene.deliverStageResize();
+    assert.equal(scene.rotation, null);
+    scene.rotate('portrait');
+    scene.rotate('landscape');
+    assert.equal(scene.rotation.source, 'ResizeObserver');
+    assert.equal(scene.rotation.nearBoundary, true);
+});
+
+test('missing ResizeObserver reports unavailability and cannot fall back to window resize proof', () => {
+    const scene = createScene('portrait', { resizeObserver: false });
+    scene.sample(5.8);
+    scene.rotate('landscape');
+    scene.sample(5.9);
+    scene.window.emit('resize');
+    scene.tick();
+    assert.equal(scene.rotationStatus, 'Fullscreen boundary observation unavailable: ResizeObserver');
+    assert.deepEqual(scene.rotation, { error: 'ResizeObserver unavailable' });
+    assert.deepEqual(scene.actions, []);
 });
 
 test('only the explicit Enter gesture sets the play anchor, once and before requesting playback', async () => {

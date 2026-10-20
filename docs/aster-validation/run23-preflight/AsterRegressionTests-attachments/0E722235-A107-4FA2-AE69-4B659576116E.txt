@@ -1,0 +1,29 @@
+Attributes: StaticText, 0x10ad3d7c0, {{16.0, 124.0}, {147.0, 24.0}}, label: 'Local tab 18 ready'
+Element subtree:
+ →StaticText, 0x10ad3d7c0, {{16.0, 124.0}, {147.0, 24.0}}, label: 'Local tab 18 ready'
+Path to element:
+ →Any, 0x10ac92d00, {{inf, inf}, {0.0, 0.0}}
+  ↳Window, 0x10ac90140, {{inf, inf}, {0.0, 0.0}}
+   ↳Other, 0x10ad3c000, {{inf, inf}, {0.0, 0.0}}
+    ↳Other, 0x10ad3c140, {{inf, inf}, {0.0, 0.0}}
+     ↳Other, 0x10ad3c280, {{inf, inf}, {0.0, 0.0}}
+      ↳Other, 0x10ad3c3c0, {{inf, inf}, {0.0, 0.0}}
+       ↳Other, 0x10ad3c500, {{inf, inf}, {0.0, 0.0}}
+        ↳Other, 0x10ad3c640, {{inf, inf}, {0.0, 0.0}}
+         ↳Other, 0x10ad3c780, {{inf, inf}, {0.0, 0.0}}
+          ↳Other, 0x10ad3c8c0, {{inf, inf}, {0.0, 0.0}}
+           ↳WebView, 0x10ad3ca00, {{inf, inf}, {0.0, 0.0}}
+            ↳WebView, 0x10ad3cb40, {{inf, inf}, {0.0, 0.0}}
+             ↳WebView, 0x10ad3cc80, {{inf, inf}, {0.0, 0.0}}
+              ↳Other, 0x10ad3cf00, {{inf, inf}, {0.0, 0.0}}
+               ↳Other, 0x10ad3d040, {{inf, inf}, {0.0, 0.0}}
+                ↳Other, 0x10ad3d180, {{inf, inf}, {0.0, 0.0}}
+                 ↳Other, 0x10ad3d2c0, {{inf, inf}, {0.0, 0.0}}, label: 'Aster tab 18'
+                  ↳Other, 0x10ad3d680, {{inf, inf}, {0.0, 0.0}}
+                   ↳StaticText, 0x10ad3d7c0, {{16.0, 124.0}, {147.0, 24.0}}, label: 'Local tab 18 ready'
+Query chain:
+ →Find: Target Application 'com.omarkebrit.aster'
+  ↪︎Find: Descendants matching type WebView
+    ↪︎Find: Descendants matching type StaticText
+      ↪︎Find: Elements matching predicate 'label == "Local tab 18 ready"'
+        ↪︎Find: First Match

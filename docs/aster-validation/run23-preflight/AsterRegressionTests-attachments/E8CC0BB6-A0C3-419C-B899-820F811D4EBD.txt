@@ -1,0 +1,91 @@
+Attributes: Application, 0x116c8f5c0, pid: 94204, label: 'Aster'
+Element subtree:
+ →Application, 0x116c8f5c0, pid: 94204, label: 'Aster'
+    Window (Main), 0x116c8f700, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x116c8f840, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x116c8f980, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x116c8fac0, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x116c8fc00, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x116c8fd40, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x116c8fe80, {{0.0, 0.0}, {932.0, 430.0}}
+            WebView, 0x116cbaa80, {{0.0, 0.0}, {932.0, 430.0}}, identifier: 'contentView', label: 'Web content'
+              WebView, 0x116cb9cc0, {{0.0, 0.0}, {932.0, 430.0}}
+                Other, 0x116cb8640, {{0.0, -376.0}, {932.0, 430.0}}
+                  Image, 0x116cb83c0, {{437.9, -17.1}, {56.2, 56.2}}, identifier: 'arrowClockwiseLarge'
+                  Other, 0x116cb8500, {{451.0, -4.0}, {30.0, 30.0}}
+                WebView, 0x116cb8280, {{0.0, 0.0}, {932.0, 430.0}}
+                  Other, 0x116cbb700, {{0.0, 0.0}, {932.0, 430.0}}
+                    Other, 0x116cb8140, {{0.0, 0.0}, {932.0, 430.0}}
+                      Other, 0x116cba580, {{59.0, 54.0}, {932.0, 430.0}}
+                        Other, 0x116cba6c0, {{59.0, 54.0}, {814.0, 348.0}}, label: 'Aster fullscreen player', Focused
+                          Other, 0x116cbb480, {{79.0, 69.0}, {774.0, 214.0}}, label: '6 seconds', value: 4 seconds, Focused
+                          Other, 0x116cba440, {{316.0, 291.0}, {299.0, 27.0}}, Focused
+                            StaticText, 0x116cbaf80, {{316.0, 293.0}, {299.0, 23.0}}, label: 'Fullscreen video playing in landscape', value: Fullscreen video p..., Focused
+                          Button, 0x116cbbe80, {{392.0, 334.0}, {148.0, 45.0}}, label: 'Exit fullscreen', Focused
+                          Other, 0x116cba080, {{67.0, 62.0}, {798.0, 371.0}}, label: 'complementary', Focused
+                            Other, 0x116cbbc00, {{67.0, 86.0}, {798.0, 100.0}}, Focused
+                              StaticText, 0x116cbb980, {{67.0, 88.0}, {789.0, 96.0}}, label: 'Media: t=4.837 frames=258 loops=2 paused=false ended=false ready=4 network=1 rate=1 error=none fullscreen=true stage=814x348 visibility=visible; Events: resize@0.685 > seeking@0.000 > seeked@0.000 > resize@0.458 > seeking@0.000 > seeked@0.000 > seeking@0.000 > seeked@0.000', value: Media: t=4.837 fra..., Focused
+                            Other, 0x116cbbac0, {{67.0, 186.0}, {798.0, 25.0}}, Focused
+                              StaticText, 0x116cba300, {{67.0, 188.0}, {471.0, 21.0}}, label: 'Fullscreen loop playback verified in landscape', value: Fullscreen loop pl..., Focused
+                            Other, 0x116cb9e00, {{67.0, 235.0}, {798.0, 100.0}}, Focused
+                              StaticText, 0x116cb9f40, {{67.0, 237.0}, {789.0, 96.0}}, label: 'Aster media clock {"t":4.836629334999925,"duration":6,"rate":1,"playing":true,"epochMs":1792493953273,"playRequestedEpochMs":1792493929667,"totalNaturalWraps":3,"orientation":"landscape"}', value: Aster media clock ..., Focused
+                            Other, 0x116cb88c0, {{67.0, 359.0}, {798.0, 25.0}}, Focused
+                              StaticText, 0x116cb8000, {{67.0, 361.0}, {410.0, 21.0}}, label: 'Waiting for first-loop boundary rotation', value: Waiting for first-..., Focused
+                            Other, 0x116cbae40, {{67.0, 408.0}, {798.0, 25.0}}, Focused
+                              StaticText, 0x116cbabc0, {{67.0, 410.0}, {318.0, 21.0}}, label: 'Aster rotation observation null', value: Aster rotation obs..., Focused
+                Other, 0x116cbad00, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                  Other, 0x116cba940, {{926.0, 58.0}, {3.0, 148.0}}
+                Other, 0x116ca0000, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                  Other, 0x116ca0140, {{442.0, 396.0}, {432.0, 3.0}}
+                Other, 0x116ca0280, {{899.0, 55.0}, {30.0, 320.0}}, label: 'Vertical scroll bar, 1 page', value: 0%
+                  Other, 0x116ca03c0, {{926.0, 58.0}, {3.0, 148.0}}
+                Other, 0x116ca0500, {{55.0, 369.0}, {822.0, 30.0}}, label: 'Horizontal scroll bar, 1 page', value: 0%
+                  Other, 0x116ca0640, {{442.0, 396.0}, {432.0, 3.0}}
+    Window, 0x116ca0780, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x116ca08c0, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x116ca0a00, {{0.0, 0.0}, {932.0, 430.0}}
+          Other, 0x116ca0b40, {{0.0, 0.0}, {932.0, 430.0}}
+            Other, 0x116ca0c80, {{0.0, 0.0}, {932.0, 430.0}}
+              Other, 0x116ca0dc0, {{0.0, 0.0}, {932.0, 430.0}}
+                Other, 0x116ca0f00, {{0.0, 0.0}, {932.0, 430.0}}
+                  Button, 0x116ca1040, {{0.0, 0.0}, {932.0, 32.0}}
+                    StaticText, 0x116ca1180, {{0.0, 0.0}, {0.0, 0.0}}
+                  Other, 0x116ca12c0, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.topBlurView'
+                  Other, 0x116ca1400, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.statusBarOverlay'
+                  Other, 0x116ca1540, {{0.0, 0.0}, {932.0, 60.0}}, identifier: 'Browser.headerContainer'
+                    Other, 0x116ca1680, {{0.0, 0.0}, {932.0, 60.0}}
+                      Other, 0x116ca17c0, {{0.0, 0.0}, {932.0, 60.0}}
+                        Other, 0x116ca1900, {{67.0, 8.0}, {798.0, 44.0}}
+                          Other, 0x116ca1a40, {{67.0, 8.0}, {88.0, 44.0}}
+                            Button, 0x116ca1b80, {{67.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.backButton', label: 'Back'
+                            Button, 0x116ca1cc0, {{111.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.forwardButton', label: 'Forward', Disabled
+                          Other, 0x116ca1e00, {{163.0, 8.0}, {562.0, 44.0}}
+                            Other, 0x116ca1f40, {{163.0, 8.0}, {44.0, 44.0}}
+                              Button, 0x116ca2080, {{163.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.shareButton', label: 'Share this page'
+                            Other, 0x116ca21c0, {{207.0, 8.0}, {474.0, 44.0}}
+                              Other, 0x116ca2300, {{400.3, 8.0}, {24.0, 44.0}}
+                                Button, 0x116ca2440, {{400.3, 19.0}, {24.0, 22.0}}, identifier: 'AddressToolbar.lockIconOff', label: 'Privacy & Security Settings', Disabled
+                              TextField, 0x116ca2580, {{424.3, 8.0}, {63.7, 44.0}}, identifier: 'AddressToolbar.address', value: 127.0.0.1
+                            Other, 0x116ca26c0, {{681.0, 8.0}, {44.0, 44.0}}
+                              Button, 0x116ca2800, {{681.0, 8.0}, {44.0, 44.0}}, identifier: 'TabLocationView.reloadButton', label: 'Reload page'
+                          Other, 0x116ca2940, {{733.0, 8.0}, {132.0, 44.0}}
+                            Button, 0x116ca2a80, {{733.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.addNewTabButton', label: 'New Tab'
+                            Button, 0x116ca2bc0, {{777.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.menuButton', label: 'Menu'
+                            Button, 0x116ca2d00, {{821.0, 8.0}, {44.0, 44.0}}, identifier: 'TabToolbar.tabsButton', label: 'Tabs open', value: 1
+                              StaticText, 0x116ca2e40, {{821.0, 23.3}, {44.0, 13.3}}, label: '1'
+                  Other, 0x116ca2f80, {{0.0, 0.0}, {932.0, 430.0}}
+                  Other, 0x116ca30c0, {{0.0, 60.0}, {932.0, 370.0}}, identifier: 'Browser.contentContainer'
+                    Other, 0x116ca3200, {{0.0, 60.0}, {932.0, 370.0}}
+                      Other, 0x116ca3340, {{0.0, 60.0}, {932.0, 370.0}}
+            Other, 0x116ca3480, {{0.0, 0.0}, {932.0, 430.0}}
+              Other, 0x116ca35c0, {{0.0, 0.0}, {932.0, 430.0}}
+    Window, 0x116ca3700, {{0.0, 0.0}, {932.0, 430.0}}
+      Other, 0x116ca3840, {{0.0, 0.0}, {932.0, 430.0}}
+        Other, 0x116ca3980, {{0.0, 0.0}, {932.0, 430.0}}
+Path to element:
+ →Application, 0x116c8f5c0, pid: 94204, label: 'Aster'
+Query chain:
+ →Find: Target Application 'com.omarkebrit.aster'
+  Output: {
+    Application, 0x116ca3ac0, pid: 94204, label: 'Aster'
+  }

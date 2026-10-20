@@ -1,0 +1,1616 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B1D866C1-67DC-4EDB-B8AB-821926404AE9.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_9E222254-009B-419A-AC42-578BBEC320B2.txt",
+        "timestamp" : 1792493788.059
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "07C94EF6-8781-4825-9C8B-E002060D2EDD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_2EC46AB3-53B8-4814-8DFD-AAB216A592D5.png",
+        "timestamp" : 1792493786.414
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A9CB4515-E25B-40DE-B6EC-F095EDDE2C1E.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Genuine gesture opened playing video tab_0_A8FF8674-670D-4908-948C-310C62891738.png",
+        "timestamp" : 1792493786.063
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testAutomaticPopupBlockedAndUserPlayerWindowAllowed()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testAutomaticPopupBlockedAndUserPlayerWindowAllowed"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "DC8F4086-0E3C-4350-9247-C8860584B714.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_24AEF2CE-602F-4597-8AF5-11082DC9860E.txt",
+        "timestamp" : 1792493850.1
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "39A0BD90-7E47-48CD-8F01-77F14A0D5FC6.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_340F7CB2-3842-4266-B7E1-F7084C35EA8E.png",
+        "timestamp" : 1792493849.613
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6EF2E9AF-4946-423A-927F-93E1C21EA7AB.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "User gesture plays sound under restrictive autoplay_0_D1FADC35-B552-4FBA-9A89-165E7EAF8D2F.png",
+        "timestamp" : 1792493849.368
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "DCC5B5C5-FEE6-4B0A-9C67-1024B826D741.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Real automatic playback attempt remains paused_0_67F9C6E3-C987-4EBB-A24A-230CBAF54537.png",
+        "timestamp" : 1792493845.836
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testBlockedAutoplayStillAllowsUserPlaybackWithSound()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testBlockedAutoplayStillAllowsUserPlaybackWithSound"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "96F5283A-DBD8-4F9B-8D5E-7E184A9D9142.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_2E78EA52-AF37-45FD-AC75-93DF801A12D2.txt",
+        "timestamp" : 1792493906.782
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "DEFD16AC-9F3B-41CC-B883-0D46A5BF19BD.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_F384BDCE-0ED0-4E45-B196-879D30DF95B6.png",
+        "timestamp" : 1792493906.395
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "573D98A6-4851-4B89-929C-847A5145A976.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Recovered native browser menu accepts interaction_0_D0BC701C-CB15-4309-8C78-C4B378716EF2.png",
+        "timestamp" : 1792493898.586
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "12E05D99-1040-45D0-970E-8A3915FD5FF4.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Fullscreen exit restores browser controls_0_40872189-B249-4989-A6D1-BE4BA4F4EE6E.png",
+        "timestamp" : 1792493895.735
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "41D360DC-ED01-4052-819F-6D58B9B8D182.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Decoded fullscreen frames continue after two landscape loops_0_A98D1A87-045B-44DA-B697-FAEEF9B310FD.png",
+        "timestamp" : 1792493887.95
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CB9A2D9C-5D9D-4F94-9634-668633ECC4EB.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Actual landscape fullscreen video_0_E9E51D16-3381-4CDE-A5EE-6B16B5CFDE27.png",
+        "timestamp" : 1792493884.825
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2F0D861F-E58F-4972-9ADF-328978BE61AF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Actual portrait fullscreen video_0_25D41857-B839-4AA4-A46B-928D3DCDCDF6.png",
+        "timestamp" : 1792493877.821
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingAcrossRotationAndExits"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2FFA024F-C88B-46DF-AE96-ABA3098F5B7E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-20 at 10.59.13 AM",
+        "timestamp" : 1792493953.934
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6579B051-4887-4AE8-AB94-1E393AF4FC00",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.14 AM",
+        "timestamp" : 1792493954.264
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E8CC0BB6-A0C3-419C-B899-820F811D4EBD.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_40DB2940-22FA-4C9C-B3FF-0ED8B7B127DF.txt",
+        "timestamp" : 1792493953.527
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "C519D9F7-E610-431F-93BB-9BA2C9F68B20.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_CAEEB6E9-9F4A-4DD5-A1C2-15E563606478.png",
+        "timestamp" : 1792493953.25
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "989180AC-9893-4D55-AD8B-2BAE8D31663B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "App UI hierarchy for com.omarkebrit_0_06BFB73F-6BEE-44A4-A368-4583AB0B13D3.aster",
+        "timestamp" : 1792493951.971
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4CE95074-86C9-476D-8101-E473709F5D53",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-20 at 10.59.11 AM",
+        "timestamp" : 1792493951.972
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "9B593750-A04E-4671-AA7B-269397F4C2B1.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_DE33AFAD-F925-4B9D-8192-6C91F392EB3A.txt",
+        "timestamp" : 1792493951.799
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F3E63CCE-CF88-4EF2-A6E4-532F00010C9B.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_895871C0-0402-415D-9C05-08E79103A72E.txt",
+        "timestamp" : 1792493950.813
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "986B9783-18D4-4CEB-973D-37E7ED7FCC4E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_651A0F84-4936-41D6-94A2-654B75FAA5DA.txt",
+        "timestamp" : 1792493949.804
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D4F8BACB-A76B-4884-AF92-74078CB49219.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_E2BF25BB-17C1-40D5-8A28-690B6D43F9EA.txt",
+        "timestamp" : 1792493948.765
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "C0461B6E-F4EA-475F-ABE8-C78CDFC50122.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_97941B8B-D10A-4085-8629-C689C0CAB695.txt",
+        "timestamp" : 1792493947.772
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "85460040-43C7-4B58-8C20-09D9FD8452B1.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_9DFB67D2-B470-4666-85B4-014E42D6E05D.txt",
+        "timestamp" : 1792493946.834
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E76F9C0E-08E4-409B-B05A-51C9950810C3.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_F4891909-3DAE-4985-9B92-31C4B8136283.txt",
+        "timestamp" : 1792493945.793
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "FF47D93C-DC04-45DD-8273-BEE75188BF7F.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_93E7A18F-B316-40EE-9095-738B02EE7ECF.txt",
+        "timestamp" : 1792493944.726
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AD70953F-A7F5-4FB8-BC46-8488A56BA278.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_28E88FF5-B116-4F40-8787-32BFA17D4215.txt",
+        "timestamp" : 1792493943.795
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4EDCB65B-0AC2-43E2-B085-990B3036AD48.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_5629A61C-286C-4143-B43E-262D06254077.txt",
+        "timestamp" : 1792493942.737
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D94F4226-69B4-4ACF-A7BA-42FD7425D1C7.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_FD54DD5F-52D7-46A8-BD87-525E1A9747F6.txt",
+        "timestamp" : 1792493941.796
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F9FE2BCE-09B7-402D-BC31-DEBFB546E0B7.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_433A56F0-43BA-48CD-A78C-0887C059FA82.txt",
+        "timestamp" : 1792493940.765
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6CDBC47F-CCB5-4276-9DB1-6C58D0CB8914.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_CABEE3B2-8265-4B4D-8129-5FD12A2C89B5.txt",
+        "timestamp" : 1792493939.745
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "502B26BD-EE29-4C58-B1EE-67D66DEE1D85.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_FDA9EEC3-74DE-4B32-9965-E94A1F3997F7.txt",
+        "timestamp" : 1792493938.803
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "3F09445C-53D5-4C39-A33E-21B0B6C79D6D.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_B38AA877-9B74-461C-822F-4AE38D463940.txt",
+        "timestamp" : 1792493937.794
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "14F9C954-4175-4D04-A0BB-BD61530B9FCD.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "First-loop media clock and native rotation schedule_0_AF570D78-16A6-487C-AF2D-25FCF993CBE4.txt",
+        "timestamp" : 1792493936.617
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1C0E61E6-DDA5-4D12-94D6-821C575C3932.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Portrait fullscreen and media clock from one native snapshot_0_14B6BFB5-C11D-4F64-9641-10FEA62BD1A7.txt",
+        "timestamp" : 1792493936.613
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "15D8F10C-9392-47AE-8227-5547B0CEA19B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-20 at 10.58.51 AM",
+        "timestamp" : 1792493931.201
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0DA41996-D2FB-4E07-BB54-DF76E74A71EB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.49 AM",
+        "timestamp" : 1792493929.829
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A7A6D818-33DE-44B7-A7C8-18963A35CA2E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.45 AM",
+        "timestamp" : 1792493925.238
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A745D6EC-E64F-494F-B416-8D369E1DB345",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.44 AM",
+        "timestamp" : 1792493924.722
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A0A6197C-220E-4092-B1FF-F92223B0FE03",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.42 AM",
+        "timestamp" : 1792493922.064
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B50C8E4B-44B7-41E9-9345-52B0CC24521D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.41 AM",
+        "timestamp" : 1792493921.333
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D6DDD3F7-9F37-4DFB-9F8E-C740353AC78A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.58.40 AM",
+        "timestamp" : 1792493920.024
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "04DBDF43-CEE7-4E84-92CC-33D94C605DE0.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-20 at 10.58.29 AM.mp4",
+        "timestamp" : 1792493909.132
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testElementFullscreenKeepsPlayingWhenFirstLoopBoundaryMeetsRotation"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "355865DD-D0A1-4526-B0BF-BFCC063AECED.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility hierarchy_0_92DEE343-17EA-473E-B3F6-A958775B0300.txt",
+        "timestamp" : 1792494391.076
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "11279F89-5351-4F28-9701-72C6523DE3FF.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Final display_0_C06A14E9-FB08-48F6-9768-376242F13921.png",
+        "timestamp" : 1792494385.828
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0E722235-A107-4FA2-AE69-4B659576116E.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `\"Local tab 18 ready\" StaticText`_0_78AD74BA-824E-4AE2-9BE4-F0E9C5AE1D8E.txt",
+        "timestamp" : 1792494384.505
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2F3BD94E-6282-4611-943A-9626B4952FE6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "UI Snapshot 2026-10-20 at 11.06.24 AM",
+        "timestamp" : 1792494384.505
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7941065E-5BFB-4293-8B8D-362ECECAC380.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Element Debug Description_0_B467FFCB-F5F5-4196-AD24-CAC406124950.txt",
+        "timestamp" : 1792494384.399
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "38845DF0-228E-45DD-916B-697C8C7F6826",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.06.00 AM",
+        "timestamp" : 1792494360.696
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D0352819-8515-4EBA-A4BB-AF5D00942C40",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.59 AM",
+        "timestamp" : 1792494359.319
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "68F918DD-0AEC-433C-9121-64218D8285BB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.54 AM",
+        "timestamp" : 1792494354.904
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "48B7891D-4B63-46EA-A626-1A1F5F2F0E82",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.53 AM",
+        "timestamp" : 1792494353.121
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "5F104E9D-6846-484D-AA49-26ABC0D6FE93",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.50 AM",
+        "timestamp" : 1792494350.277
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "FBD5287A-9E4A-440D-AAEB-61E4C28DFED0",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.42 AM",
+        "timestamp" : 1792494342.754
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "68CDA87E-71CC-4949-85B6-EBFE1097076B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.36 AM",
+        "timestamp" : 1792494336.611
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "47BE46D8-CD12-4EF4-8F5C-7006D4969AAB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.25 AM",
+        "timestamp" : 1792494325.172
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E44299EE-743E-41E7-B704-6BC03452460D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.24 AM",
+        "timestamp" : 1792494324.289
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0AA622BA-2D3F-4018-88A8-E88272C9B91E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.20 AM",
+        "timestamp" : 1792494320.205
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "825A591F-7FB5-4AB7-9263-BE8F4B1D4CA1",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.17 AM",
+        "timestamp" : 1792494317.369
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "29FC4A66-1415-4D9F-8E88-E887316D2692",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.14 AM",
+        "timestamp" : 1792494314.761
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AA50442A-1558-4882-9471-6373B8DEE2C7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.05.07 AM",
+        "timestamp" : 1792494307.673
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4EE560F7-6C75-4D1A-9753-F9D71A9B3AB1",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.57 AM",
+        "timestamp" : 1792494297.588
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7673D2F8-939C-4672-9660-C9484B5043DA.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Debug description for `StaticText (First Match)`_0_F26A1825-988E-4A66-9FDD-2D615130AB18.txt",
+        "timestamp" : 1792494283.254
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7BE36157-E3BB-4D29-AB64-DB339FEB6D8D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.34 AM",
+        "timestamp" : 1792494274.439
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "64BDCBF5-B8EF-41EC-8AF6-1ABC2192607E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.33 AM",
+        "timestamp" : 1792494273.356
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6BC5371A-4CCC-4A47-BB46-ACD3166FB086",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.29 AM",
+        "timestamp" : 1792494269.505
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "78AC2CA9-6A7C-47E6-A5D8-8F300259B3F6",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.28 AM",
+        "timestamp" : 1792494268.324
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AF345528-F71E-44BA-B8C0-E1695BDBA1FF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.26 AM",
+        "timestamp" : 1792494266.744
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "291D652D-14AB-4681-8608-B52F3D852144",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.21 AM",
+        "timestamp" : 1792494261.41
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "62CEAAE2-2534-4277-A4B0-E910D7183544",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.12 AM",
+        "timestamp" : 1792494252.391
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4427A05E-6742-448C-AB19-8F2C826BE58C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.05 AM",
+        "timestamp" : 1792494245.472
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "3E9ECA81-3FCD-4349-87BE-2F881399030D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.05 AM",
+        "timestamp" : 1792494245.06
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "47D4A326-AF60-435B-8AED-F90A032F9869",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.02 AM",
+        "timestamp" : 1792494242.328
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "323728A3-4F66-4E23-8491-47426857D1FE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.01 AM",
+        "timestamp" : 1792494241.704
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "38BD4F19-3AF7-452F-A2E6-9EBA42EDFF94",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.04.00 AM",
+        "timestamp" : 1792494240.624
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1B02663E-8F1E-424A-A6CC-A7BF81B6B391",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.56 AM",
+        "timestamp" : 1792494236.53
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AAE6C04D-C743-4B39-B052-F1E7A1A6E58C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.52 AM",
+        "timestamp" : 1792494232.303
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0B01A629-4CC2-4F0E-8BD4-FC0CC73AC5AF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.46 AM",
+        "timestamp" : 1792494226.521
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CB403D49-37F7-4931-AEFC-E3EF6DD2CA93",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.46 AM",
+        "timestamp" : 1792494226.056
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6FAF4A40-CF56-4E90-831F-ACF82C233406",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.43 AM",
+        "timestamp" : 1792494223.301
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D0FD33FF-594D-45FC-B718-5229F2D0BC06",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.42 AM",
+        "timestamp" : 1792494222.801
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "43ED46CD-73D8-4620-BC5F-108FCAB41F40",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.41 AM",
+        "timestamp" : 1792494221.862
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0942F4DA-D576-434A-9D16-3C7BE8A92070",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.37 AM",
+        "timestamp" : 1792494217.957
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4A9B3152-DB42-4CDC-A2F2-9153F4EDDB87",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.33 AM",
+        "timestamp" : 1792494213.499
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2168A6C1-1262-4ECC-8B62-33106EC60216",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.25 AM",
+        "timestamp" : 1792494205.758
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "161AF0A1-BFC6-46C4-A455-E522E6DF6E1A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.25 AM",
+        "timestamp" : 1792494205.251
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "35F6AF9E-3904-4A2B-8644-6A5FAE3A36C2",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.22 AM",
+        "timestamp" : 1792494202.587
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B414B4CA-2C25-4E36-B529-30FC0A0C7AB4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.22 AM",
+        "timestamp" : 1792494202.025
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D42FBEE9-A48F-468E-8332-9A5E13B35C74",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.21 AM",
+        "timestamp" : 1792494201.126
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4AAF9844-A9A2-42FB-98A0-BF3D925B1B9D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.16 AM",
+        "timestamp" : 1792494196.977
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "9AFD69E7-2B5A-44EC-94AB-9957DEC13E38",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.12 AM",
+        "timestamp" : 1792494192.83
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "92F50685-F3A7-4301-A665-3C4E514689D9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.07 AM",
+        "timestamp" : 1792494187.037
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2DE40422-2227-4638-976A-944189ACA2AA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.06 AM",
+        "timestamp" : 1792494186.632
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CF6E3D5C-5065-4055-94C8-A354B4CA6EBE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.03 AM",
+        "timestamp" : 1792494183.769
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "06750C26-2127-48DA-A9CE-4219D5F257FB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.03 AM",
+        "timestamp" : 1792494183.095
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "ACE4C81A-17A9-4FBB-918C-37B669634828",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.03.02 AM",
+        "timestamp" : 1792494182.043
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0B881999-0FF7-4EA4-AC9F-0A3C2E3EBFEA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.57 AM",
+        "timestamp" : 1792494177.56
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "63DD0234-B8A0-4D17-97F5-AC19D6C91775",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.52 AM",
+        "timestamp" : 1792494172.941
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E67EA39C-69FC-4405-948F-8B26D505C168",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.47 AM",
+        "timestamp" : 1792494167.183
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "31CEBE4A-84E6-4B2C-93C0-2CAEDAB6DE2C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.46 AM",
+        "timestamp" : 1792494166.661
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D34A93D6-9E3A-49A0-9079-6DC85C193C56",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.43 AM",
+        "timestamp" : 1792494163.705
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "90392B11-310E-4B62-BF4D-0581AC33A4B5",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.43 AM",
+        "timestamp" : 1792494163.045
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6D8AEDFD-0954-4E06-936A-F51364141ACF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.41 AM",
+        "timestamp" : 1792494161.96
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "02D8F804-BA94-4F98-A645-E75D0F1299E1",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.37 AM",
+        "timestamp" : 1792494157.892
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1A2EDCBB-36CD-478A-BD81-82B4A912F9FC",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.33 AM",
+        "timestamp" : 1792494153.734
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "84FE228C-EA0F-4F3C-AEB9-4CD27465D4F7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.27 AM",
+        "timestamp" : 1792494147.996
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "85499C99-ECC4-48CD-85C6-BC731785C2E3",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.27 AM",
+        "timestamp" : 1792494147.613
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "59FD79A0-2A64-4B5E-8EEA-5AFAFF43C544",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.24 AM",
+        "timestamp" : 1792494144.739
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "FC847604-7198-453A-9678-4971619688F7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.24 AM",
+        "timestamp" : 1792494144.14
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "05C159CF-9345-44E4-ACC5-5067FE9F10DD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.23 AM",
+        "timestamp" : 1792494143.212
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2696F530-8AC9-4B99-A597-50288F6393E9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.19 AM",
+        "timestamp" : 1792494139.269
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "13063F95-74DF-4DBA-9252-40934D4EB3AF",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.15 AM",
+        "timestamp" : 1792494135.11
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E032BD7C-EEE6-4CB6-836E-3BD5BF4E4C3C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.08 AM",
+        "timestamp" : 1792494128.779
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "C920712B-F552-4978-B386-8612CCB115BC",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.08 AM",
+        "timestamp" : 1792494128.354
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "715F5ADF-5DBF-4BBC-B464-CA09611EA772",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.05 AM",
+        "timestamp" : 1792494125.457
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AE33A1CC-6A3B-462C-8F38-6FCF9B6642D7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.04 AM",
+        "timestamp" : 1792494124.738
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "684595BE-C459-4362-AB96-92AD4F50CE7D",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.02.03 AM",
+        "timestamp" : 1792494123.861
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7EF643D2-04EF-49E3-A576-481BD6F09D25",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.59 AM",
+        "timestamp" : 1792494119.667
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4BA845DE-8C7A-4D12-B221-E45201D482F7",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.55 AM",
+        "timestamp" : 1792494115.19
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F5801EA2-EB0D-4364-AEF4-311486A26085",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.49 AM",
+        "timestamp" : 1792494109.465
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "C7D1C649-4555-4555-9907-CCFB11799ACA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.49 AM",
+        "timestamp" : 1792494109.089
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "93CB2A07-729B-471D-8024-DB990060F4CE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.46 AM",
+        "timestamp" : 1792494106.442
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "EF1DB56F-490C-4296-91AE-336C90092CEA",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.45 AM",
+        "timestamp" : 1792494105.904
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2CAC130D-3639-4E3D-8D3D-73F499F6A07C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.44 AM",
+        "timestamp" : 1792494104.945
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7A967C9B-E92A-4F97-83DF-BEFAFD1DD220",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.41 AM",
+        "timestamp" : 1792494101.156
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B4576F38-5BAF-4A9E-8191-7FBF78106C8B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.36 AM",
+        "timestamp" : 1792494096.899
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7A64565F-AD96-410C-8901-72B87717E750",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.31 AM",
+        "timestamp" : 1792494091.349
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1BA21A0B-A4A7-4925-AF7D-84568DA52F20",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.30 AM",
+        "timestamp" : 1792494090.993
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "29E8CF27-27DC-454E-A8D4-6A36DC8AAA96",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.28 AM",
+        "timestamp" : 1792494088.274
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "76436857-BACA-4F41-8B0F-ED99F7BCD3FD",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.27 AM",
+        "timestamp" : 1792494087.785
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B8724BA4-4C80-4D79-BD20-8F9CA92F7B34",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.26 AM",
+        "timestamp" : 1792494086.946
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D485D5CF-EB4D-41CC-B329-38F2F0C96247",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.22 AM",
+        "timestamp" : 1792494082.739
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B28A7891-878E-4125-B0FD-0F1B5B7D1C34",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.18 AM",
+        "timestamp" : 1792494078.754
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "AADC356E-D9A7-425F-9104-C85A06FAA48E",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.13 AM",
+        "timestamp" : 1792494073.101
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CB5F54B0-1F97-4AB9-89A7-2D07B7FF4120",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.12 AM",
+        "timestamp" : 1792494072.726
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "8A4D3188-A818-497C-A6B0-3E8ABE07D92B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.09 AM",
+        "timestamp" : 1792494069.932
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "16FA79AE-A881-468F-9477-3ABC067033C9",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.09 AM",
+        "timestamp" : 1792494069.426
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B675707B-34B0-4AE4-9F14-50451FE82E85",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.08 AM",
+        "timestamp" : 1792494068.525
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "9E91D279-97AB-4155-8880-509B6994496B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.04 AM",
+        "timestamp" : 1792494064.51
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B6AF66DD-8E17-4BCD-8842-F8357FBF5C49",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.01.00 AM",
+        "timestamp" : 1792494060.546
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0EDD8185-AEE6-4EAD-AF88-386271949CCC",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.54 AM",
+        "timestamp" : 1792494054.781
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "A3EAE963-86B4-4F60-9D33-EB7634F7FD58",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.54 AM",
+        "timestamp" : 1792494054.437
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "1A3761CC-C0A4-410D-AC36-6F101A76F79C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.51 AM",
+        "timestamp" : 1792494051.671
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "60811246-6A4B-49F9-9AFE-D7DA0249B845",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.51 AM",
+        "timestamp" : 1792494051.157
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "EB3028D5-5EA7-4040-93F2-E3665B25A86B",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.50 AM",
+        "timestamp" : 1792494050.127
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6BBE394E-4E08-4244-B8B9-FECF5E091FC1",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.45 AM",
+        "timestamp" : 1792494045.468
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "E9DB0157-CA47-4FF2-BCE8-1A6F79792E04",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.41 AM",
+        "timestamp" : 1792494041.404
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "76FBEC62-BCE1-46A4-B783-29C1C6EDC58A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.35 AM",
+        "timestamp" : 1792494035.396
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "2C89E83C-1C25-4D05-9A3A-10CCA8F720BE",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.34 AM",
+        "timestamp" : 1792494034.96
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F2EEAFAD-5DF8-4C34-A26B-9922F898F515",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.31 AM",
+        "timestamp" : 1792494031.991
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "9D015FB4-4CDE-4D08-8FCB-D9BD7C773226",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.31 AM",
+        "timestamp" : 1792494031.223
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "BFD62500-F539-4C1F-BEC0-78DA6577E215",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.30 AM",
+        "timestamp" : 1792494030.31
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D5344980-6A5E-4FD0-957D-4A6B22280AFB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.25 AM",
+        "timestamp" : 1792494025.69
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "6FEC00D6-94E1-48A5-896E-CF3C030D2698",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.21 AM",
+        "timestamp" : 1792494021.662
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "69093BDF-36C1-45B6-AD5A-8A6E2FE63F11",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.15 AM",
+        "timestamp" : 1792494015.469
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "0FF47530-C610-42C1-9C89-9C4C4D3522B4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.15 AM",
+        "timestamp" : 1792494015.051
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4359E5A8-DEB1-4B6D-A91A-13A04D980F2F",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.12 AM",
+        "timestamp" : 1792494012.231
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F49C109D-D2A7-40B7-8B33-31957FD98011",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.11 AM",
+        "timestamp" : 1792494011.447
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "DEFAA56D-A063-4252-B12E-68BD03D3B180",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.10 AM",
+        "timestamp" : 1792494010.397
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "9DAF56E8-C1AE-477D-9A97-CDCB6CA17E15",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.05 AM",
+        "timestamp" : 1792494005.339
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "079BEE49-041A-424B-86D8-452327897D25",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 11.00.00 AM",
+        "timestamp" : 1792494000.928
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D5D37F5D-B213-43B5-91AB-5A0D14683010",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.54 AM",
+        "timestamp" : 1792493994.885
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F8EABAAE-F8D2-438C-8FD2-3CF4869E1513",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.54 AM",
+        "timestamp" : 1792493994.57
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "7E1CED76-D9BE-4493-A2E5-A06133313D5C",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.51 AM",
+        "timestamp" : 1792493991.905
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "3DD99F33-0FE3-4C14-AA90-A0066F7C5928",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.51 AM",
+        "timestamp" : 1792493991.463
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "D199FBEA-E626-4AD9-A7BE-96762A1C7E43",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.50 AM",
+        "timestamp" : 1792493990.694
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B2633E25-C291-4C19-B45F-6ADEAF4BF2BB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.46 AM",
+        "timestamp" : 1792493986.227
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "B42228FE-DBC2-4ACD-BDD8-78ADA443259A",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.41 AM",
+        "timestamp" : 1792493981.861
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "4CEFC12C-B6C4-4D00-A54F-EEC53EAB7607",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.36 AM",
+        "timestamp" : 1792493976.705
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "BBE23A69-D279-4049-8EF8-8A34E538DE80",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.36 AM",
+        "timestamp" : 1792493976.24
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "F6E58B16-4661-424D-94C1-F7F90BDBF3A4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.33 AM",
+        "timestamp" : 1792493973.378
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "673CA33C-D98C-4A26-8566-29C3634773BB",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.32 AM",
+        "timestamp" : 1792493972.559
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "CDD311DE-8E05-4E87-847F-ACDCC2642165",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Synthesized Event 2026-10-20 at 10.59.31 AM",
+        "timestamp" : 1792493971.229
+      },
+      {
+        "configurationName" : "Configuration 1",
+        "deviceId" : "6BE2A10F-1139-4F1B-82F7-A973C6EAF5E4",
+        "deviceName" : "Aster iPhone 15 Pro Max",
+        "exportedFileName" : "72E9A041-E1B9-47E1-A7C8-0CA8EB981D7A.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-10-20 at 10.59.19 AM.mp4",
+        "timestamp" : 1792493959.82
+      }
+    ],
+    "testIdentifier" : "AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch()",
+    "testIdentifierURL" : "test://com.apple.xcode/Client/XCUITests/AsterAcceptanceTests/testTwentyFiveTabsSurviveProcessRelaunch"
+  }
+]

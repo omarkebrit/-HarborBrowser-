@@ -1,0 +1,6 @@
+Aster media clock {"t":1.1962828546664517,"duration":6,"rate":1,"playing":true,"epochMs":1792493931220,"playRequestedEpochMs":1792493929667,"totalNaturalWraps":0,"orientation":"portrait"}
+receivedEpochMs=1792493931305.8628
+sampleAge=0.08586287498474121
+firstBoundaryEpochMs=1792493936023.7173
+targetEpochMs=1792493935623.717
+rotationRequestedEpochMs=1792493935691.1401

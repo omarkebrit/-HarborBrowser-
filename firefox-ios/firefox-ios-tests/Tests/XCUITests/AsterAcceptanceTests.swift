@@ -27,6 +27,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         let duration: TimeInterval
         let epochMs: Double
         let totalNaturalWraps: Int
+        let source: String
     }
 
     private struct FullscreenPortraitSample {
@@ -271,6 +272,7 @@ final class AsterAcceptanceTests: BaseTestCase {
         guard observation.hasPrefix(prefix),
               let data = String(observation.dropFirst(prefix.count)).data(using: .utf8),
               let resize = try? JSONDecoder().decode(FullscreenRotationObservation.self, from: data),
+              resize.source == "ResizeObserver",
               resize.t.isFinite, resize.duration.isFinite, resize.epochMs.isFinite,
               resize.t >= 0, resize.t <= resize.duration, (5.9...6.1).contains(resize.duration) else {
             XCTFail("Invalid actual landscape resize observation: \(observation)")
@@ -518,14 +520,17 @@ final class AsterAcceptanceTests: BaseTestCase {
             XCTFail("Missing rendered page text: \(text)", file: file, line: line)
             return
         }
-        let viewport = app.webViews["contentView"].firstMatch
         let visible = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
-            let frame = element.frame
-            let viewportFrame = viewport.frame
-            let windowFrame = self.app.windows.firstMatch.frame
-            return frame.minX.isFinite && frame.minY.isFinite && frame.width.isFinite && frame.height.isFinite
-                && frame.width > 0 && frame.height > 0 && viewportFrame.contains(frame) && windowFrame.contains(frame)
-        }, object: element)
+            guard let root = try? self.app.snapshot(),
+                  let window = self.snapshot(in: root, matching: { $0.elementType == .window }),
+                  let viewport = self.snapshot(in: window, matching: {
+                      $0.elementType == .webView && $0.identifier == "contentView"
+                  }),
+                  let renderedText = self.snapshot(in: viewport, matching: {
+                      $0.elementType == .staticText && $0.label == text
+                  }) else { return false }
+            return self.visibleSnapshot(renderedText, in: viewport, window: window)
+        }, object: app)
         XCTAssertEqual(XCTWaiter().wait(for: [visible], timeout: timeout), .completed,
                        "Page text must render inside the native viewport and display: \(text)", file: file, line: line)
     }
@@ -538,7 +543,9 @@ final class AsterAcceptanceTests: BaseTestCase {
         let sampleAt = clock.epochMs / 1000
         let age = receivedAt - sampleAt
         let firstBoundary = sampleAt + (clock.duration - clock.t) / clock.rate
-        let target = firstBoundary - 0.4
+        // Begin the native orientation transaction at the existing timing window's lower edge.
+        // Its first observed stage-layout crossing must still fall within -0.75...0.5 seconds.
+        let target = firstBoundary - 0.75
         let waitDuration = target - Date().timeIntervalSince1970
         guard waitDuration > 0, waitDuration <= min(6.1, clock.duration / clock.rate) else {
             XCTFail("SETUP: Too late to target the first loop boundary; target=\(target), wait=\(waitDuration), \(raw)",
